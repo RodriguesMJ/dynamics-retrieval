@@ -1,5 +1,6 @@
 #!/bin/sh
-PHASE_model=../../../PhaseModel/bov_nlsa_refine_47.pdb
+#PHASE_model=../../../PhaseModel/bov_nlsa_refine_47.pdb
+PHASE_model=../RHO_swissfel_TG_refine_49.pdb
 
 LIGHTMTZ=$1
 DARKMTZ=$2
