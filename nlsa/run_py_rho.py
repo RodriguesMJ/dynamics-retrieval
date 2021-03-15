@@ -9,6 +9,10 @@ if flag == 1:
     os.system('python convert.py')    # sbatch -p day run.sh
 
 
+# import convert
+# convert.main()
+# convert contains def main()
+
 # CALCULATE d_sq
 flag = 0
 if flag == 1:    
