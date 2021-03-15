@@ -8,6 +8,7 @@ flag = 0
 if flag == 1:
     os.system('python convert.py')    # sbatch -p day run.sh
 
+
 # CALCULATE d_sq
 flag = 0
 if flag == 1:    
@@ -19,7 +20,7 @@ flag = 0
 if flag == 1:
     os.system('sbatch run_parallel.sh')
     
-flag = 0
+flag = 1
 if flag == 1:    
     import calculate_distances_utilities
     #calculate_distances_utilities.merge_D_sq()
@@ -90,6 +91,6 @@ if flag == 1:
     for mode in range(0, 3):
         util_append_bwd_reconstruction.f(mode)
         
-flag = 1
+flag = 0
 if flag == 1:    
     os.system('python export_Is.py')        

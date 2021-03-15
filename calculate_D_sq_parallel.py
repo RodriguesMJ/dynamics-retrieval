@@ -30,7 +30,7 @@ def f(myArguments):
     step = settings.paral_step 
     
     d_sq = joblib.load('%s/d_sq.jbl'%results_path)   
-    print 'd_sq: ', d_sq.shape
+    print 'd_sq: ', d_sq.shape, d_sq.dtype
     
     S = d_sq.shape[0]
     s = S-q
@@ -51,8 +51,9 @@ def f(myArguments):
     for i in range(q_start, q_end):
         if (i%100==0):
             print i, '/', q
-        term = d_sq[i:i+s+1, i:i+s+1]
-        D_sq = D_sq + term
+#        term = d_sq[i:i+s+1, i:i+s+1]
+#        D_sq = D_sq + term
+        D_sq += d_sq[i:i+s+1, i:i+s+1]
         
     print 'Time: ', time.time() - starttime   
     

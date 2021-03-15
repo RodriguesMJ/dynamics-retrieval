@@ -2,7 +2,8 @@
 import numpy
 
 label = 'dark'
-results_path = '../data_rho/rho_%s'%label
+#results_path = '../data_rho/rho_%s'%label
+results_path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho/results_NLSA_I_b_5000/rho_%s'%label
 
 datatype = numpy.float32
 q = 4096   # Concatenation n.

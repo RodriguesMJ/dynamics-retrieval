@@ -16,7 +16,7 @@ def f(nproc):
 #    test = joblib.load(fn)
 #    print test.shape, test.dtype
     
-    n = 123902
+    n = 181438
     
     print 'Merge d_sq'
     #D_sq = numpy.zeros(test.shape, dtype=datatype)
@@ -26,7 +26,8 @@ def f(nproc):
         fn = '%s/D_sq_loop_idx_%d.jbl'%(results_path, i)
         print fn
         temp = joblib.load(fn)
-        D_sq = D_sq + temp
+        #D_sq = D_sq + temp
+        D_sq += temp
     print 'Done.'
         
     print 'Saving.'

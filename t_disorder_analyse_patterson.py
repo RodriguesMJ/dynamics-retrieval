@@ -31,11 +31,11 @@ from matplotlib import pyplot
 #pyplot.savefig('./rho_dark_ortho_patt_x0_z0.png')
 #pyplot.close()
 
-#label = 'rho_dark_ortho'
-label = '348394_pushres1.9'
-outfolder = './I_correction_method_2'
+path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/translation_corr_det'
+outfolder = '%s/I_correction_fraction_tests'%path
+label = 'rho'
 
-fractions = numpy.arange(0.19, 0.26, 0.01)
+fractions = numpy.arange(0.14, 0.22, 0.01)
 
 pyplot.figure()
 pyplot.ylim([-20,+50])
@@ -57,5 +57,5 @@ for fraction in fractions:
     pyplot.plot(y,arr[0,:,0],label='%.2f'%fraction)
     
 pyplot.legend()
-pyplot.savefig('%s/%s_patt_x0_z0_frac_0p19_0p26.png'%(outfolder, label))
+pyplot.savefig('%s/%s_patt_x0_z0_frac_range.png'%(outfolder, label))
 pyplot.close()
