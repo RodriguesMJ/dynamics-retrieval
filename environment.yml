@@ -1,0 +1,17 @@
+name: nlsa
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=2.7
+  - spyder=4.1.1
+  - numpy
+  - scipy
+  - matplotlib
+  - joblib
+  - h5py
+  - dask
+  - pip
+  - pip:
+    - gemmi
+
