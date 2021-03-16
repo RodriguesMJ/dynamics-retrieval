@@ -1,4 +1,5 @@
 *.out
 *.pyc
 /trash
-
+/slurm_old
+/out
