@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
+#import os
+import settings_rho_light as settings
 
 ### SPARSE ###
 
@@ -36,7 +37,9 @@ if flag ==1:
     
 flag = 0
 if flag ==1:
-    os.system('python transition_matrix.py')
+    import nlsa.transition_matrix
+    nlsa.transition_matrix.main(settings)
+#    os.system('python transition_matrix.py')
     
 flag = 0
 if flag == 1:

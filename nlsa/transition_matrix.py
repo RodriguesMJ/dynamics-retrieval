@@ -2,8 +2,6 @@
 import joblib
 import numpy
 
-import settings_rho_light as settings
-
 def calculate_W_localspeeds(D, N, v, results_path, datatype, sigma_sq):
     s = D.shape[0]
     b = D.shape[1]    
@@ -22,7 +20,6 @@ def calculate_W_localspeeds(D, N, v, results_path, datatype, sigma_sq):
             v_neighbor = v[neighbor_idx] 
             W[i, neighbor_idx] = numpy.exp(-(d_i_neighbor*d_i_neighbor)/
                                             (sigma_sq*v_i*v_neighbor))
-    
     return W
 
 
@@ -47,7 +44,7 @@ def calculate_W(D, N, results_path, datatype, sigma_sq):
     
 
 
-def symmetrise_W(W, dataype):
+def symmetrise_W(W, datatype):
     s = W.shape[0]
     W_sym = numpy.empty((s,s), dtype=datatype)
     W_sym[:] = numpy.nan
@@ -64,7 +61,7 @@ def symmetrise_W(W, dataype):
 
 
 
-def symmetrise_W_optimised(W, dataype):
+def symmetrise_W_optimised(W, datatype):
     s = W.shape[0]
     W_sym = numpy.empty((s,s), dtype=datatype)
     W_sym[:] = numpy.nan
@@ -94,7 +91,7 @@ def symmetrise_W_optimised(W, dataype):
     
     
 
-if __name__ == '__main__':
+def main(settings):
     
     print '\n****** RUNNING tansition_matrix ****** '
     

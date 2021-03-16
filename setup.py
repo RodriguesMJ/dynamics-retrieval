@@ -10,7 +10,7 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = ['Click>=7.0', 'numpy', 'scipy', 'matplotlib', 'joblib', 'h5py', 'dask', 'gemmi']
 
 setup_requirements = ['pytest-runner',]
 
@@ -23,24 +23,14 @@ dev_requirements = ["bump2version", "twine"]
 setup(
     author="Cecilia Casadei",
     author_email='ceciliamariacasadei@gmail.com',
-    python_requires='>=3.5',
+    python_requires='>=2.7,<3',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 2.7',
     ],
     description="Run NLSA on various data set types.",
-    entry_points={
-        'console_scripts': [
-            'nlsa=nlsa.cli:main',
-        ],
-    },
     install_requires=requirements,
     extras_require={
         "tests": test_requirements,
