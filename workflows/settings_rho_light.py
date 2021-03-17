@@ -4,6 +4,7 @@ import numpy
 label = 'light'
 #results_path = '../data_rho/rho_%s'%label
 
+
 results_path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho/results_NLSA_I_t_correction/rho_%s'%label
 
 datatype = numpy.float32
