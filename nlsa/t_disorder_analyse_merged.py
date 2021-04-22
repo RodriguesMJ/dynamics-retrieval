@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy
+import matplotlib
+matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
 import matplotlib.pyplot
 from scipy.optimize import curve_fit
 import os

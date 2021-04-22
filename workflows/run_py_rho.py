@@ -1,29 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import settings_rho_light as settings
+import os
+
+# USE: sbatch -p day run.sh
+import settings_rho_dark as settings
 
 ### SPARSE ###
 
 # Data conversion with convert.py
-# Will need 
-# sbatch -p day run.sh
-flag = 1
+flag = 0
 if flag == 1:
     import nlsa.convert
     nlsa.convert.main(settings)
 
+# Apply translational disorder correction
+flag = 0
+if flag == 1:
+    import nlsa.t_disorder_correct
+    nlsa.t_disorder_correct.main(settings)
 
-# # CALCULATE d_sq
-# flag = 0
-# if flag == 1:    
-#     import calculate_distances_utilities
-#     calculate_distances_utilities.calculate_d_sq_SFX()
+# CALCULATE d_sq
+flag = 0
+if flag == 1:    
+    import nlsa.calculate_distances_utilities
+    nlsa.calculate_distances_utilities.calculate_d_sq_SFX_steps(settings)
+    
+    # Only for small datasets eg dark
+    #nlsa.calculate_distances_utilities.calculate_d_sq_SFX(settings)
+    #nlsa.calculate_distances_utilities.compare(settings)
 
-# # CALCULATE D_sq    
-# flag = 0
-# if flag == 1:
-#     os.system('sbatch run_parallel.sh')
+# CALCULATE D_sq    
+flag = 1
+if flag == 1:
+    os.system('sbatch run_parallel.sh')
     
 # flag = 0
 # if flag == 1:    
