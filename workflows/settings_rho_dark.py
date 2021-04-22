@@ -9,10 +9,13 @@ results_path = '%s/results_NLSA/rho_%s'%(root_folder, label)
 
 datatype = numpy.float32
 
+# Translational disorder correction parameters
 t_d_y = 0.244
 t_correction_factor = 0.174
-# q = 4096   # Concatenation n.
-# paral_step = 1000 # with 5 proc
+
+# Calculation of distances between supervectors
+q = 7000          # Concatenation n.
+paral_step = 1000 # with 7 proc
 
 
 # b = 2000    # Nearest neighbor n.
