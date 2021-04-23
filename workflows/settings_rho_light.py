@@ -16,6 +16,7 @@ t_correction_factor = 0.174
 # Calculation of distances between supervectors
 q = 30000         # Concatenation n
 paral_step = 1000 # with 30 proc
+n_workers = 30
 
 
 # b = 15000

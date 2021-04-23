@@ -4,7 +4,11 @@
 import os
 
 # USE: sbatch -p day run.sh
-import settings_rho_dark as settings
+# FOR PARALLEL STEPS USE:
+# conda activate myenv_nlsa
+# python run_py_rho.py
+
+import settings_rho_light as settings
 
 ### SPARSE ###
 
@@ -33,7 +37,9 @@ if flag == 1:
 # CALCULATE D_sq    
 flag = 1
 if flag == 1:
-    os.system('sbatch run_parallel.sh')
+    end_worker = settings.n_workers - 1
+    os.system('sbatch -p week -t 7-00:00:00 --mem=500G --array=0-%d ../scripts_parallel_submission/run_parallel.sh %s'
+              %(end_worker, settings.__name__)) 
     
 # flag = 0
 # if flag == 1:    

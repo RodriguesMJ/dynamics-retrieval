@@ -1,31 +1,18 @@
 # -*- coding: utf-8 -*-
-import getopt
-import sys
+import argparse
+import importlib
 import numpy
 import time
 import joblib
-
-import settings_rho_light as settings
  
-def f(myArguments):
-    
-    try:
-        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["index="])
-    except getopt.GetoptError:
-        print 'Usage: python ....py --index <index>'
-        sys.exit(2)   
-    for option, value in optionPairs:
-        if option == '-h':
-            print 'Usage: python ....py --index <index>'
-            sys.exit()
-        elif option == "--index":
-            loop_idx = int(value)
+def f(loop_idx, settings):
 
-    print 'loop_idx: ', loop_idx
+    print 'PARALLEL JOB loop_idx: ', loop_idx
     
     q = settings.q    
     datatype = settings.datatype
     results_path = settings.results_path
+    print 'q: ', q
     
     step = settings.paral_step 
     
@@ -51,8 +38,6 @@ def f(myArguments):
     for i in range(q_start, q_end):
         if (i%100==0):
             print i, '/', q
-#        term = d_sq[i:i+s+1, i:i+s+1]
-#        D_sq = D_sq + term
         D_sq += d_sq[i:i+s+1, i:i+s+1]
         
     print 'Time: ', time.time() - starttime   
@@ -60,8 +45,25 @@ def f(myArguments):
     print 'D_sq: ', D_sq.shape
     joblib.dump(D_sq, '%s/D_sq_loop_idx_%d.jbl'%(results_path,loop_idx))
     
-    print 'Time: ', time.time() - starttime   
+    print 'Time: ', time.time() - starttime  
     
-if __name__== "__main__":
     
-    f(sys.argv[1:])
+def main(args=None):
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("worker_ID", help="Worker ID")
+    parser.add_argument("settings", help="settings file")
+    args = parser.parse_args(args)
+
+    print 'Worker ID: ', args.worker_ID
+    
+    # Dynamic import based on the command line argument
+    settings = importlib.import_module(args.settings)
+
+    print("Label: %s"%settings.label)
+    print("Concatenation n: %d"%settings.q)
+    
+    f(int(args.worker_ID), settings)
+
+
+if __name__ == "__main__":
+    main()
