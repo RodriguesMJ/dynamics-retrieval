@@ -3,30 +3,27 @@ import joblib
 import numpy
 import time
 
-import settings_rho_light as settings
-
-def f(nproc):
+def f(settings):
     print '\n****** RUNNING merge_D_sq ******'
     results_path = settings.results_path
     datatype = settings.datatype
+    nproc = settings.n_workers
+    n = settings.n
     
     starttime = time.time()
     
-#    fn = '%s/D_sq_loop_idx_0.jbl'%(results_path)
-#    test = joblib.load(fn)
-#    print test.shape, test.dtype
+    # fn = '%s/D_sq_loop_idx_0.jbl'%(results_path)
+    # D_sq = joblib.load(fn)
+    # print D_sq.shape, D_sq.dtype
+    # n = D_sq.shape[0]
     
-    n = 181438
-    
-    print 'Merge d_sq'
-    #D_sq = numpy.zeros(test.shape, dtype=datatype)
+    print 'Merge D_sq'
     D_sq = numpy.zeros((n,n), dtype=datatype)
     for i in range(nproc):
         print i
         fn = '%s/D_sq_loop_idx_%d.jbl'%(results_path, i)
         print fn
         temp = joblib.load(fn)
-        #D_sq = D_sq + temp
         D_sq += temp
     print 'Done.'
         

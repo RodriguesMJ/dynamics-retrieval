@@ -5,8 +5,6 @@ import numpy.linalg
 import scipy.sparse.linalg
 from scipy import sparse
 
-import settings_rho_light as settings
-
 
 def eigendecompose_P(P):
     evals, evecs = numpy.linalg.eig(P)
@@ -44,9 +42,9 @@ def sort(evecs, evals):
     return evecs_sorted, evals_sorted
     
     
-if __name__ == '__main__':
+def main(settings):
 
-    label = '_sym_ARPACK'
+    label = settings.eigenlabel
     results_path = settings.results_path
     l = settings.l
 
@@ -54,12 +52,12 @@ if __name__ == '__main__':
     P = joblib.load('%s/P_sym.jbl'%results_path)
     
     print 'NaN values: ', numpy.isnan(P).any()
-    s = P.shape[0]
+    #s = P.shape[0]
 
-#    print 'Verify P row normalization'
-#    row_sum = numpy.sum(P, axis = 1)
-#    diff = row_sum - numpy.ones((s,))
-#    print numpy.amax(diff), numpy.amin(diff), '\n'
+    # print 'Verify P row normalization'
+    # row_sum = numpy.sum(P, axis = 1)
+    # diff = row_sum - numpy.ones((s,))
+    # print numpy.amax(diff), numpy.amin(diff), '\n'
 
     print 'Eigendecompose'    
     #evals, evecs = eigendecompose_P(P)

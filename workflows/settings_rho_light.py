@@ -17,15 +17,15 @@ t_correction_factor = 0.174
 q = 30000         # Concatenation n
 paral_step = 1000 # with 30 proc
 n_workers = 30
+n = 183558  # N. samples, for merging D_sq
+b = 15000   # Nearest neighbor n.
 
+n = 2
+sigma_opt = 1119.0 
+sigma_sq = (n*sigma_opt)**2
 
-# b = 15000
-# #
-# #n = 2
-# #sigma_opt = 46843.5 #47388.4 
-# #sigma_sq = (n*sigma_opt)**2
-# #
-# #l = 20     # N. diffusion map eigenvectors
+eigenlabel = '_sym_ARPACK'
+l = 10     # N. diffusion map eigenvectors
 # #
 # #nmodes = 3 # N. SVD modes   max nmodes = l
 # #toproject = [0, 18, 19]

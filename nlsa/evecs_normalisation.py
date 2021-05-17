@@ -2,8 +2,6 @@
 import joblib
 import numpy
 
-import settings_rho_light as settings
-
 
 def normalise(evecs, mu):
     norm = numpy.asarray([mu, ]*evecs.shape[1])
@@ -16,9 +14,9 @@ def get_mu_SFX(evecs):
     mu = evecs[:,0]*evecs[:,0]
     return mu
 
-if __name__ == '__main__':
+def main(settings):
     
-    label = '_sym_ARPACK'    
+    label = settings.eigenlabel  
     results_path = settings.results_path
     
 #    if label == '_sym_ARPACK':

@@ -8,7 +8,7 @@ import os
 # conda activate myenv_nlsa
 # python run_py_rho.py
 
-import settings_rho_light as settings
+import settings_rho_dark as settings
 
 ### SPARSE ###
 
@@ -35,43 +35,52 @@ if flag == 1:
     #nlsa.calculate_distances_utilities.compare(settings)
 
 # CALCULATE D_sq    
-flag = 1
+flag = 0
 if flag == 1:
     end_worker = settings.n_workers - 1
-    os.system('sbatch -p week -t 7-00:00:00 --mem=500G --array=0-%d ../scripts_parallel_submission/run_parallel.sh %s'
+    os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel.sh %s'
               %(end_worker, settings.__name__)) 
     
-# flag = 0
-# if flag == 1:    
-#     import calculate_distances_utilities
-#     #calculate_distances_utilities.merge_D_sq()
-#     calculate_distances_utilities.sort_D_sq()
-
-# flag = 0
-# if flag ==1:
-#     os.system('python get_epsilon.py')
     
-# flag = 0
-# if flag ==1:
-#     import nlsa.transition_matrix
-#     nlsa.transition_matrix.main(settings)
+flag = 0
+if flag == 1:    
+    import nlsa.calculate_distances_utilities
+    nlsa.calculate_distances_utilities.merge_D_sq(settings)
 
+flag = 0
+if flag == 1:    
+    import nlsa.calculate_distances_utilities
+    nlsa.calculate_distances_utilities.sort_D_sq(settings)
+
+flag = 0
+if flag ==1:
+    import nlsa.get_epsilon
+    nlsa.get_epsilon.main(settings)
     
-# flag = 0
-# if flag == 1:
-#     os.system('python probability_matrix.py')
+flag = 0
+if flag ==1:
+    import nlsa.transition_matrix
+    nlsa.transition_matrix.main(settings)
+   
+flag = 0
+if flag == 1:
+    import nlsa.probability_matrix
+    nlsa.probability_matrix.main(settings)
         
-# flag = 0
-# if flag == 1:
-#     os.system('python eigendecompose.py')    
+flag = 0
+if flag == 1:
+    import nlsa.eigendecompose
+    nlsa.eigendecompose.main(settings)   
 
-# flag = 0
-# if flag == 1:
-#     os.system('python evecs_normalisation.py')
+flag = 1
+if flag == 1:
+    import nlsa.evecs_normalisation
+    nlsa.evecs_normalisation.main(settings)
     
-# flag = 0
-# if flag == 1:  
-#     os.system('python plot_P_evecs.py')
+flag = 1
+if flag == 1:  
+    import nlsa.plot_P_evecs
+    nlsa.plot_P_evecs.main(settings)
 
 # flag = 0
 # if flag == 1:

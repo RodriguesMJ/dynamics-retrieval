@@ -2,7 +2,6 @@
 import numpy
 import joblib
 import scipy
-import numpy
 #import pickle
 
 def calculate_d_sq_SFX_steps(settings):    
@@ -79,7 +78,24 @@ def compare(settings):
     diff_rel = diff/d_sq
     print 'max(diff_rel): ', numpy.nanmax(diff_rel)
     
+def merge_D_sq(settings):
+    import util_merge_D_sq
+    util_merge_D_sq.f(settings)    
     
+def sort_D_sq(settings):
+    import util_sort_D_sq
+    
+    results_path = settings.results_path
+    b = settings.b
+    datatype = settings.datatype
+    D_sq = joblib.load('%s/D_sq_parallel.jbl'%results_path)
+    D, N = util_sort_D_sq.f_opt(D_sq, b, datatype)
+    
+    print 'Saving'    
+    joblib.dump(D, '%s/D_loop.jbl'%results_path)
+    joblib.dump(N, '%s/N_loop.jbl'%results_path)
+    #joblib.dump(v, '%s/v.jbl'%results_path)
+    print '\n'
     
 # #    # CALCULATE d_sq SPARSE INPUT
 # #    d_sq_sparse = util_calculate_d_sq.f_sparse(T_sparse, M_sparse)
@@ -178,24 +194,4 @@ def compare(settings):
     
 #     print 'Saving D_sq'    
 #     joblib.dump(D_sq, '%s/D_sq.jbl'%results_path)
-#     print '\n'
-    
-# def merge_D_sq():
-#     import util_merge_D_sq
-#     nproc = 5
-#     util_merge_D_sq.f(nproc)
-    
-# def sort_D_sq():
-#     import settings_rho_light as settings
-#     import util_sort_D_sq
-    
-#     results_path = settings.results_path
-#     b = settings.b
-#     D_sq = joblib.load('%s/D_sq_parallel.jbl'%results_path)
-#     D, N, v = util_sort_D_sq.f(D_sq, b)
-    
-#     print 'Saving'    
-#     joblib.dump(D, '%s/D.jbl'%results_path)
-#     joblib.dump(N, '%s/N.jbl'%results_path)
-#     joblib.dump(v, '%s/v.jbl'%results_path)
 #     print '\n'

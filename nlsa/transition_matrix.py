@@ -103,19 +103,19 @@ def main(settings):
     results_path = settings.results_path
     datatype = settings.datatype
     
-#    N = joblib.load('%s/N.jbl'%results_path)
-#    D = joblib.load('%s/D.jbl'%results_path)
+    N = joblib.load('%s/N_loop.jbl'%results_path)
+    D = joblib.load('%s/D_loop.jbl'%results_path)
 #    v = joblib.load('%s/v.jbl'%results_path)
 #    
 #    print 'Calculate W (local speeds)'
 #    W = calculate_W_localspeeds(D, N, v, results_path, datatype, sigma_sq)
 #    joblib.dump(W, '%s/W.jbl'%results_path)
          
-#    print 'Calculate W'
-#    W = calculate_W(D, N, results_path, datatype, sigma_sq)
-#    joblib.dump(W, '%s/W.jbl'%results_path)
+    print 'Calculate W'
+    W = calculate_W(D, N, results_path, datatype, sigma_sq)
+    joblib.dump(W, '%s/W.jbl'%results_path)
 
-    W = joblib.load('%s/W.jbl'%results_path)
+#    W = joblib.load('%s/W.jbl'%results_path)
 
 #    print 'Symmetrise W'
 #    W_sym = symmetrise_W(W, datatype)
@@ -125,6 +125,8 @@ def main(settings):
     W_sym = symmetrise_W_optimised(W, datatype)
     joblib.dump(W_sym, '%s/W_sym.jbl'%results_path)
 
+
+##### CHECKS #####
 #    W_sym_opt = joblib.load('%s/W_sym_opt.jbl'%results_path)
     
 #    print 'Checks:'
