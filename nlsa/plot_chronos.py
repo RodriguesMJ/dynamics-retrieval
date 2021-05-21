@@ -4,9 +4,7 @@ import matplotlib.pyplot
 import os
 import numpy  
 
-import settings_rho_light as settings
-
-def plot():
+def plot(settings):
     results_path = settings.results_path
     label = ''
     
@@ -58,69 +56,69 @@ def plot():
         #os.system('convert %s -resize 2048x512 %s'%(figname, rs_figname))
     
  
-def plot_chrono_movie(mode):
-    results_path = settings.results_path
-    label = ''    
-    VT_final = joblib.load('%s/VT_final%s.jbl'%(results_path,  label))  
-    s = VT_final.shape[1]   
-    chrono =  VT_final[mode,:]
-    print 'mode: ', mode
-    print 's: ', s
+# def plot_chrono_movie(mode):
+#     results_path = settings.results_path
+#     label = ''    
+#     VT_final = joblib.load('%s/VT_final%s.jbl'%(results_path,  label))  
+#     s = VT_final.shape[1]   
+#     chrono =  VT_final[mode,:]
+#     print 'mode: ', mode
+#     print 's: ', s
     
-    out_folder = '%s/chronos%s_%d_movie_noaxis'%(results_path, label, mode)
-    if not os.path.exists(out_folder):
-        os.mkdir(out_folder)
-    
-    
-            
-    my_dpi=96
-    #for i in range(100, 83800, 100):
-    for i in range(100, 99200, 100):   #99200
-        print mode, i
-        figname = '%s/chrono%s_%d_timepoint_%0.5d.png'%(out_folder, label, mode, i)
-        rs_figname = '%s/rs_chrono%s_%d_timepoint_%0.5d.png'%(out_folder, label, mode, i)
-        matplotlib.pyplot.figure(figsize=(2048/my_dpi, 512/my_dpi), dpi=my_dpi)
-        matplotlib.pyplot.plot(range(s), chrono, 'o', markersize=2, c='b', zorder=0)
-        matplotlib.pyplot.scatter(i, chrono[i], c='c', s=150, zorder=10)
+#     out_folder = '%s/chronos%s_%d_movie_noaxis'%(results_path, label, mode)
+#     if not os.path.exists(out_folder):
+#         os.mkdir(out_folder)
+                
+#     my_dpi=96
+#     for i in range(100, 99200, 100):   #99200
+#         print mode, i
+#         figname = '%s/chrono%s_%d_timepoint_%0.5d.png'%(out_folder, label, mode, i)
+#         rs_figname = '%s/rs_chrono%s_%d_timepoint_%0.5d.png'%(out_folder, label, mode, i)
+#         matplotlib.pyplot.figure(figsize=(2048/my_dpi, 512/my_dpi), dpi=my_dpi)
+#         matplotlib.pyplot.plot(range(s), chrono, 'o', markersize=2, c='b', zorder=0)
+#         matplotlib.pyplot.scatter(i, chrono[i], c='c', s=150, zorder=10)
         
-        ax = matplotlib.pyplot.gca()
-        ax.spines['bottom'].set_position('zero')
-        ax.tick_params(axis='x', which='major', labelsize=20)
-        ax.tick_params(axis='y', which='major', labelsize=0)
-        ax.spines['right'].set_visible(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.tick_params(axis='x', colors='magenta')
-        matplotlib.pyplot.tick_params(
-                axis='y',          # changes apply to the y-axis
-                which='both',      # both major and minor ticks are affected
-                left=False,        # ticks along the left edge are off
-                ) #
+#         ax = matplotlib.pyplot.gca()
+#         ax.spines['bottom'].set_position('zero')
+#         ax.tick_params(axis='x', which='major', labelsize=20)
+#         ax.tick_params(axis='y', which='major', labelsize=0)
+#         ax.spines['right'].set_visible(False)
+#         ax.spines['top'].set_visible(False)
+#         ax.spines['left'].set_visible(False)
+#         ax.tick_params(axis='x', colors='magenta')
+#         matplotlib.pyplot.tick_params(
+#                 axis='y',          # changes apply to the y-axis
+#                 which='both',      # both major and minor ticks are affected
+#                 left=False,        # ticks along the left edge are off
+#                 ) #
         
-        matplotlib.pyplot.savefig(figname, dpi=my_dpi)
-        matplotlib.pyplot.close()
-        os.system('convert %s -resize 2048x512 %s'%(figname, rs_figname))
+#         matplotlib.pyplot.savefig(figname, dpi=my_dpi)
+#         matplotlib.pyplot.close()
+#         os.system('convert %s -resize 2048x512 %s'%(figname, rs_figname))
 
   
-def plot_topos():
-    results_path = settings.results_path  
-    q = settings.q
-    U = joblib.load('%s/U.jbl'%(results_path))
-    print U.shape
-    print len(numpy.argwhere(U[:,3])<0)    
-    m = float(U.shape[0])/q
-    print m
-    m = int(m)
-    for i in range(U.shape[1]):
-        topo = U[0:m, i]
-        matplotlib.pyplot.plot(range(m), topo)
-        matplotlib.pyplot.savefig('%s/topo_%d.png'%(results_path, i))
-        matplotlib.pyplot.close()
+# def plot_topos():
+#     results_path = settings.results_path  
+#     q = settings.q
+#     U = joblib.load('%s/U.jbl'%(results_path))
+#     print U.shape
+#     print len(numpy.argwhere(U[:,3])<0)    
+#     m = float(U.shape[0])/q
+#     print m
+#     m = int(m)
+#     for i in range(U.shape[1]):
+#         topo = U[0:m, i]
+#         matplotlib.pyplot.plot(range(m), topo)
+#         matplotlib.pyplot.savefig('%s/topo_%d.png'%(results_path, i))
+#         matplotlib.pyplot.close()
 
 
 
-if __name__ == '__main__':    
-    plot()
+def main(settings):   
+    plot(settings)
+    
+    
+    
     #for mode in range(1, 6):
         #plot_chrono_movie(mode)
         

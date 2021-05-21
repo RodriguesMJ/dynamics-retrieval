@@ -3,23 +3,25 @@ import joblib
 import numpy
 import time
 
-import settings_rho_light as settings
 
-def f(nproc):
+def main(settings):
 
     print '\n****** RUNNING merge_A ******'
     results_path = settings.results_path
     datatype = settings.datatype
+    n_workers_A = settings.n_workers_A
     
     starttime = time.time()
     
     fn = '%s/A_chunck_idx_0.jbl'%(results_path)
-    test = joblib.load(fn)
-    print test.shape, test.dtype
+    A = joblib.load(fn)
+    print A.shape, A.dtype
+    nrows = A.shape[0]
+    ncols = A.shape[1]
     
     print 'Merge A'
-    A = numpy.zeros(test.shape, dtype=datatype)
-    for i in range(nproc):
+    A = numpy.zeros((nrows, ncols), dtype=datatype)
+    for i in range(n_workers_A):
         print i
         fn = '%s/A_chunck_idx_%d.jbl'%(results_path, i)
         print fn

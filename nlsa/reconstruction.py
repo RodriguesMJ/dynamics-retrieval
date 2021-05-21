@@ -3,10 +3,8 @@ import joblib
 import numpy
 import time
 
-import settings_rho_light as settings
 
-
-def reconstruct():
+def reconstruct(settings):
     print '\n****** RUNNING reconstruct ******'
     results_path = settings.results_path
     
@@ -24,7 +22,7 @@ def reconstruct():
 
 
         
-def unwrap():
+def unwrap(settings):
     print '\n****** RUNNING unwrap ******'
     results_path = settings.results_path
     l = settings.l
@@ -53,7 +51,7 @@ def unwrap():
            
         joblib.dump(movie_mode, '%s/movie_mode_%d.jbl'%(results_path, mode))
 
-def unwrap_extended_bwd_fwd():
+def unwrap_extended_bwd_fwd(settings):
     print '\n****** RUNNING unwrap ******'
     results_path = settings.results_path
     l = settings.l
@@ -104,7 +102,7 @@ def unwrap_extended_bwd_fwd():
 
 
 
-def reconstruct_unwrap_loop():
+def reconstruct_unwrap_loop(settings):
     print '\n****** RUNNING reconstruct_unwrap_loop ******'
     results_path = settings.results_path
     q = settings.q
@@ -136,7 +134,7 @@ def reconstruct_unwrap_loop():
    
 
 
-def reconstruct_unwrap_loop_extended_bwd_fwd():
+def reconstruct_unwrap_loop_extended_bwd_fwd(settings):
     print '\n****** RUNNING reconstruct_unwrap_loop ******'
     results_path = settings.results_path
     q = settings.q
@@ -188,19 +186,18 @@ def reconstruct_unwrap_loop_extended_bwd_fwd():
 
 
 
-def reconstruct_unwrap_loop_chunck_bwd():
+def reconstruct_unwrap_loop_chunck_bwd(settings):
     print '\n****** RUNNING reconstruct_unwrap_loop_chunck_bwd ******'
     results_path = settings.results_path
     q = settings.q
     ncopies = settings.ncopies
+    datatype = settings.datatype
 
     U = joblib.load('%s/U.jbl'%results_path)
     SVs = joblib.load('%s/S.jbl'%results_path)
     VT_final = joblib.load('%s/VT_final.jbl'%results_path)
 
     nmodes = VT_final.shape[0]
-    #s = VT_final.shape[1]
-    #S = s+q
     m = U.shape[0]/q
 
     VT_final = VT_final.T    
@@ -209,7 +206,7 @@ def reconstruct_unwrap_loop_chunck_bwd():
         print 'Mode: ', k
     
         # backward
-        x_r_bkw = numpy.zeros((m,q-ncopies))   
+        x_r_bkw = numpy.zeros((m,q-ncopies), dtype=datatype)   
         for j in range(q-ncopies):
             for i in range(ncopies):
                 #print i, j

@@ -3,13 +3,11 @@ import joblib
 import numpy
 import time
 
-import settings_rho_light as settings
-
-def f(nproc, mode):
-    
+def f(settings, mode):   
     print '\n****** RUNNING merge_x_r ******'
     results_path = settings.results_path
     datatype = settings.datatype
+    nproc = settings.n_workers_reconstruction 
     
     print 'Mode: ', mode
     starttime = time.time()
@@ -32,11 +30,3 @@ def f(nproc, mode):
     joblib.dump(x_r, '%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
     print 'Done.'
     print 'It took: ', time.time() - starttime
-
-#x_r_ref = joblib.load('%s/movie_mode_%d.jbl'%(results_path, mode))
-#diff = x_r - x_r_ref
-#print numpy.amax(diff), numpy.amin(diff)
-
-#for i in range(4):
-#    nproc = 11
-#    f(nproc, i)

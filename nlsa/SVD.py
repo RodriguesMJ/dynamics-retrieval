@@ -3,9 +3,6 @@ import joblib
 import numpy
 import numpy.linalg
 
-import settings_rho_light as settings
-
-
 def SVD_f(A):
     print 'SVD'
     U, S, VH = numpy.linalg.svd(A, full_matrices=False)
@@ -50,8 +47,7 @@ def project_chronos_loop(V_temp, Phi):
     print 'VT_final_loop: ', VT_final.shape
     return VT_final
 
-if __name__ == '__main__':
-    
+def main(settings):    
     print '\n****** RUNNING SVD ******'
     
     results_path = settings.results_path
@@ -88,12 +84,10 @@ if __name__ == '__main__':
 #    print numpy.amax(abs(diff))
         
     P_evecs_norm = joblib.load('%s/P_sym_ARPACK_evecs_normalised.jbl'%(results_path))
-#    
-#    VH = joblib.load('%s/VH.jbl'%results_path)
+
     nmodes = VH.shape[0]
     print 'nmodes: ', nmodes
 
-    #Phi = P_evecs_norm[:,0:nmodes]  
     Phi = numpy.zeros((P_evecs_norm.shape[0], nmodes), dtype=datatype)
     for j in range(nmodes):
         ev_toproject = toproject[j]

@@ -40,8 +40,7 @@ if flag == 1:
     end_worker = settings.n_workers - 1
     os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel.sh %s'
               %(end_worker, settings.__name__)) 
-    
-    
+        
 flag = 0
 if flag == 1:    
     import nlsa.calculate_distances_utilities
@@ -72,57 +71,68 @@ if flag == 1:
     import nlsa.eigendecompose
     nlsa.eigendecompose.main(settings)   
 
-flag = 1
+flag = 0
 if flag == 1:
     import nlsa.evecs_normalisation
     nlsa.evecs_normalisation.main(settings)
     
-flag = 1
+flag = 0
 if flag == 1:  
     import nlsa.plot_P_evecs
     nlsa.plot_P_evecs.main(settings)
 
-# flag = 0
-# if flag == 1:
-#     os.system('sbatch run_parallel_A.sh')
-    
-# flag = 0
-# if flag == 1:
-#     import util_merge_A
-#     nproc = 12
-#     util_merge_A.f(nproc)  
-
-# flag = 0
-# if flag == 1:    
-#     os.system('python SVD.py')
-
-# flag = 0
-# if flag == 1:      
-#     os.system('python plot_SVs.py')
-#     os.system('python plot_chronos.py')
-    
-# flag = 0
-# if flag == 1:
-#     os.system('sbatch run_parallel_reconstruction.sh')
-    
-# flag = 0
-# if flag == 1:
-#     import util_merge_x_r
-#     nproc = 11  
-#     for mode in range(1,3):
-#         util_merge_x_r.f(nproc, mode) 
-
-# flag = 0
-# if flag == 1:
-#     import reconstruction
-#     reconstruction.reconstruct_unwrap_loop_chunck_bwd()
-
-# flag = 0
-# if flag == 1:
-#     import util_append_bwd_reconstruction
-#     for mode in range(0, 3):
-#         util_append_bwd_reconstruction.f(mode)
+flag = 0
+if flag == 1:
+    end_worker = settings.n_workers_A - 1
+    #os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_A.sh %s'
+    #          %(end_worker, settings.__name__)) 
+    os.system('sbatch -p hour --array=0-%d ../scripts_parallel_submission/run_parallel_A.sh %s'
+              %(end_worker, settings.__name__))
         
-# flag = 0
-# if flag == 1:    
-#     os.system('python export_Is.py')        
+flag = 0
+if flag == 1:
+    import nlsa.util_merge_A
+    nlsa.util_merge_A.main(settings)  
+
+flag = 0
+if flag == 1:  
+    import nlsa.SVD
+    nlsa.SVD.main(settings)
+
+flag = 0
+if flag == 1:  
+    import nlsa.plot_SVs 
+    import nlsa.plot_chronos
+    nlsa.plot_SVs.main(settings)
+    nlsa.plot_chronos.main(settings)
+    
+flag = 0
+if flag == 1:
+    end_worker = settings.n_workers_reconstruction - 1
+    #os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_A.sh %s'
+    #          %(end_worker, settings.__name__)) 
+    os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
+              %(end_worker, settings.__name__))    
+
+flag = 0
+if flag == 1:
+    import nlsa.util_merge_x_r
+    for mode in range(0, settings.nmodes):
+        nlsa.util_merge_x_r.f(settings, mode) 
+
+flag = 0
+if flag == 1:
+    import nlsa.reconstruction
+    nlsa.reconstruction.reconstruct_unwrap_loop_chunck_bwd(settings)
+
+flag = 0
+if flag == 1:
+    import nlsa.util_append_bwd_reconstruction
+    for mode in range(0, settings.nmodes):
+        nlsa.util_append_bwd_reconstruction.f(settings, mode)
+        
+flag = 1
+if flag == 1:  
+    import nlsa.export_Is
+    for mode in range(1, settings.nmodes):
+        nlsa.export_Is.get_Is(settings, mode)    

@@ -1,36 +1,21 @@
 # -*- coding: utf-8 -*-
-import getopt
-import sys
+import argparse
+import importlib
 import numpy
 import time
 import joblib
-
-import settings_rho_light as settings
  
-def f(myArguments):
-    
-    try:
-        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["index="])
-    except getopt.GetoptError:
-        print 'Usage: python ....py --index <index>'
-        sys.exit(2)   
-    for option, value in optionPairs:
-        if option == '-h':
-            print 'Usage: python ....py --index <index>'
-            sys.exit()
-        elif option == "--index":
-            loop_idx = int(value)
+def f(loop_idx, settings):
+    results_path = settings.results_path
+    q = settings.q
+    ncopies = settings.ncopies
+    step = settings.paral_step_reconstruction
+    datatype = settings.datatype
+    modes = settings.modes_to_reconstruct
             
-    for k in range(1, 3):
-        print 'Mode: ', k
-    
+    for k in modes:
+        print 'Mode: ', k    
         print 'loop_idx: ', loop_idx
-        
-        results_path = settings.results_path
-        q = settings.q
-        ncopies = settings.ncopies
-        step = settings.paral_step_reconstruction
-        datatype = settings.datatype
         
         U = joblib.load('%s/U.jbl'%results_path)
         S = joblib.load('%s/S.jbl'%results_path)
@@ -42,8 +27,7 @@ def f(myArguments):
        
         start_j = loop_idx*step
         end_j = (loop_idx+1)*step
-    #    if end_j > s-q:
-    #        end_j = s-q
+    
         if end_j > s-ncopies+1:
             end_j = s-ncopies+1
         print 'Loop: ', start_j, end_j
@@ -64,6 +48,21 @@ def f(myArguments):
         print 'Time: ', time.time() - starttime
     
 
-if __name__== "__main__":
+def main(args=None):
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("worker_ID", help="Worker ID")
+    parser.add_argument("settings", help="settings file")
+    args = parser.parse_args(args)
+
+    print 'Worker ID: ', args.worker_ID
     
-    f(sys.argv[1:])
+    # Dynamic import based on the command line argument
+    settings = importlib.import_module(args.settings)
+
+    print("Label: %s"%settings.label)
+    
+    f(int(args.worker_ID), settings)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,27 +1,13 @@
 # -*- coding: utf-8 -*-
-import getopt
-import sys
+import argparse
+import importlib
 import numpy
 import time
 import joblib
-#import pickle
 
-import settings_rho_light as settings
  
-def f(myArguments):
-    
-    try:
-        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["index="])
-    except getopt.GetoptError:
-        print 'Usage: python ....py --index <index>'
-        sys.exit(2)   
-    for option, value in optionPairs:
-        if option == '-h':
-            print 'Usage: python ....py --index <index>'
-            sys.exit()
-        elif option == "--index":
-            loop_idx = int(value)
-
+def f(loop_idx, settings):
+        
     print 'loop_idx: ', loop_idx
     
     q = settings.q    
@@ -29,10 +15,9 @@ def f(myArguments):
     results_path = settings.results_path    
     step = settings.paral_step_A 
     nmodes = settings.nmodes
-    toproject  = settings.toproject
-    label = settings.label
+    toproject = settings.toproject
+    data_file = settings.data_file
     
-    #mu = joblib.load('%s/mu_P_sym.jbl'%(results_path))
     mu = joblib.load('%s/mu.jbl'%(results_path))
     print 'mu (s, ): ', mu.shape
     
@@ -43,8 +28,7 @@ def f(myArguments):
         ev_toproject = toproject[j]
         print 'Evec: ', ev_toproject
         Phi[:, j] = evecs_norm[:, ev_toproject]
-    #Phi = evecs_norm[:,0:nmodes]
-
+    
 #    f = open('%s/T_anomaly.pkl'%results_path,'rb')
 #    x = pickle.load(f)
 #    f.close()
@@ -55,8 +39,7 @@ def f(myArguments):
 #        x[numpy.isnan(x)] = 0
 #        print 'Set X NaNs to zero'
     
-    T_sparse = joblib.load('../data_rho/data_converted_%s/T_sparse_%s.jbl'%(label, 
-                                                                            label))
+    T_sparse = joblib.load(data_file)
     x = T_sparse[:,:].todense()
     print 'x: ', x.shape, x.dtype
     x = numpy.asarray(x, dtype=datatype)
@@ -90,6 +73,21 @@ def f(myArguments):
     joblib.dump(A, '%s/A_chunck_idx_%d.jbl'%(results_path,loop_idx))    
     print 'Time: ', time.time() - starttime   
     
-if __name__== "__main__":
+def main(args=None):
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("worker_ID", help="Worker ID")
+    parser.add_argument("settings", help="settings file")
+    args = parser.parse_args(args)
+
+    print 'Worker ID: ', args.worker_ID
     
-    f(sys.argv[1:])
+    # Dynamic import based on the command line argument
+    settings = importlib.import_module(args.settings)
+
+    print("Label: %s"%settings.label)
+    
+    f(int(args.worker_ID), settings)
+
+
+if __name__ == "__main__":
+    main()

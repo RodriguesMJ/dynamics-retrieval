@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 #SBATCH --ntasks-per-core=1 
 
 module purge

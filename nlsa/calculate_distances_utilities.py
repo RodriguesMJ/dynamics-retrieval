@@ -8,11 +8,13 @@ def calculate_d_sq_SFX_steps(settings):
     import util_calculate_d_sq
     
     data_path = settings.data_path
+    data_file = settings.data_file
     label = settings.label
        
     # EXTRACT DATA
-    T_sparse = joblib.load('%s/T_sparse_corr_%s.jbl'%(data_path, label))
+    T_sparse = joblib.load(data_file)
     
+    print 'Data file: ', data_file
     print 'T_sparse: ', T_sparse.shape, T_sparse.dtype
     print 'T_sparse nonzero: ', T_sparse.count_nonzero()
     
@@ -36,11 +38,13 @@ def calculate_d_sq_SFX(settings):
     
     datatype = settings.datatype    
     data_path = settings.data_path
+    data_file = settings.data_file
     label = settings.label
        
     # EXTRACT DATA AND CONVERT SPARSE -> DENSE
-    T_sparse = joblib.load('%s/T_sparse_corr_%s.jbl'%(data_path, label))
+    T_sparse = joblib.load(data_file)
     
+    print 'Data file: ', data_file
     print 'T_sparse: is  sparse?', scipy.sparse.isspmatrix(T_sparse)  
     print 'T_sparse: ', T_sparse.shape, T_sparse.dtype
     print 'T_sparse nonzero: ', T_sparse.count_nonzero()
