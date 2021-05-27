@@ -6,6 +6,7 @@ import matplotlib.pyplot
 from scipy.optimize import curve_fit
 import os
 
+# VALUES FOR RHODOPSIN
 t_d_y = 0.244
 a =   61.45
 b =   90.81
@@ -110,7 +111,6 @@ def plot(I_avg, fign):
     matplotlib.pyplot.savefig(fign)  
     matplotlib.pyplot.close()
     
-#path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho/results_NLSA_I_b_15000/rho_light/reconstructed_intensities_mode_0_2_extended_fwd_bwd'
 path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/translation_corr_det'
 
 # Fixed correction 
