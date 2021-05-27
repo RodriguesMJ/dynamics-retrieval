@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Produce andvisualise patterson maps
+# Produce and visualise patterson maps
+# ./generate_mtzs_rho
 # cctbx.patterson_map blahblah.mtz
 # mapslicer blahblah_patt.ccp4
 
 ### To use this code:
 # source activate myenv_gemmi
-# python analyse_patterson
+# python t_disorder_analyse_patterson
 # source deactivate
-
 
 import gemmi
 import numpy

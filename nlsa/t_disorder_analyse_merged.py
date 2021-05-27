@@ -5,6 +5,8 @@ matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
 import matplotlib.pyplot
 from scipy.optimize import curve_fit
 import os
+import warnings
+warnings.filterwarnings("ignore")
 
 # VALUES FOR RHODOPSIN
 t_d_y = 0.244
@@ -19,6 +21,9 @@ def f(x, A, B):
     return A + B*numpy.cos(2*numpy.pi*x*t_d_y)
 
 def get_I_avg_vs_k(fn):
+    # The first 4 columns must be: h k l I
+    # Subsequent columns and number of spaces do not matter.
+    # Calculate, for each value of Miller index k, the average intensity.
     Is_avg = []
     
     for k in range(0, 40):
@@ -42,10 +47,10 @@ def get_I_avg_vs_k(fn):
     return Is_avg
 
 
-def fit(Is_avg):
+def fit(Is_avg, k_range):
     
-    xdata = range(10)
-    ydata = numpy.asarray(Is_avg)[0:10]
+    xdata = range(k_range)
+    ydata = numpy.asarray(Is_avg)[0:k_range]
     popt, pcov = curve_fit(f, xdata, ydata)
     
     A_opt = popt[0]
@@ -57,41 +62,32 @@ def fit(Is_avg):
     
     return A_opt, B_opt, fraction
 
-def correct(fo_w_fn, fo_r_fn, A, B):
-    fo_w = open(fo_w_fn, 'w')
-    fo_r = open(fo_r_fn, 'r')
+def correct(f_w, f_r, A, B):
+    print 'Writing corrected intensities in: ', f_w
+    fo_w = open(f_w, 'w')
+    fo_r = open(f_r, 'r')
     
-    for i in fo_r:
-        
+    for i in fo_r:        
         isplit = i.split()
         h = int(isplit[0])
         k = int(isplit[1])
         l = int(isplit[2])
         I = float(isplit[3])
+        sigI = float(isplit[4])
         
-        # DEPENDING ON FORMAT
-        sigI = float(isplit[5])
-        #:qsigI = float(isplit[4])
-       
-        #print i
-        #print h, k, l, I, sigI
         factor = 1.0/( A + B * numpy.cos( 2 * numpy.pi * k * t_d_y ) )
         I_corr = factor*I
         sigI_corr = factor*sigI
-        #print I_corr, sigI_corr
-        #fo_w.write('%4d%5d%5d%11.2f        -%11.2f%8d\n'%(h, k, l, I_corr, sigI_corr, n))
-        #fo_w.write('%4d%5d%5d%11.2f%11.2f\n'%(h, k, l, I_corr, sigI_corr))
         fo_w.write('%4d%5d%5d%15.2f%15.2f\n'%(h, k, l, I_corr, sigI_corr))
     
     fo_w.close()
     fo_r.close()
     
-def rewrite(fo_w_fn, fo_r_fn,):
-    fo_w = open(fo_w_fn, 'w')
-    fo_r = open(fo_r_fn, 'r')
+def rewrite(f_w, f_r,):
+    fo_w = open(f_w, 'w')
+    fo_r = open(f_r, 'r')
     
-    for i in fo_r:
-        
+    for i in fo_r:        
         isplit = i.split()
         h = int(isplit[0])
         k = int(isplit[1])
@@ -104,101 +100,130 @@ def rewrite(fo_w_fn, fo_r_fn,):
     fo_r.close()    
 
 def plot(I_avg, fign):
+    print 'Plotting average intensities in: ', fign
     matplotlib.pyplot.figure(figsize=(40, 10))  
     matplotlib.pyplot.plot(range(len(Is_avg)), Is_avg, '-o')
-    matplotlib.pyplot.xlabel(r'k'),
-    matplotlib.pyplot.ylabel(r'<I>_k')
+    matplotlib.pyplot.xlabel(r'k', fontsize=22),
+    matplotlib.pyplot.ylabel(r'<I>_k', fontsize=22)
     matplotlib.pyplot.savefig(fign)  
     matplotlib.pyplot.close()
+
+def get_A(fraction):
+    return 2 * fraction * fraction - 2 * fraction + 1
+
+def get_B(fraction):
+    return 2 * fraction * (1 - fraction)
+
+if __name__ == '__main__':  
     
-path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/translation_corr_det'
-
-# Fixed correction 
-### GUARANTEES A+B = 1
-#fraction = 0.18
-#A = 2 * fraction * fraction - 2 * fraction + 1
-#B = 2 * fraction * (1 - fraction)
-
-#for ts in range(0, 138300, 100):
-#    print 'Timestamp: ', ts
-#    label = 'rho_light_mode_0_2_timestep_%0.6d'%ts    
-label = 'rho'
+    path = './test'
+    label = 'rho-alldark'
     
-# Get average I vs k
-filename = '%s/%s.txt'%(path, label)
-Is_avg = get_I_avg_vs_k(filename)
-
-# Plot
-fign = '%s/%s_original_Is.png'%(path, label)
-plot(Is_avg, fign)
-
-#### Method 1 ###
-flag = 0
-if flag == 1:
+    # Get average I vs k
+    filename = '%s/%s.txt'%(path, label)
+    Is_avg = get_I_avg_vs_k(filename)
     
-    # Fit 
-    # DOES NOT GUARANTEE A+B = 1
-    A, B, fraction = fit(Is_avg)
-            
-    # Correct intensities
-    fo_w_fn = '%s/%s_corrected.txt'%(path, label)
-    correct(fo_w_fn, filename, A, B)
+    # Plot
+    fign = '%s/%s_original_Is.png'%(path, label)
+    plot(Is_avg, fign)
     
     # Rewrite original in different format
     fo_w_fn_original = '%s/%s_original.txt'%(path, label)
     rewrite(fo_w_fn_original, filename)
     
+    print '\n*** Determine translated domain fraction. ***'
+    fn_r = '%s/%s_original.txt'%(path, label)
+    
+### METHOD 1: FIT ###
+    # DOES NOT GUARANTEE A+B = 1
+    out_path = '%s/method_fit'%path
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+    print '\n*** Method 1: fit (%s) ***'%out_path
+    print '(does not guarantee A+B=1)'
+    
+    # Fit 
+    k_max = 10 # For fitting purposes
+    A, B, fraction_fit = fit(Is_avg, k_max)
+    
+    print 'Translated domain fraction: ', fraction_fit
+    print 'A: ', A
+    print 'B: ', B
+    print 'A+B', A+B
+    
+    # Correct intensities
+    fn_w = '%s/%s_corrected.txt'%(out_path, label)
+    correct(fn_w, fn_r, A, B)
+    
     # Get average corrected I vs k
-    Is_avg = get_I_avg_vs_k(fo_w_fn)
+    Is_avg = get_I_avg_vs_k(fn_w)
     
     # Plot
-    fign = '%s/%s_corrected_Is.png'%(path, label)
+    fign = '%s/%s_corrected_Is.png'%(out_path, label)
     plot(Is_avg, fign)
-    
-    print 'Method 1 fraction: ', fraction, A, B, A+B
-
-#### Method 2 ###
-flag = 1
-if flag == 1:
-    
-    outfolder = '%s/I_correction_fraction_tests'%path
-    if not os.path.exists(outfolder):
-        os.mkdir(outfolder)
-    
+            
+### METHOD 2: BRUTE FORCE ###
+    out_path = '%s/method_bf'%path
+    if not os.path.exists(out_path):
+        os.mkdir(out_path) 
+    print '\n*** Method 2: brute force (%s) ***'%out_path
+    print '(A+B=1)' 
+     
     fractions = numpy.arange(0.01, 0.50, 0.01)
     for fraction in fractions:
-        print fraction
-        A = 2 * fraction * fraction - 2 * fraction + 1
-        B = 2 * fraction * (1 - fraction)
+        print '\nTesting translated domain fraction: %.2f'%fraction
+        A = get_A(fraction)
+        B = get_B(fraction)
         
         # Correct intensities
-        fo_w_fn = '%s/%s_corrected_frac_%.2f.txt'%(outfolder, label, fraction)
-        correct(fo_w_fn, filename, A, B)
+        fn_w = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction)
+        correct(fn_w, fn_r, A, B)
         
         # Get average corrected I vs k
-        Is_avg = get_I_avg_vs_k(fo_w_fn)
+        Is_avg = get_I_avg_vs_k(fn_w)
         
         # Plot
-        fign = '%s/%s_corrected_Is_frac_%.2f.png'%(outfolder, label, fraction)
-        plot(Is_avg, fign)   
-    
-    ## Summary figure    
+        fign = '%s/%s_corrected_Is_frac_%.2f.png'%(out_path, label, fraction)
+        plot(Is_avg, fign) 
+        
+    # Plot summary figure  
+    print '\n*** Summary figure ***'
     matplotlib.pyplot.figure(figsize=(40, 10))
-    matplotlib.pyplot.xlabel(r'k'),
-    matplotlib.pyplot.ylabel(r'<I>_k')
+    matplotlib.pyplot.xlabel(r'k', fontsize=22),
+    matplotlib.pyplot.ylabel(r'<I>_k', fontsize=22)
     
-    fractions = numpy.arange(0.14, 0.22, 0.01)
-    for fraction in fractions:
-        print fraction
-        
+    fractions = numpy.arange(numpy.round(fraction_fit, 2)-0.04, numpy.round(fraction_fit, 2)+0.04, 0.01)
+    for fraction in fractions:            
         # Get average corrected I vs k
-        fo_w_fn = '%s/%s_corrected_frac_%.2f.txt'%(outfolder, label, fraction)
-        Is_avg = get_I_avg_vs_k(fo_w_fn)
-        
+        fn = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction)
+        Is_avg = get_I_avg_vs_k(fn)           
         # Plot
         matplotlib.pyplot.plot(range(len(Is_avg)), Is_avg, '-o', label='%.2f'%fraction)
     
     matplotlib.pyplot.legend() 
-    fign = '%s/%s_corrected_Is_frac_range.png'%(outfolder, label)
+    fign = '%s/%s_corrected_Is_frac_range.png'%(out_path, label)
     matplotlib.pyplot.savefig(fign)  
     matplotlib.pyplot.close()
+    print 'Summary figure in:', fign
+
+### APPLY CORRECTION ###
+### GUARANTEES A+B = 1
+    out_path = '%s/final'%path
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+    print '\n*** Apply results from fit (%s) ***'%out_path
+    print '(enforcing A+B=1)'
+            
+    A = get_A(fraction_fit)
+    B = get_B(fraction_fit)
+    
+    # Correct intensities
+    fn_w = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction_fit)
+    correct(fn_w, fn_r, A, B)
+        
+    # Get average corrected I vs k
+    Is_avg = get_I_avg_vs_k(fn_w)
+        
+    # Plot
+    fign = '%s/%s_corrected_Is_frac_%.2f.png'%(out_path, label, fraction_fit)
+    plot(Is_avg, fign) 
