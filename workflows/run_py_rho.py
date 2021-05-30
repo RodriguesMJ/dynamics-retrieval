@@ -8,7 +8,7 @@ import os
 # conda activate myenv_nlsa
 # python run_py_rho.py
 
-import settings_rho_dark as settings
+import settings_rho_light as settings
 
 ### SPARSE ###
 
@@ -131,8 +131,13 @@ if flag == 1:
     for mode in range(0, settings.nmodes):
         nlsa.util_append_bwd_reconstruction.f(settings, mode)
         
-flag = 1
+flag = 0
 if flag == 1:  
     import nlsa.export_Is
     for mode in range(1, settings.nmodes):
         nlsa.export_Is.get_Is(settings, mode)    
+        
+flag = 1
+if flag == 1:  
+    import nlsa.export_Is
+    nlsa.export_Is.export_merged_data_light(settings)
