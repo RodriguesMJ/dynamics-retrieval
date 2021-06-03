@@ -22,7 +22,6 @@
 % cartesian coordinates and .h5 format.
 % -------------------------------------------------------------------------
 
-
 % INPUT
 % -------------------------------------------------------------------------
 clear all;
@@ -32,19 +31,18 @@ radius = 1.7; % ??
 distance = 0.2; % ??, how dense grid within sphere
 sigmacutoff = 4; % exclude data below this sigma level
 
-mode = 4;
+mode = 1;
 % Files
-here = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR/map_analysis/maptool_CMC/';
-pdbpath = [here '/6g7h_edited_nonH.pdb']; % resting state pdb
-indir = [here 'output_mode_0_' num2str(mode) '_h5grid_8_step_10/']; % where to find .h5 maps
-%indir = [here 'output/']; % where to find .h5 maps
+here = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis';
+pdbpath = [here '/bov_nlsa_refine_96_edited.pdb']; % resting state pdb
+indir  = [here '/output_m_0_' num2str(mode) '/']; % where to find .h5 maps
+outdir = [here '/results_m_0_' num2str(mode) '/'];
 
-%mapnames = {'1.5_bR_light_mode_0_1_timestep_100_light--dark_bR_dark_mode_0_avg'};%; '05_0.760us'; '13_1725us'};
-nrmaps = 1500;
+nrmaps = 2115;
 mapnames = cell(nrmaps, 1);
 for idx = 1:nrmaps
-    i = 75000+(idx-1)*10;
-    nm = ['1.5_bR_light_mode_0_' num2str(mode) '_timestep_' num2str(i) '_light--dark_bR_dark_mode_0_avg'];
+    i = 100*idx;
+    nm = ['2.0_rho_light_mode_0_' num2str(mode) '_timestep_' num2str(i, '%0.6d') '_light--dark_rho_alldark_mode_0_avg'];
     mapnames(idx,1) = {nm};
 end
 
@@ -53,15 +51,12 @@ end
 % ------------------------------------------------------------------------
 time = tic;
 
-
 % LOAD ATOMS
 pdb = pdbread(pdbpath);
 
 % In this case all HETATM are written as ATOM in pdb
-atomcoord = [[pdb.Model.Atom.X]' [pdb.Model.Atom.Y]' [pdb.Model.Atom.Z]'];...
-             %[pdb.Model.HeterogenAtom.X]' [pdb.Model.HeterogenAtom.Y]' [pdb.Model.HeterogenAtom.Z]'];
+atomcoord = [[pdb.Model.Atom.X]' [pdb.Model.Atom.Y]' [pdb.Model.Atom.Z]'];
 nratoms =  size(atomcoord,1); 
-
 
 % CALCULATE SPHERE COORDINATES
 calcdist = @(x,y,z) sqrt(x^2 + y^2 + z^2);
@@ -91,12 +86,12 @@ nrpoints = size(spherelist,1);
 
 % PRECALCULATE ALL COORDINATES IN ALL SPHERES
 % (example: 1834 rows = atoms, 2109 columns = points) 
-X0 = repmat(atomcoord(:,1),1,nrpoints)+repmat(spherelist(:,1)',nratoms,1);
+X = repmat(atomcoord(:,1),1,nrpoints)+repmat(spherelist(:,1)',nratoms,1);
 Y = repmat(atomcoord(:,2),1,nrpoints)+repmat(spherelist(:,2)',nratoms,1);
 Z = repmat(atomcoord(:,3),1,nrpoints)+repmat(spherelist(:,3)',nratoms,1);
 
 % Reshape to a single column starting with first point for each atom, then second etc. 
-X=reshape(X0, nratoms*nrpoints,1);
+X=reshape(X, nratoms*nrpoints,1);
 Y=reshape(Y, nratoms*nrpoints,1);
 Z=reshape(Z, nratoms*nrpoints,1);
 
@@ -107,8 +102,8 @@ XYZinfo = dlmread([indir 'log/' mapnames{1} '_XYZinfo.dat']);
 
 celldimensions = XYZinfo(1,1:3);
 gridpoints = XYZinfo(2,1:3); 
-axislimits = XYZinfo(3,:);
-axisorder = XYZinfo(4,1:3);
+axislimits = XYZinfo(3,:);  
+axisorder = XYZinfo(4,1:3);  % Used to extract correct axislimits for each axis
 
 % grid distance
 dX = celldimensions(1)/gridpoints(1);
@@ -116,14 +111,14 @@ dY = celldimensions(2)/gridpoints(2);
 dZ = celldimensions(3)/gridpoints(3);
 
 tmp = [axisorder(1) axislimits(1:2); axisorder(2) axislimits(3:4); axisorder(3) axislimits(5:6)];
-axes = sortrows(tmp);
+axes = sortrows(tmp); % By def., in order 1 2 3 (ie x, y, z)
 
 % points at each side
 sX = [axes(1,2):axes(1,3)]*dX;
 sY = [axes(2,2):axes(2,3)]*dY;
 sZ = [axes(3,2):axes(3,3)]*dZ;
 
-[gY,gZ,gX] = meshgrid(sY,sZ,sX);
+[gY,gZ,gX] = meshgrid(sY,sZ,sX); % order so that gY, gZ, gX have same dim as map.
 
 
 % LOAD MAPS AND EXTRACT DENSITIES
@@ -150,29 +145,30 @@ for m = 1:nrmaps
     mapd0(m,:,:) = mapdensities/sigma(m,2); 
 end
 
+save([outdir 'mapd0.mat'], 'mapd0', '-v7.3');
 
-% CALCULATE AVERAGE DENSITIES AND CORRELATIONS
-%------------------------------------
-% Calculate mean positive and negative densities
-mapd = mapd0;
-mapd(abs(mapd0) < sigmacutoff) = 0;
-clear 'mapd0';
-
-mapd_pos = mapd;
-mapd_pos(mapd < 0) = 0;
-meanposden = mean(mapd_pos,3);
-clear 'mapd_pos';
-save(['meanposden_map_modes_0_', num2str(mode), '_radius_', num2str(radius), '_dist_', num2str(distance), '_sig_', num2str(sigmacutoff), '_time_75000_90000_step_10.mat'], 'meanposden');
-clear 'meanposden';
-
-mapd_neg = mapd;
-mapd_neg(mapd > 0) = 0;
-meannegden = mean(mapd_neg,3);
-clear 'mapd_neg';
-save(['meannegden_map_modes_0_', num2str(mode), '_radius_', num2str(radius), '_dist_', num2str(distance), '_sig_', num2str(sigmacutoff), '_time_75000_90000_step_10.mat'], 'meannegden');
-clear 'meanmegden';
-
-save('6g7h_edited_noH.mat', 'pdb');
+% % CALCULATE AVERAGE DENSITIES AND CORRELATIONS
+% %------------------------------------
+% % Calculate mean positive and negative densities
+% mapd = mapd0;
+% mapd(abs(mapd0) < sigmacutoff) = 0;
+% clear 'mapd0';
+% 
+% mapd_pos = mapd;
+% mapd_pos(mapd < 0) = 0;
+% meanposden = mean(mapd_pos,3);
+% clear 'mapd_pos';
+% save([outdir '/meanposden_map_modes_0_', num2str(mode), '_radius_', num2str(radius), '_dist_', num2str(distance), '_sig_', num2str(sigmacutoff), '.mat'], 'meanposden');
+% clear 'meanposden';
+% 
+% mapd_neg = mapd;
+% mapd_neg(mapd > 0) = 0;
+% meannegden = mean(mapd_neg,3);
+% clear 'mapd_neg';
+% save([outdir '/meannegden_map_modes_0_', num2str(mode), '_radius_', num2str(radius), '_dist_', num2str(distance), '_sig_', num2str(sigmacutoff), '.mat'], 'meannegden');
+% clear 'meannegden';
+% 
+% save([here '/bov_nlsa_refine_96_edited.mat'], 'pdb');
 
 
 % % % Calculate Pscore = pearson correlation (<A+> <A->, <B+> <B->)

@@ -2,6 +2,7 @@
 #
 # (c) 2018 Gergely Katona <gergely.katona@gu.se>
 #
+print 'Calling map_to_h5.py'
 import iotbx.ccp4_map
 import sys
 import h5py
@@ -14,4 +15,3 @@ with h5py.File(sys.argv[2], "w") as f:
     f.create_dataset('map', data=map_object1.data.as_numpy_array())
     f.close()
 print 'h5 done'
-    
