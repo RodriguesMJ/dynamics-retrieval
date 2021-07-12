@@ -2,6 +2,47 @@ from pymol import cmd
 import sys
 import getopt
 import os
+from pymol.cgo import *
+
+def myfunc_sphere():
+    
+    cmd.load('./bov_nlsa_refine_96_chainA.pdb')
+    cmd.color('blue', selection=' (name C*)')
+    cmd.color('lightblue', selection=' (name N*)')
+    #cmd.load('./1ps_chainA_superposed.pdb')
+    cmd.show('sticks', 'all')
+    cmd.bg_color('white')
+    cmd.hide('all')
+    #cmd.select('sel', '((chain A and (resi 212 or resi 216 or resn RET) and not h.) or (chain A and (resi 407 or resi 411 or resi 415)))')
+    cmd.select('sel', 'resn RET or resi 296')
+    cmd.show('lines', 'sel')    
+    cmd.show('spheres', 'sel')    
+    cmd.set('sphere_scale', 0.10, 'all')
+    
+    spherelist = [
+   			    COLOR,    0.5, 1, 1,
+   			    ALPHA, 0.5,
+                SPHERE,   9.69,  25.67,  26.92, 1.70, # Positive peak
+   			    #SPHERE,   8.18,  25.74,  27.02, 1.70, # C11
+                #SPHERE,   8.52,  24.50,  26.59, 1.70, # C12
+                #SPHERE,  10.84,  24.19,  27.63, 1.70  # C20 
+    		      ]	
+
+    cmd.load_cgo(spherelist, 'segment',   1)
+    
+    cmd.set_view ('\
+                           0.080371954,    0.806613684,   -0.585589767,\
+                          -0.930780470,   -0.149466500,   -0.333627909,\
+                          -0.356634021,    0.571868539,    0.738767087,\
+                           0.000000000,    0.000000000,  -38.521888733,\
+                           9.948150635,   28.112447739,   29.300647736,\
+                          30.370950699,   46.672828674,  -20.000000000 ')
+    cmd.move( 'y', -1 )
+    cmd.move( 'x', -3 )
+    cmd.ray(2048, 1024)
+    cmd.png('./rho_spheres_1p7A_positive_peak.png')
+    
+
       
 def myfunc_step(myArguments):  
     try:
@@ -34,14 +75,14 @@ def myfunc_step(myArguments):
     cmd.show('spheres', 'sel')    
     cmd.set('sphere_scale', 0.10, 'all')
     
-    map_folder = '../maps_light_m_0_%d_minus_alldark_avg_m_0'%mode
-    out_folder = './FRAMES_light_mode_0_%d_minus_dark_avg_mode_0_%sp%ssig_RET%s'%(mode, str(sig)[0], str(sig)[2], chainID)
+    map_folder = '../maps_alldark_m_0_%d_minus_alldark_avg_m_0'%mode
+    out_folder = './FRAMES_alldark_mode_0_%d_minus_alldark_avg_mode_0_%sp%ssig_RET%s'%(mode, str(sig)[0], str(sig)[2], chainID)
     
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
         
-    for time in range(0, 211500, 100):
-        cmd.load('%s/2.0_rho_light_mode_0_%d_timestep_%0.6d_light--dark_rho_alldark_mode_0_avg.ccp4'%(map_folder, mode, time), 'nlsa_map')
+    for time in range(0, 49400, 100):
+        cmd.load('%s/2.0_rho_alldark_mode_0_%d_timestep_%0.6d_light--dark_rho_alldark_mode_0_avg.ccp4'%(map_folder, mode, time), 'nlsa_map')
         cmd.zoom('sel')
         
         # RET A
@@ -113,7 +154,7 @@ def myfunc_bin(myArguments):
     
     map_folder = '.'
     out_folder = '.'
-    time_bin_labels = ['0_to_200_fs', '180_to_380_fs']
+    time_bin_labels = ['-331_to_-185_fs', '-185_to_22_fs', '22_to_381_fs']
     for time_bin_label in time_bin_labels:    
         cmd.load('%s/2.0_light_merged_%s_light--dark_alldark_merged.ccp4'%(map_folder, 
                                                                            time_bin_label), 'nlsa_map')
@@ -209,11 +250,13 @@ def myfunc_bin(myArguments):
 #         cmd.delete('map_modes_0_x_m')
 #         cmd.delete('nlsa_map')
         
-cmd.extend('myfunc_step',  myfunc_step)
-cmd.extend('myfunc_bin',  myfunc_bin)
-#cmd.extend('myfunc_step_pocket',  myfunc_step)
+cmd.extend('myfunc_step',   myfunc_step)
+cmd.extend('myfunc_bin',    myfunc_bin)
+cmd.extend('myfunc_sphere', myfunc_sphere)
 
 #print "\n**** CALLING myfunc_step ****"
-#myfunc_step(sys.argv[1:])  
+#myfunc_step(sys.argv[1:]) 
+#print "\n**** CALLING myfunc_sphere ****"
+#myfunc_sphere() 
 print "\n**** CALLING myfunc_bin ****"
 myfunc_bin(sys.argv[1:])  

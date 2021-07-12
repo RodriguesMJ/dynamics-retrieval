@@ -38,6 +38,7 @@
 5. maptool_getmeanden.py
 
    Load mapd0 in py: 2’553 x 4’871 x 2’115
+                     n_grid_pts_per_atom x n_atoms x n_maps
    
    Loop on sigmacutoff values:
 
@@ -52,3 +53,5 @@
    Final matrices: 
    meanposden: n_atoms x n_maps (for each mode)
    meannegden: n_atoms x n_maps (for each mode)
+   
+6. plot_densities.py

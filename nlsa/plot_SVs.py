@@ -11,6 +11,7 @@ def main(settings):
     S = joblib.load('%s/S.jbl'%results_path)
     nmodes = S.shape[0]
     print 'nmodes: ', nmodes
+    print S
     
     out_folder = '%s/chronos'%results_path
     if not os.path.exists(out_folder):

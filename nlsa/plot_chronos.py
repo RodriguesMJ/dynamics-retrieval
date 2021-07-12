@@ -55,7 +55,34 @@ def plot(settings):
 #        matplotlib.pyplot.close()
         #os.system('convert %s -resize 2048x512 %s'%(figname, rs_figname))
     
- 
+def plot_abs(settings):
+    results_path = settings.results_path
+    label = ''
+    
+    VT_final = joblib.load('%s/VT_final%s.jbl'%(results_path,  label))
+    
+    nmodes = VT_final.shape[0]
+    s = VT_final.shape[1]
+    
+    print 'nmodes: ', nmodes
+    print 's: ', s
+    
+    out_folder = '%s/chronos%s'%(results_path, label)
+    if not os.path.exists(out_folder):
+        os.mkdir(out_folder)
+    
+    for i in range(nmodes):
+        print i
+        chrono = VT_final[i,:]
+        matplotlib.pyplot.figure(figsize=(40,10))
+        
+        matplotlib.pyplot.plot(range(29000, 29000+s-1000), abs(chrono)[0:-1000], 'o-', c='b', markersize=8)
+        #matplotlib.pyplot.plot(range(120), chrono[0:120], 'o-', markersize=8)
+        ax = matplotlib.pyplot.gca()
+        ax.tick_params(axis='x', labelsize=25)
+        ax.tick_params(axis='y', labelsize=25)
+        matplotlib.pyplot.savefig('%s/abs_chrono%s_%d.png'%(out_folder, label, i), dpi=2*96)
+        matplotlib.pyplot.close() 
 # def plot_chrono_movie(mode):
 #     results_path = settings.results_path
 #     label = ''    
@@ -116,25 +143,4 @@ def plot(settings):
 
 def main(settings):   
     plot(settings)
-    
-    
-    
-    #for mode in range(1, 6):
-        #plot_chrono_movie(mode)
-        
-#for i in range(l):
-#    chrono = VT_final[i,:]
-#    matplotlib.pyplot.figure(figsize=(30,10))
-#    matplotlib.pyplot.plot(range(120), chrono[0:120], 'o-', markersize=8)
-#    matplotlib.pyplot.savefig('%s/chrono%s_%d_zoom.png'%(out_folder, label, i), dpi=2*96)
-#    matplotlib.pyplot.close()
-#    
-#i = 2
-#chrono = VT_final[i,:]
-#start = 1176
-#end = 1176 + 50*12
-#print start, end
-#matplotlib.pyplot.figure(figsize=(30,10))
-#matplotlib.pyplot.plot(range(end-start), chrono[start:end], 'o-', markersize=8)
-#matplotlib.pyplot.savefig('%s/chrono%s_%d_time_%d_to_%d.png'%(out_folder, label, i, start, end), dpi=2*96)
-#matplotlib.pyplot.close()
+    plot_abs(settings)

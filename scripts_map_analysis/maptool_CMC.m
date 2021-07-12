@@ -29,19 +29,23 @@ clear all;
 % Sphere and sigma settings
 radius = 1.7; % ??
 distance = 0.2; % ??, how dense grid within sphere
-sigmacutoff = 4; % exclude data below this sigma level
+%sigmacutoff = 4; % exclude data below this sigma level
 
 mode = 1;
+
+
+label = '_step_10_range_178000_195000';
 % Files
 here = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis';
 pdbpath = [here '/bov_nlsa_refine_96_edited.pdb']; % resting state pdb
-indir  = [here '/output_m_0_' num2str(mode) '/']; % where to find .h5 maps
-outdir = [here '/results_m_0_' num2str(mode) '/'];
+indir  = [here '/output_m_0_' num2str(mode) label '/']; % where to find .h5 maps
+outdir = [here '/results_m_0_' num2str(mode) label '/'];
 
-nrmaps = 2115;
+nrmaps = 1701;
 mapnames = cell(nrmaps, 1);
 for idx = 1:nrmaps
-    i = 100*idx;
+    %i = 100*idx;
+    i = 178000+10*(idx-1);
     nm = ['2.0_rho_light_mode_0_' num2str(mode) '_timestep_' num2str(i, '%0.6d') '_light--dark_rho_alldark_mode_0_avg'];
     mapnames(idx,1) = {nm};
 end

@@ -10,16 +10,16 @@ def get_Is(settings, mode):
     label = settings.label
     
     mult_factor = 1000000    
-    output_step = 100
+    output_step = 10
     
     mode_0 = 0
     mode_i = mode
     
     print 'Modes', mode_0, ' +', mode
     
-    fpath = '%s/reconstructed_intensities_mode_%d_%d/'%(results_path, 
-                                                        mode_0, 
-                                                        mode_i)
+    fpath = '%s/reconstructed_intensities_mode_%d_%d_step_10/'%(results_path, 
+                                                                mode_0, 
+                                                                mode_i)
     
     if not os.path.exists(fpath):
         os.mkdir(fpath)
@@ -46,7 +46,7 @@ def get_Is(settings, mode):
     if x_r.shape[0] != miller_h.shape[0]:
         print 'Problem'
         
-    for i in range(0, x_r.shape[1], output_step):   
+    for i in range(186400, x_r.shape[1], output_step):   
         
         f_out = '%s/rho_%s_mode_%d_%d_timestep_%0.6d.txt'%(fpath, 
                                                            label, 
@@ -199,35 +199,35 @@ def export_merged_data_light(settings):
     out[:, 1] = miller_k.flatten()
     out[:, 2] = miller_l.flatten()
     
-    # NEGATIVE DELAYS
-    # print '\nNEGATIVE DELAYS'
-    # t_left = -330
-    # t_right = -100
-    # I_avg, sigI = get_bin(t_uniform, t_left, t_right, x, mask, datatype)    
-    # out[:, 3] = I_avg
-    # out[:, 4] = sigI        
-    # f_out = '%s/%s_merged_%d_to_%d_fs.txt'%(out_path, label, t_left, t_right)
-    # numpy.savetxt(f_out, out, fmt='%6d%6d%6d%15.2f%15.2f')  
+    #NEGATIVE DELAYS
+    print '\nNEGATIVE DELAYS'
+    t_left = -331
+    t_right = -185
+    I_avg, sigI = get_bin(t_uniform, t_left, t_right, x, mask, datatype)    
+    out[:, 3] = I_avg
+    out[:, 4] = sigI        
+    f_out = '%s/%s_merged_%d_to_%d_fs.txt'%(out_path, label, t_left, t_right)
+    numpy.savetxt(f_out, out, fmt='%6d%6d%6d%15.2f%15.2f')  
     
     # POSITIVE DELAYS
-    print '\nPOSITIVE DELAYS'
-    t_left = 180
-    t_right = 380
+    print '\nPOSITIVE DELAYS (ULTRASHORT)'
+    t_left = -185
+    t_right = 22
     I_avg, sigI = get_bin(t_uniform, t_left, t_right, x, mask, datatype)
     out[:, 3] = I_avg
     out[:, 4] = sigI        
     f_out = '%s/%s_merged_%d_to_%d_fs.txt'%(out_path, label, t_left, t_right)
     numpy.savetxt(f_out, out, fmt='%6d%6d%6d%15.2f%15.2f')  
     
-    # POSITIVE DELAYS (ULTRASHORT)
-    # print '\nPOSITIVE DELAYS (ULTRASHORT)'
-    # t_left = 0
-    # t_right = 200
-    # I_avg, sigI = get_bin(t_uniform, t_left, t_right, x, mask, datatype)
-    # out[:, 3] = I_avg
-    # out[:, 4] = sigI        
-    # f_out = '%s/%s_merged_%d_to_%d_fs.txt'%(out_path, label, t_left, t_right)
-    # numpy.savetxt(f_out, out, fmt='%6d%6d%6d%15.2f%15.2f')  
+    # POSITIVE DELAYS 
+    print '\nPOSITIVE DELAYS'
+    t_left = 22
+    t_right = 381
+    I_avg, sigI = get_bin(t_uniform, t_left, t_right, x, mask, datatype)
+    out[:, 3] = I_avg
+    out[:, 4] = sigI        
+    f_out = '%s/%s_merged_%d_to_%d_fs.txt'%(out_path, label, t_left, t_right)
+    numpy.savetxt(f_out, out, fmt='%6d%6d%6d%15.2f%15.2f')  
 
 
    

@@ -13,8 +13,8 @@
 here=/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis
 filetype='ccp4'    #'map' or 'ccp4'
 
-indir=$here/input
-outdir=$here/output
+indir=$here/input_m_0_1_step_10_range_50000_99990
+outdir=$here/output_m_0_1_step_10_range_50000_99990
 scriptdir=/das/work/p17/p17491/Cecilia_Casadei/NLSA/code/scripts_map_analysis
 #----------------------------------------------------------------------------------
 
