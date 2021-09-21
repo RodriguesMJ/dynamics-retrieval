@@ -9,7 +9,7 @@ import joblib
 
 
 def get_meanden(mode, label):
-    folder = './out_mode_0_%d_h5grid_8'%mode
+    folder = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR/map_analysis/maptool_CMC/output_figures/out_mode_0_%d_h5grid_8'%mode
     filename = '%s/meannegden_map_modes_0_%d%s.mat'%(folder, mode, label)
     mat = scipy.io.loadmat(filename)
     meannegden = mat['meannegden']
@@ -22,6 +22,7 @@ def get_meanden(mode, label):
 
 def plot_site_density():
     label = '_radius_1.7_dist_0.2_sig_4'  
+    folder = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR/map_analysis/maptool_CMC/output_figures'
     
     # Atom in 6g7h
     #atom = 1645 # LYS216 - CD
@@ -56,7 +57,7 @@ def plot_site_density():
         matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
         matplotlib.pyplot.xlim(100, 99100)
         matplotlib.pyplot.xlabel('Reconstructed frame number', fontsize=28)
-        figname = './RET_C20_map_modes_0_%d%s.png'%(mode, label)
+        figname = '%s/RET_C20_map_modes_0_%d%s.png'%(folder, mode, label)
         matplotlib.pyplot.savefig(figname)
         matplotlib.pyplot.close()
 
@@ -355,7 +356,7 @@ def correlate_density():
 
             
 if __name__ == '__main__':
-    #plot_site_density()
-    plot_movie_density()
+    plot_site_density()
+    #plot_movie_density()
     #correlate_density()
     #calc_helix_CC()

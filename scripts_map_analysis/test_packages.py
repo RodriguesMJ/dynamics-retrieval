@@ -61,8 +61,8 @@ from mtspec.util import _load_mtdata
 ### TEST mtspec WITH SUM OF SINES
 print '\nTEST: Sum of sines'
 start = 0 #s
-stop  = 2 #s
-n = 500 #500000
+stop  = 0.15 #s
+n = 150 #500000
 step = float(stop-start)/n 
 print 'Time range [s]:', start, '-', stop
 print 'N samples:', n
@@ -70,9 +70,9 @@ print 'Sampling period [s]:', step
 print 'Sampling frequency [Hz]:', 1/step, '-> Nyquist frequency [Hz]:', 1/(2*step)
 t = numpy.arange(start, stop, step=step)
 
-phase = numpy.pi/4
-f_1 = 15 # Hz
-data_1 = numpy.sin(2*numpy.pi*f_1*t + 2*numpy.pi*t*t)#30*t)
+#phase = numpy.pi/4
+f_1 = 50 # Hz
+data_1 = numpy.sin(2*numpy.pi*f_1*t)# + 2*numpy.pi*t*t)#30*t)
 # plt.figure()
 # plt.gca().set_xlabel("Time [s]")
 # plt.plot(t, data_1)
@@ -130,6 +130,7 @@ ax1.plot(t, data, color='m')
 matplotlib.pyplot.setp(ax1.get_xticklabels(), rotation=45, fontsize=25)
 matplotlib.pyplot.setp(ax1.get_yticklabels(), rotation=0, fontsize=25)
 ax1.set_xlabel(r"Time [s]", fontsize=30)
+"""
 ax1.text(0.01, 
          0.95, 
          'Component at %.1f Hz, with phase quadratic in time, plus gaussian noise with amplitude %.1f\nnpoints: %d, sampling frequency: %.1f Hz '%(f_1, A, n, 1.0/step),
@@ -139,7 +140,7 @@ ax1.text(0.01,
          transform=ax1.transAxes, 
          fontsize=30,
          verticalalignment='top')#, bbox=props)
-     
+"""     
         
 # MULTITAPER ANALYSIS, WITHOUT F-STATS
 spec, freq, jackknife, _, _ = mtspec(data=data, 
@@ -227,7 +228,6 @@ ax6.set_xlim(0, xmax)
 
 matplotlib.pyplot.tight_layout()
 #matplotlib.pyplot.savefig('./test_multitape_sines_plus_noise_A_%.1f_n_%d.png'%(A, n))
-matplotlib.pyplot.savefig('./test_multitape_sine_plus_noise_A_%.1f_n_%d_quadraticphase.png'%(A, n))
+matplotlib.pyplot.savefig('./test.png')
 #matplotlib.pyplot.savefig('./test_multitape_only_noise_n_%d.png'%(n))
 matplotlib.pyplot.close()
-    
