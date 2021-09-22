@@ -12,9 +12,9 @@ out_fn = open('csplit.dat', 'w')
 for i in range(n_events):
     print i
     if 'class1' in img_fn[i]:
-        out_fn.write('%s %s class1\n'%(img_fn[i][16:].strip('\n'), event_file[i][9:].strip('\n')))
+        out_fn.write('%s //%s class1\n'%(img_fn[i][16:].strip('\n'), event_file[i][9:].strip('\n')))
     elif 'class4' in img_fn[i]:
-        out_fn.write('%s %s class4\n'%(img_fn[i][16:].strip('\n'), event_file[i][9:].strip('\n')))
+        out_fn.write('%s //%s class4\n'%(img_fn[i][16:].strip('\n'), event_file[i][9:].strip('\n')))
     else:
         print 'issue'
 out_fn.close()
