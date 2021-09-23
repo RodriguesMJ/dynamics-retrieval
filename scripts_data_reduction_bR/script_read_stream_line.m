@@ -24,7 +24,7 @@ fn = 'Image_filename';
 img_filename_pos = [path, folder, fn, '_position.txt']; 
 
 fn = 'Event';
-event_pos = [path, folder, fn, '_position.txt']
+event_pos = [path, folder, fn, '_position.txt'];
 
 str_img_fn_pos = fileread(img_filename_pos);                               % read file into one string
 str_ev_pos = fileread(event_pos);

@@ -8,7 +8,7 @@ clear all
 
 % LOAD TIMESTAMPS FILE
 path = '../';
-folder = 'time_delays/';
+folder = 'timestamps/';
 fn = 'time_delays_full_path';
 time_delays_file = [path, folder, fn, '.txt']; 
 str_time_delays = fileread(time_delays_file);

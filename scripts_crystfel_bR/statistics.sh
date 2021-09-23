@@ -4,9 +4,9 @@ echo 'syntax: statistics.sh Filename(without .hkl1/hkl2) ResCut(in A)'
 HKLFILE=$1
 RESO=$2
 
-CELLFILE=rho.cell
+CELLFILE=BR.cell
 
-check_hkl ${HKLFILE} -y mmm -p ${CELLFILE} --highres=${RESO}
+check_hkl ${HKLFILE} -y 6/m -p ${CELLFILE} --highres=${RESO}
 mv shells.dat check.dat
 compare_hkl  ${HKLFILE}1 ${HKLFILE}2 -p ${CELLFILE} --highres=${RESO} --fom=rsplit
 mv shells.dat rsplit.dat

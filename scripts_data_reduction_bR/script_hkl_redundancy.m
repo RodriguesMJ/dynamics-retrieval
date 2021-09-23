@@ -9,7 +9,7 @@ clear
 
 path = './';
 load([path, 'partialator_OK.mat'], 'uniqueID');
-load([path, 'drls_reflection_n.mat'], 'reflection_ns');
+load([path, 'reflection_n.mat'], 'reflection_ns');
 
 fileRedundancy = [path, 'redundancy.mat'];                         
 num_snapshots = length(uniqueID);
@@ -21,6 +21,7 @@ l_max = 120;
  
 redundancy = zeros((h_max+1),(k_max+1),(l_max+1));
  for nn=1:num_snapshots
+     nn
      ID = uniqueID{nn};
      s = strfind(ID, '/');
      s = s(end);
