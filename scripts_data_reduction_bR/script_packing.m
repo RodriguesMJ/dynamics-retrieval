@@ -1,4 +1,4 @@
-% script_packing
+ll% script_packing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script reads light/dark data information 
 % and the redundancy file for the data as well. 

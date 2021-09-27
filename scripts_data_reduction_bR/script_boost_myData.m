@@ -12,13 +12,13 @@ tic
 
 % to load:
 path = './';
-%fn = 'data_bR_light_selected_int_unifdelay_DRL_SCL_nS116552_nBrg47735.mat'; 
-fn = 'data_bR_dark_selected_int_DRL_SCL_nS234988_nBrg47735.mat'; 
+%fn = 'data_bR_light_selected_int_unifdelay_SCL_rescut_nS133115_nBrg39172.mat'; 
+fn = 'data_bR_dark_selected_int_SCL_rescut_nS259423_nBrg39172.mat'; 
 fileData = [path, fn];
 
 % to save:
-%fn = 'data_bR_light_selected_int_unifdelay_DRL_SCL_BST_nS116552_nBrg47735.mat'; 
-fn = 'data_bR_dark_selected_int_DRL_SCL_BST_nS234988_nBrg47735.mat'; 
+%fn = 'data_bR_light_selected_int_unifdelay_SCL_rescut_BST_nS133115_nBrg39172.mat'; 
+fn = 'data_bR_dark_selected_int_SCL_rescut_BST_nS259423_nBrg39172.mat'; 
 fileData_BST = [path, fn];
 
 generate_hkl_avg = false; % whether to save the averaged data or not
@@ -26,8 +26,8 @@ generate_hkl_avg = false; % whether to save the averaged data or not
 load(fileData);
 
 %%%%%%%%%%%% TO RM
-T_dtw = T_dark_selected;
-M_dtw = M_dark_selected;
+T = T_dark_selected;
+M = M_dark_selected;
 clear T_dark_selected M_dark_selected
 
 miller_h = h_selected;
@@ -35,22 +35,22 @@ miller_k = k_selected;
 miller_l = l_selected;
 %%%%%%%%%%%%%%%
 
-[nS, nBrg] = size(T_dtw);
+[nS, nBrg] = size(T);
 
-T_bst = T_dtw;
-M_bst = M_dtw;
+T_bst = T;
+M_bst = M;
 
 %_________________________________________________________________________________________
 % Boosting:
 for k=1:nBrg
-    co(k) = sum(M_dtw(:,k));                                               %#ok<SAGROW>
+    k
+    co(k) = sum(M(:,k));                                               %#ok<SAGROW>
     if co(k)
-        T_bst(:,k) = T_dtw(:,k)./co(k);
+        T_bst(:,k) = 1000.0.*T(:,k)./co(k);
     end
 end
 
 
-% save data with DRL cuts, scaled and boosted:
 save(fileData_BST,'T_bst', ...
                   'M_bst', ...
                   'miller_h', ...
@@ -59,6 +59,8 @@ save(fileData_BST,'T_bst', ...
                   '-v7.3');  
 %CMC - And t_uniform for light data
 
+avg_before = sum(T, 'all')/sum(M, 'all')
+avg_after = sum(T_bst, 'all')/sum(M_bst, 'all')
 %_________________________________________________________________________________________
 % % Finding average and std of "DRL'ed, scaled, boosted" data and save them as a *hkl file 
 % if generate_hkl_avg
