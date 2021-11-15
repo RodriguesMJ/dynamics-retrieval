@@ -50,7 +50,7 @@ def get_distributions(settings):
     D_sq = joblib.load('%s/D_sq_normalised.jbl'%results_path)    
     print 'D_sq: ', D_sq.shape, D_sq.dtype # S-q+1 = s+1
     print 'N. nans', numpy.count_nonzero(numpy.isnan(D_sq))
-    """
+    
     idxs = numpy.triu_indices_from(D_sq)    
     print 'idxs: ', len(idxs), len(idxs[0]), len(idxs[1])
     
@@ -117,7 +117,7 @@ def get_distributions(settings):
         matplotlib.pyplot.hist(D_sq,bins=mybins,color='b')
         matplotlib.pyplot.savefig('%s/exponent_0_p99.png'%results_path)
         matplotlib.pyplot.close()
-    """
+    
 def test(settings):
     results_path = settings.results_path
     
