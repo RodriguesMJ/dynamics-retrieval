@@ -31,7 +31,27 @@ def calculate_d_sq_SFX_steps(settings):
     util_calculate_d_sq.f_add_2(settings)
     util_calculate_d_sq.regularise_d_sq(settings)
     
-
+def calculate_d_sq_SFX_element_n(settings):
+    import util_calculate_d_sq
+    data_path = settings.data_path
+    label = settings.label
+    M_sparse = joblib.load('%s/M_sparse_%s.jbl'%(data_path, label))
+    
+    print 'M_sparse: ', M_sparse.shape, M_sparse.dtype
+    print 'M_sparse nonzero: ', M_sparse.count_nonzero()
+    
+    util_calculate_d_sq.f_sparse_m_T_m(settings, M_sparse)
+    # mask = M_sparse[:,:].todense()
+    # print 'mask (dense): ', mask.shape, mask.dtype
+    # # mask = numpy.asarray(mask, dtype=numpy.uint8)
+    
+    # n_dsq_elements = numpy.matmul(mask.T, mask[:,0:10000])
+    # print 'n_dsq_elements:', n_dsq_elements.shape, n_dsq_elements.dtype
+    # #joblib.dump(mask_T_x_sq, '%s/n_dsq_elements.jbl'%settings.results_path)
+    # # print 'issparse: ', scipy.sparse.isspmatrix(n_dsq_elements)    
+    
+    
+    
 
 def calculate_d_sq_SFX(settings):    
     import util_calculate_d_sq
@@ -85,6 +105,10 @@ def compare(settings):
 def merge_D_sq(settings):
     import util_merge_D_sq
     util_merge_D_sq.f(settings)    
+    
+def merge_N_D_sq_elements(settings):
+    import util_merge_D_sq
+    util_merge_D_sq.f_N_D_sq_elements(settings)    
     
 def sort_D_sq(settings):
     import util_sort_D_sq

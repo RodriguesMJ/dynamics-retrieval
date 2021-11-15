@@ -19,13 +19,27 @@ def eigendecompose_P_sym(P_sym):
 def eigendecompose_P_sym_ARPACK(P_sym, l):
     
     ### NEW!!! ###
-    P_sym_sparse = sparse.csr_matrix(P_sym)
+    P_sym = sparse.csr_matrix(P_sym)
+    print 'P_sym', P_sym.shape, P_sym.dtype
+    print 'N. non-zero:', P_sym.count_nonzero()
     ###
     
     #evals, evecs = scipy.sparse.linalg.eigsh(P_sym_sparse, k=s-1)
-    evals, evecs = scipy.sparse.linalg.eigsh(P_sym_sparse, k=l, which='LM')
+    evals, evecs = scipy.sparse.linalg.eigsh(P_sym, k=l, which='LM')
     return evals, evecs
 
+
+def eigendecompose_P_ARPACK(P, l):
+    
+    ### NEW!!! ###
+    P = sparse.csr_matrix(P)
+    print 'P', P.shape, P.dtype
+    print 'N. non-zero:', P.count_nonzero()
+    ###
+    
+    #evals, evecs = scipy.sparse.linalg.eigsh(P_sym_sparse, k=s-1)
+    evals, evecs = scipy.sparse.linalg.eigs(P, k=l, which='LM')
+    return evals, evecs
 
 def check_ev(P, evecs, evals):
     for i in range(20):
@@ -41,15 +55,15 @@ def sort(evecs, evals):
     evecs_sorted = evecs[:,sort_idxs]
     return evecs_sorted, evals_sorted
     
-    
+
 def main(settings):
 
     label = settings.eigenlabel
     results_path = settings.results_path
     l = settings.l
 
-    #P = joblib.load('%s/P.jbl'%results_path)
-    P = joblib.load('%s/P_sym.jbl'%results_path)
+    P = joblib.load('%s/P.jbl'%results_path)
+    #P = joblib.load('%s/P_sym.jbl'%results_path)
     
     print 'NaN values: ', numpy.isnan(P).any()
     #s = P.shape[0]
@@ -62,7 +76,8 @@ def main(settings):
     print 'Eigendecompose'    
     #evals, evecs = eigendecompose_P(P)
     #evals, evecs = eigendecompose_P_sym(P)
-    evals, evecs = eigendecompose_P_sym_ARPACK(P, l)
+    #evals, evecs = eigendecompose_P_sym_ARPACK(P, l)
+    evals, evecs = eigendecompose_P_ARPACK(P, l)
     print 'Done'
 
 #    print 'Saving'

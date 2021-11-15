@@ -30,7 +30,7 @@ flag = 0
 if flag == 1:    
     import nlsa.calculate_distances_utilities
     nlsa.calculate_distances_utilities.calculate_d_sq_SFX_steps(settings)
-    
+    nlsa.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
     # Only for small datasets eg dark
     #nlsa.calculate_distances_utilities.calculate_d_sq_SFX(settings)
     #nlsa.calculate_distances_utilities.compare(settings)
@@ -47,23 +47,41 @@ if flag == 1:
     import nlsa.calculate_distances_utilities
     nlsa.calculate_distances_utilities.merge_D_sq(settings)
 
+# CALCULATE N_D_sq_elements    
+flag = 0
+if flag == 1:
+    end_worker = settings.n_workers - 1
+    os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_n_Dsq_elements.sh %s'
+              %(end_worker, settings.__name__)) 
 
+flag = 0
+if flag == 1:    
+    import nlsa.calculate_distances_utilities
+    nlsa.calculate_distances_utilities.merge_N_D_sq_elements(settings)
+    
 flag = 1
 if flag == 1:    
     import nlsa.get_epsilon
-    nlsa.get_epsilon.main(settings)
+    #nlsa.get_epsilon.get_hist(settings)
+    #nlsa.get_epsilon.get_epsilon_curve(settings)
     
-
+    #nlsa.get_epsilon.get_N_Dsq_elements_distribution(settings)
+    nlsa.get_epsilon.get_distributions(settings)
+    #nlsa.get_epsilon.test(settings)
+    
 
 flag = 0
 if flag == 1:    
     import nlsa.calculate_distances_utilities
     nlsa.calculate_distances_utilities.sort_D_sq(settings)
 
+
 flag = 0
-if flag ==1:
+if flag == 1:    
     import nlsa.get_epsilon
-    nlsa.get_epsilon.main(settings)
+    nlsa.get_epsilon.get_hist_b_nns(settings)
+    nlsa.get_epsilon.get_epsilon_curve_b_nns(settings)
+    
     
 flag = 0
 if flag ==1:
@@ -80,10 +98,17 @@ if flag == 1:
     import nlsa.eigendecompose
     nlsa.eigendecompose.main(settings)   
 
+# flag = 0
+# if flag ==1:
+#     import nlsa.transition_matrix
+#     nlsa.transition_matrix.check(settings)
+   
+
 flag = 0
 if flag == 1:
     import nlsa.evecs_normalisation
-    nlsa.evecs_normalisation.main(settings)
+    nlsa.evecs_normalisation.main_part_1(settings)
+    #nlsa.evecs_normalisation.main_part_2(settings)
     
 flag = 0
 if flag == 1:  

@@ -7,16 +7,21 @@ import time
 
 def density_normalisation_memopt(W_sym, datatype):    
     s = W_sym.shape[0]
-    Q = numpy.sum(W_sym, axis=0)
+    #Q = numpy.sum(W_sym, axis=0)
+    # CHANGE 07/10/2021
+    Q = numpy.sum(W_sym, axis=1)
+    print 'Q', Q.shape
     W_norm = numpy.zeros((s,s), dtype=datatype)
     start = time.time()
-    for i in range(s):
+    for i in range(100):#(s):
         if i%1000 == 0:
             print i, '/', s
         Q_i = Q[i]
+        #print 'Q_i', Q_i
         for j in range(s):
             if abs(W_sym[i,j]) > 0:
                 Q_j = Q[j]
+                #print 'Q_i, Q_j, Q_i*Q_j', Q_i, Q_j, Q_i*Q_j
                 W_norm[i,j] = W_sym[i,j]/(Q_i*Q_j)
     print 'It took: ', time.time()-start
     return W_norm
@@ -108,26 +113,34 @@ def main(settings):
     results_path = settings.results_path
     datatype = settings.datatype
     
-    print 'Load W_sym'
-    W_sym = joblib.load('%s/W_sym.jbl'%results_path)
+    flag_W_norm = 0
+    if flag_W_norm == 1:
+        print 'Load W_sym'
+        W_sym = joblib.load('%s/W_sym_local_distances.jbl'%results_path)
+        
+        #print 'Set NaN values to zero'
+        #W_sym[numpy.isnan(W_sym)] = 0
+        print 'Convert to dense'
+        W_sym = W_sym.todense()
+        
+        print 'W_sym', W_sym.shape, W_sym.dtype
     
-    print 'Set NaN values to zero'
-    W_sym[numpy.isnan(W_sym)] = 0
-
-    # print 'Check that W_sym is symmetric:'
-    # diff = W_sym - W_sym.T
-    # print numpy.amax(diff), numpy.amin(diff)
+        print 'Check that W_sym is symmetric:'
+        diff = W_sym - W_sym.T
+        print numpy.amax(diff), numpy.amin(diff)
+        
+        print 'Density normalization (low memory use, long running time)'
+        W_norm = density_normalisation_memopt(W_sym, datatype) 
+        joblib.dump(W_norm, '%s/W_norm_local_distances.jbl'%results_path)
     
-    print 'Density normalization (low memory use, long running time)'
-    W_norm = density_normalisation_memopt(W_sym, datatype) 
-    joblib.dump(W_norm, '%s/W_norm.jbl'%results_path)
+    flag_check_W_norm = 0
+    if flag_check_W_norm == 1:
+        W_norm = joblib.load('%s/W_norm_local_distances.jbl'%results_path)
+        
+        print 'Check that W_norm is symmetric'            
+        diff = W_norm - W_norm.T
+        print numpy.amax(diff), numpy.amin(diff)       
     
-    #W_norm = joblib.load('%s/W_norm.jbl'%results_path)
-    
-#    print 'Check that W_norm is symmetric'            
-#    diff = W_norm - W_norm.T
-#    print numpy.amax(diff), numpy.amin(diff)       
-#    
     #print 'Density normalization (optimised, short running time but highmemory use)'
     #W_norm = density_normalisation_opt(W_sym)
     # print 'Check that W_norm is symmetric'            
@@ -137,8 +150,13 @@ def main(settings):
 #    diff = W_norm - W_norm_opt
 #    print numpy.amax(diff), numpy.amin(diff)
 #   
-    print 'Row normalisation (low memory use)'
-    P, Q = row_normalisation_memopt(W_norm, datatype)
+
+
+    flag_P = 1
+    if flag_P == 1:
+        W_norm = joblib.load('%s/W_norm_local_distances.jbl'%results_path)
+        print 'Row normalisation (low memory use)'
+        P, Q = row_normalisation_memopt(W_norm, datatype)
     
     # print 'Row normalisation (optimised, but high memory use)'
     # P, Q = row_normalisation_opt(W_norm)
@@ -148,8 +166,8 @@ def main(settings):
 #    diff = P - P_opt
 #    print numpy.amax(diff), numpy.amin(diff)
         
-    #joblib.dump(P, '%s/P.jbl'%results_path)
-    #joblib.dump(Q, '%s/Q.jbl'%results_path)
+        joblib.dump(P, '%s/P_local_distances.jbl'%results_path)
+        joblib.dump(Q, '%s/Q_local_distances.jbl'%results_path)
     #P = joblib.load('%s/P.jbl'%results_path)
     #Q = joblib.load('%s/Q.jbl'%results_path)
     
@@ -164,16 +182,23 @@ def main(settings):
 #    diff = dot - mu_P_T
 #    print numpy.amax(diff), numpy.amin(diff)
 
-    print 'Symmetrise P (optimised, low memory use)'
-    P_sym = symmetrize_P_memopt(P, Q)
-
-    joblib.dump(P_sym, '%s/P_sym_cmp.jbl'%results_path)
+    flag_P_sym = 0
+    if flag_P_sym == 1:
+        P = joblib.load('%s/P.jbl'%results_path)
+        Q = joblib.load('%s/Q.jbl'%results_path)
+        print 'Symmetrise P (optimised, low memory use)'
+        P_sym = symmetrize_P_memopt(P, Q)
     
-    # print 'Check that P_sym is symmetric'            
-    # diff = P_sym - P_sym.T
-    # print numpy.amax(diff), numpy.amin(diff)    
+        joblib.dump(P_sym, '%s/P_sym.jbl'%results_path)
+    
+    flag_check_P_sym = 0
+    if flag_check_P_sym == 1:
+        P_sym = joblib.load('%s/P_sym.jbl'%results_path)
+        print 'Check that P_sym is symmetric'            
+        diff = P_sym - P_sym.T
+        print numpy.amax(diff), numpy.amin(diff)    
 
-    #P_sym = joblib.load('%s/P_sym.jbl'%results_path)
+   
     
 #    print 'Calculate mu_P_sym'    
 #    evals_P_sym_left, mu_P_sym = get_mu_P_sym(P_sym)
@@ -186,3 +211,57 @@ def main(settings):
 #    dot = numpy.dot(mu_P_sym_T, P_sym)
 #    diff = dot - mu_P_sym_T
 #    print numpy.amax(diff), numpy.amin(diff)
+
+def main_test(settings):
+        
+    results_path = settings.results_path
+    datatype = settings.datatype
+    
+    flag_Wnorm = 0
+    if flag_Wnorm == 1:
+        print 'Load W_sym'
+        W_sym = joblib.load('%s/W_sym.jbl'%results_path)
+        
+        print 'W_sym', W_sym.shape, W_sym.dtype
+        print 'N. non-zero:', W_sym.count_nonzero()
+        
+        print 'issparse: ', scipy.sparse.isspmatrix(W_sym)
+        print 'W_sym sparse -> dense'
+        W_sym = W_sym[:,:].todense()
+        print 'issparse: ', scipy.sparse.isspmatrix(W_sym)
+    
+        print 'Density normalization (low memory use, long running time)'
+        W_norm = density_normalisation_memopt(W_sym, datatype) 
+        joblib.dump(W_norm, '%s/W_norm.jbl'%results_path)
+      
+    flag_P = 0
+    if flag_P == 1:
+        print 'Load W_norm'
+        W_norm = joblib.load('%s/W_norm.jbl'%results_path)        
+        print 'W_norm', W_norm.shape, W_norm.dtype       
+       
+        print 'Row normalisation (low memory use)'
+        P, Q = row_normalisation_memopt(W_norm, datatype)
+        print 'P: ', P.shape, P.dtype
+        print 'Q: ', Q.shape, Q.dtype
+        
+        joblib.dump(P, '%s/P.jbl'%results_path)
+        joblib.dump(Q, '%s/Q.jbl'%results_path)
+        
+    flag_P_sym = 0
+    if flag_P_sym == 1:
+        P = joblib.load('%s/P.jbl'%results_path)
+        Q = joblib.load('%s/Q.jbl'%results_path)
+        
+        print 'Symmetrise P (optimised, low memory use)'
+        P_sym = symmetrize_P_memopt(P, Q)
+
+        joblib.dump(P_sym, '%s/P_sym.jbl'%results_path)
+    
+        
+    flag_P_sym_check = 1
+    if flag_P_sym_check == 1:
+        P_sym = joblib.load('%s/P_sym.jbl'%results_path)
+        diff = P_sym - P_sym.T
+        print numpy.amax(diff), numpy.amin(diff)
+        

@@ -31,3 +31,32 @@ def f(settings):
     joblib.dump(D_sq, '%s/D_sq_parallel.jbl'%results_path)
     print 'Done.'
     print 'It took: ', time.time() - starttime
+    
+def f_N_D_sq_elements(settings):
+    print '\n****** RUNNING merge_N_D_sq_elements ******'
+    results_path = settings.results_path
+    datatype = settings.datatype
+    nproc = settings.n_workers
+    n = settings.n
+    
+    starttime = time.time()
+    
+    # fn = '%s/D_sq_loop_idx_0.jbl'%(results_path)
+    # D_sq = joblib.load(fn)
+    # print D_sq.shape, D_sq.dtype
+    # n = D_sq.shape[0]
+    
+    print 'Merge N_D_sq_elements'
+    N_D_sq = numpy.zeros((n,n), dtype=datatype)
+    for i in range(nproc):
+        print i
+        fn = '%s/N_D_sq_loop_idx_%d.jbl'%(results_path, i)
+        print fn
+        temp = joblib.load(fn)
+        N_D_sq += temp
+    print 'Done.'
+        
+    print 'Saving.'
+    joblib.dump(N_D_sq, '%s/N_D_sq_parallel.jbl'%results_path)
+    print 'Done.'
+    print 'It took: ', time.time() - starttime

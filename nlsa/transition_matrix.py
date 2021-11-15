@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import joblib
 import numpy
+from scipy import sparse
+import matplotlib
+matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
+matplotlib.rcParams['agg.path.chunksize'] = 10000
+import matplotlib.pyplot
 
 def calculate_W_localspeeds(D, N, v, results_path, datatype, sigma_sq):
     s = D.shape[0]
@@ -89,7 +94,42 @@ def symmetrise_W_optimised(W, datatype):
 
     return W_sym
     
+def check(settings):
+    results_path = settings.results_path
+    W_sym = joblib.load('%s/W_sym.jbl'%results_path)
+    counts = []
+    for i in range(W_sym.shape[0]):
+        count = W_sym[i,:].count_nonzero()
+        counts.append(count)
+    matplotlib.pyplot.figure(figsize=(30,10))
+    matplotlib.pyplot.plot(range(W_sym.shape[0]), counts)
+    matplotlib.pyplot.savefig('%s/W_sym_nns.png'%results_path)
+    matplotlib.pyplot.close()
     
+    
+def main_test(settings):
+    
+    print '\n****** RUNNING tansition_matrix ****** '
+    
+    sigma_sq = settings.sigma_sq
+    print 'Sigma_sq: ', sigma_sq
+    epsilon = sigma_sq/2
+    print 'Epsilon: ', epsilon
+        
+    results_path = settings.results_path
+    
+    W = joblib.load('%s/D_sq_parallel.jbl'%results_path)  
+    print 'D_sq:', W.shape, W.dtype   
+     
+    W = numpy.exp(-W/sigma_sq)
+    
+    thresh = numpy.exp(-3)
+    W[W<thresh]=0
+    
+    W = sparse.csr_matrix(W)
+    print 'W:', W.shape, W.dtype
+    joblib.dump(W, '%s/W_sym.jbl'%results_path)
+
 
 def main(settings):
     
@@ -99,6 +139,8 @@ def main(settings):
     print 'Sigma_sq: ', sigma_sq
     epsilon = sigma_sq/2
     print 'Epsilon: ', epsilon
+    log10_epsilon = numpy.log10(epsilon)
+    print 'Log10(epsilon): ', log10_epsilon
         
     results_path = settings.results_path
     datatype = settings.datatype

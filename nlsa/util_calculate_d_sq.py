@@ -3,7 +3,15 @@ import numpy
 import joblib
 import scipy.sparse
 
-
+def f_sparse_m_T_m(settings, M_sparse):
+    mask = M_sparse[:,:].todense()    
+    mask = numpy.asarray(mask, dtype=settings.datatype)
+    print 'mask (dense): ', mask.shape, mask.dtype    
+    mask_T = mask.T
+    n_dsq_elements = numpy.matmul(mask_T, mask)
+    print 'n_dsq_elements:', n_dsq_elements.shape, n_dsq_elements.dtype
+    joblib.dump(n_dsq_elements, '%s/n_dsq_elements.jbl'%settings.results_path)
+    
 
 def calc_x_sq_T_mask_term(settings, x_sq, mask):
     mask = mask[:,:].todense()
