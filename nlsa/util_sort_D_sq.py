@@ -3,8 +3,11 @@ import numpy
 import time
 import math
 
-def f_unoptimised(D_sq, b):
+def f_unoptimised(D_sq, settings):
     print '\n****** RUNNING sort_D_sq ******'
+    b = settings.b
+    S = settings.S
+    q = settings.q
     
     starttime = time.time()
     
@@ -17,8 +20,9 @@ def f_unoptimised(D_sq, b):
     print 'Extract velocities.'
     v = numpy.sqrt(numpy.diag(D_sq, 1))
     
-    print 'Remove first sample.'
-    D_sq = D_sq[1:, 1:]    
+    if D_sq.shape[0] == S - q + 1:
+        print 'Remove first sample.'
+        D_sq = D_sq[1:, 1:]    
     print 'D_sq: ', D_sq.shape, D_sq.dtype    
     
     print 'Sqrt of D_sq.'
@@ -75,10 +79,14 @@ def f(D, b): # It is D_sq
 
 
 
-def f_opt(D, b, datatype): # It is D_sq
+def f_opt(D, settings): # It is D_sq
     print '\n****** RUNNING sort_D_sq ******'
     
     starttime = time.time()
+    b = settings.b
+    S = settings.S
+    q = settings.q
+    datatype = settings.datatype
     
     print 'D_sq: ', D.shape, D.dtype
     
@@ -88,10 +96,13 @@ def f_opt(D, b, datatype): # It is D_sq
 #    
 #    print 'Extract velocities.'
 #    v = numpy.sqrt(numpy.diag(D_sq, 1))
-    
-    print 'Remove first sample.'
-    D = D[1:, 1:]    
+    if D.shape[0] == S - q + 1:        
+        print 'Remove first sample.'
+        D = D[1:, 1:]    
     print 'D_sq: ', D.shape, D.dtype    
+    
+    print numpy.amax(D), numpy.amin(D)
+    D[D<0]=0
     
     print 'Sqrt of D_sq.'
     D = numpy.sqrt(D)

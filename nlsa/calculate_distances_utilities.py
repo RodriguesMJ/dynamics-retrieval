@@ -33,22 +33,20 @@ def calculate_d_sq_SFX_steps(settings):
     
 def calculate_d_sq_SFX_element_n(settings):
     import util_calculate_d_sq
-    data_path = settings.data_path
-    label = settings.label
-    M_sparse = joblib.load('%s/M_sparse_%s.jbl'%(data_path, label))
+    # data_path = settings.data_path
+    # label = settings.label
+    # M_sparse = joblib.load('%s/M_sparse_%s.jbl'%(data_path, label))
+    M_sparse = joblib.load('%s/mask.jbl'%(settings.results_path))
     
     print 'M_sparse: ', M_sparse.shape, M_sparse.dtype
-    print 'M_sparse nonzero: ', M_sparse.count_nonzero()
+    
+    try:
+        print 'M_sparse nonzero: ', M_sparse.count_nonzero()
+    except:
+        print 'M is not sparse'
     
     util_calculate_d_sq.f_sparse_m_T_m(settings, M_sparse)
-    # mask = M_sparse[:,:].todense()
-    # print 'mask (dense): ', mask.shape, mask.dtype
-    # # mask = numpy.asarray(mask, dtype=numpy.uint8)
     
-    # n_dsq_elements = numpy.matmul(mask.T, mask[:,0:10000])
-    # print 'n_dsq_elements:', n_dsq_elements.shape, n_dsq_elements.dtype
-    # #joblib.dump(mask_T_x_sq, '%s/n_dsq_elements.jbl'%settings.results_path)
-    # # print 'issparse: ', scipy.sparse.isspmatrix(n_dsq_elements)    
     
     
     
@@ -114,40 +112,36 @@ def sort_D_sq(settings):
     import util_sort_D_sq
     
     results_path = settings.results_path
-    b = settings.b
-    datatype = settings.datatype
+    
     D_sq = joblib.load('%s/D_sq_parallel.jbl'%results_path)
-    D, N = util_sort_D_sq.f_opt(D_sq, b, datatype)
+    #D_sq = joblib.load('%s/D_sq_lp_filtered_fmax_%d.jbl'%(results_path, settings.f_max_considered))
+    D, N = util_sort_D_sq.f_opt(D_sq, settings)
     
     print 'Saving'    
-    joblib.dump(D, '%s/D_loop.jbl'%results_path)
-    joblib.dump(N, '%s/N_loop.jbl'%results_path)
+    joblib.dump(D, '%s/D.jbl'%results_path)
+    joblib.dump(N, '%s/N.jbl'%results_path)
     #joblib.dump(v, '%s/v.jbl'%results_path)
     print '\n'
     
-# #    # CALCULATE d_sq SPARSE INPUT
-# #    d_sq_sparse = util_calculate_d_sq.f_sparse(T_sparse, M_sparse)
-# #    print 'd_sq_sparse: ', d_sq_sparse.shape, d_sq_sparse.dtype
-# #        
-# #    print 'Saving d_sq_sparse'    
-# #    joblib.dump(d_sq_sparse, '%s/d_sq_sparseinput.jbl'%results_path)
-# #    print '\n' 
-        
-
-# #    term_xTx = util_calculate_d_sq.f_sparse_x_T_x(T_sparse)
-# #    print 'Saving x_T_x'    
-# #    joblib.dump(term_xTx, '%s/term_xTx.jbl'%results_path)
+def normalise(settings):
+    results_path = settings.results_path
     
+    D_sq = joblib.load('%s/D_sq_parallel.jbl'%results_path)    
+    print 'D_sq: ', D_sq.shape, D_sq.dtype # S-q+1 = s+1
     
-
-
+    N_D_sq = joblib.load('%s/N_D_sq_parallel.jbl'%results_path)    
+    print 'N_D_sq: ', N_D_sq.shape, N_D_sq.dtype # S-q+1 = s+1
+    
+    D_sq = D_sq / N_D_sq
+    print 'After normalisation D_sq:', D_sq.shape, D_sq.dtype
+    joblib.dump(D_sq, '%s/D_sq_normalised.jbl'%results_path)
 
 
 ### UNUSED
 
-# def concatenate_backward():
-#     import util_concatenate_backward
-#     util_concatenate_backward.f()
+def concatenate_backward(settings):
+    import util_concatenate_backward
+    util_concatenate_backward.f(settings)
     
 # def calculate_D_N_v_optimised_dense():
 #     import util_calculate_D_N_v_optimised_dense
@@ -165,61 +159,56 @@ def sort_D_sq(settings):
 #     import util_calculate_D_N_v_sparse
 #     util_calculate_D_N_v_sparse.f()
     
-# def calculate_d_sq_dense():
-#     import settings_NP as settings
-#     import util_calculate_d_sq
+def calculate_d_sq_dense(settings):
     
-#     results_path = settings.results_path
-#     f = open('%s/T_anomaly.pkl'%results_path, 'rb')
-#     #f = open('%s/T.pkl'%results_path, 'rb')
-#     x = pickle.load(f)
-#     f.close()
-#     print 'Data: ', x.shape
+    import util_calculate_d_sq
     
-#     mask = numpy.ones(x.shape)       
+    results_path = settings.results_path
     
-#     d_sq = util_calculate_d_sq.f(x, mask)
-#     print 'd_sq: ', d_sq.shape, d_sq.dtype
+    x = joblib.load('%s/x.jbl'%results_path)
+    print 'Data: ', x.shape
     
-#     print 'Saving d_sq'    
-#     joblib.dump(d_sq, '%s/d_sq.jbl'%results_path)
-#     print '\n'
+    mask = numpy.ones(x.shape)       
     
-# def calculate_d_sq_sparse():
-#     import settings
-#     import util_calculate_d_sq
+    d_sq = util_calculate_d_sq.f_dense(settings, x, mask)
+    print 'd_sq: ', d_sq.shape, d_sq.dtype
     
-#     results_path = settings.results_path
-#     sparsity = settings.sparsity
-#     f = open('%s/T_anomaly_sparse_%.2f.pkl'%(results_path, sparsity), 'rb')
-#     x = pickle.load(f)
-#     f.close()
-#     print 'Data: ', x.shape
+    print 'Saving d_sq'    
+    joblib.dump(d_sq, '%s/d_sq.jbl'%results_path)
+    print '\n'
     
-#     mask = numpy.ones(x.shape) 
-#     mask[numpy.isnan(x)] = 0
-#     x[numpy.isnan(x)] = 0      
+def calculate_d_sq_sparse(settings):
     
-#     d_sq = util_calculate_d_sq.f(x, mask)
-#     print 'd_sq: ', d_sq.shape, d_sq.dtype
+    import util_calculate_d_sq
     
-#     print 'Saving d_sq'    
-#     joblib.dump(d_sq, '%s/d_sq.jbl'%results_path)
-#     print '\n'  
+    results_path = settings.results_path
+    
+    x = joblib.load('%s/x.jbl'%results_path)
+    print 'Data: ', x.shape
+    
+    mask = joblib.load('%s/mask.jbl'%results_path)
+    print 'Mask: ', mask.shape      
+    
+    d_sq = util_calculate_d_sq.f_dense(settings, x, mask)
+    print 'd_sq: ', d_sq.shape, d_sq.dtype
+    
+    print 'Saving d_sq'    
+    joblib.dump(d_sq, '%s/d_sq.jbl'%results_path)
+    print '\n'
         
-# def calculate_D_sq():  
-#     import settings_NP as settings
-#     import util_calculate_D_sq
+def calculate_D_sq(settings):  
     
-#     results_path = settings.results_path
-#     q = settings.q
-#     datatype = settings.datatype
-#     d_sq = joblib.load('%s/d_sq.jbl'%results_path)    
-#     print 'd_sq: ', d_sq.shape
+    import util_calculate_D_sq
     
-#     D_sq = util_calculate_D_sq.f(d_sq, q, datatype)
-#     print 'D_sq: ', D_sq.shape, D_sq.dtype
+    results_path = settings.results_path
+    q = settings.q
+    datatype = settings.datatype
+    d_sq = joblib.load('%s/d_sq.jbl'%results_path)    
+    print 'd_sq: ', d_sq.shape
     
-#     print 'Saving D_sq'    
-#     joblib.dump(D_sq, '%s/D_sq.jbl'%results_path)
-#     print '\n'
+    D_sq = util_calculate_D_sq.f(d_sq, q, datatype)
+    print 'D_sq: ', D_sq.shape, D_sq.dtype
+    
+    print 'Saving D_sq'    
+    joblib.dump(D_sq, '%s/D_sq.jbl'%results_path)
+    print '\n'

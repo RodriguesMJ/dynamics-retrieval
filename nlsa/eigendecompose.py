@@ -58,11 +58,11 @@ def sort(evecs, evals):
 
 def main(settings):
 
-    label = settings.eigenlabel
+    #label = settings.eigenlabel
     results_path = settings.results_path
     l = settings.l
 
-    P = joblib.load('%s/P.jbl'%results_path)
+    P = joblib.load('%s/W_tilde.jbl'%results_path)
     #P = joblib.load('%s/P_sym.jbl'%results_path)
     
     print 'NaN values: ', numpy.isnan(P).any()
@@ -76,8 +76,8 @@ def main(settings):
     print 'Eigendecompose'    
     #evals, evecs = eigendecompose_P(P)
     #evals, evecs = eigendecompose_P_sym(P)
-    #evals, evecs = eigendecompose_P_sym_ARPACK(P, l)
-    evals, evecs = eigendecompose_P_ARPACK(P, l)
+    evals, evecs = eigendecompose_P_sym_ARPACK(P, l)
+    #evals, evecs = eigendecompose_P_ARPACK(P, l)
     print 'Done'
 
 #    print 'Saving'
@@ -92,5 +92,5 @@ def main(settings):
     evecs_sorted, evals_sorted = sort(evecs, evals)
 
     print 'Saving'
-    joblib.dump(evals_sorted, '%s/P%s_evals_sorted.jbl'%(results_path, label))
-    joblib.dump(evecs_sorted, '%s/P%s_evecs_sorted.jbl'%(results_path, label))
+    joblib.dump(evals_sorted, '%s/evals_sorted.jbl'%(results_path))
+    joblib.dump(evecs_sorted, '%s/evecs_sorted.jbl'%(results_path))

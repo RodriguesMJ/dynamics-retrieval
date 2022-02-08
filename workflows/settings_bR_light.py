@@ -6,16 +6,28 @@ label = 'light'
 
 root_folder = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2'
 data_path = '%s/converted_data_%s'%(root_folder, label)
-results_path = '%s/results_NLSA/bR_%s'%(root_folder, label)
+results_path = '%s/results_NLSA/bR_%s_lp_filter'%(root_folder, label)
 data_file = '%s/T_sparse_%s.jbl'%(data_path, label)
 
 datatype = numpy.float64
 
+S = 133115
 q = 16384         # Concatenation n.
-paral_step = 1000 # with 17 proc
-n_workers = 17
 
-n = 116732        # S-q+1 
+f_max = 200 # For building LP-filter
+
+n_workers_aj = (2*f_max) + 1
+f_max_considered = 200
+
+n_workers = 15
+
+step_lp_filter_Dsq = 8000
+#paral_step_A = 1000
+#n_workers_A = 17
+# paral_step = 1000 # with 17 proc
+# n_workers = 17
+
+# n = 116732        # S-q+1 
 
 # b = 5000
 

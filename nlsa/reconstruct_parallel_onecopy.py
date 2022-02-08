@@ -39,10 +39,11 @@ def f(loop_idx, settings):
             if j%1000==0:
                 print j
             for i in range(ncopies):
-                i1 = i*m
-                i2 = (i+1)*m
-                x_r[:,j] = x_r[:,j] + U[i1:i2,k] * S[k] * VT_final[j+i,k]
-            x_r[:,j] = x_r[:,j]/ncopies
+                if i == 1990:
+                    i1 = i*m
+                    i2 = (i+1)*m
+                    x_r[:,j] = x_r[:,j] + U[i1:i2,k] * S[k] * VT_final[j+i,k]
+            #x_r[:,j] = x_r[:,j]/ncopies
         joblib.dump(x_r, '%s/movie_mode_%d_chunck_%d.jbl'%(results_path, k, loop_idx))
         print x_r.shape
         print 'Time: ', time.time() - starttime

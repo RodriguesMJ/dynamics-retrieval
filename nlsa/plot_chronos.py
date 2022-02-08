@@ -6,9 +6,9 @@ import numpy
 
 def plot(settings):
     results_path = settings.results_path
-    label = ''
     
-    VT_final = joblib.load('%s/VT_final%s.jbl'%(results_path,  label))
+    
+    VT_final = joblib.load('%s/VT_final.jbl'%(results_path))
     
     nmodes = VT_final.shape[0]
     s = VT_final.shape[1]
@@ -16,7 +16,7 @@ def plot(settings):
     print 'nmodes: ', nmodes
     print 's: ', s
     
-    out_folder = '%s/chronos%s'%(results_path, label)
+    out_folder = '%s/chronos'%(results_path)
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
     
@@ -29,7 +29,7 @@ def plot(settings):
         ax = matplotlib.pyplot.gca()
         ax.tick_params(axis='x', labelsize=25)
         ax.tick_params(axis='y', labelsize=25)
-        matplotlib.pyplot.savefig('%s/chrono%s_%d.png'%(out_folder, label, i), dpi=2*96)
+        matplotlib.pyplot.savefig('%s/chrono_%d.png'%(out_folder, i), dpi=2*96)
         matplotlib.pyplot.close()
         
 #        matplotlib.pyplot.figure(figsize=(2048/96, 512/96), dpi=96)
@@ -143,4 +143,4 @@ def plot_abs(settings):
 
 def main(settings):   
     plot(settings)
-    plot_abs(settings)
+    #plot_abs(settings)

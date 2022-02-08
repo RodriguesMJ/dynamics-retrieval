@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
-import settings_NP as settings
-import pickle
+import joblib
 import numpy
 
-def f():
+def f(settings):
     print '\n****** RUNNING concatenate_backward. ******'
     datatype = settings.datatype    
     results_path = settings.results_path
-    q = settings.q                                                             # Concatenation n.
+    q = settings.q   
+    data_file = settings.data_file                                                          # Concatenation n.
     #sparsity = settings.sparsity                                                          
     
     #o = open('%s/T_anomaly_sparse_%.2f.pkl'%(results_path, sparsity), 'rb') 
-    o = open('%s/T_anomaly.pkl'%(results_path), 'rb') 
+    #o = open('%s/T_anomaly.pkl'%(results_path), 'rb') 
     #o = open('%s/T.pkl'%(results_path), 'rb') 
-    x = pickle.load(o)
+    #x = pickle.load(o)
+    x = joblib.load(data_file)
 
     m = x.shape[0]                                                             # Size of physical space
     S = x.shape[1]                                                             # N. ofsamples (original time points
@@ -34,6 +35,6 @@ def f():
             
     print 'Concatenated data shape: ', X.shape
         
-    f = open('%s/X_backward_q_%d.pkl'%(results_path, q), 'wb')
-    pickle.dump(X, f)
-    f.close()
+    f = '%s/X_backward_q_%d.jbl'%(results_path, q)
+    joblib.dump(X, f)
+   

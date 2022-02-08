@@ -11,12 +11,11 @@ def main(settings):
     print '****** RUNNING plot_P_evecs ******'
     results_path = settings.results_path
     l = settings.l
-    label = settings.eigenlabel
     
-    evals_sorted = joblib.load('%s/P%s_evals_sorted.jbl'%(results_path, label))
-    evecs_sorted = joblib.load('%s/P%s_evecs_normalised.jbl'%(results_path, label))
+    evals_sorted = joblib.load('%s/evals_sorted.jbl'%(results_path))
+    evecs_sorted = joblib.load('%s/evecs_sorted.jbl'%(results_path))
     
-    figure_path = '%s/P%s_evecs'%(results_path, label)
+    figure_path = '%s/evecs'%(results_path)
     if not  os.path.exists(figure_path):
         os.mkdir(figure_path)
     
@@ -29,18 +28,9 @@ def main(settings):
         ax.tick_params(axis='x', labelsize=25)
         ax.tick_params(axis='y', labelsize=25)
         matplotlib.pyplot.plot(range(s), phi, 'o-', markersize=2)
-        matplotlib.pyplot.savefig('%s/P%s_evec_%d_normalised.png'%(figure_path, label, i), dpi=2*96)
+        matplotlib.pyplot.savefig('%s/evec_%d.png'%(figure_path, i), dpi=2*96)
         matplotlib.pyplot.close()
         
-    #for i in range(l):
-    #    print i
-    #    phi = evecs_sorted[:,i]
-    #    matplotlib.pyplot.figure(figsize=(30,10))
-    #    #matplotlib.pyplot.plot(range(1200), phi[0:1200], 'o-', markersize=1)
-    #    matplotlib.pyplot.plot(range(s), phi[0:s], 'o-', markersize=1)
-    #    matplotlib.pyplot.savefig('%s/P%s_evec_%d.png'%(figure_path, label, i), dpi=2*96)
-    #    matplotlib.pyplot.close()    
-        
     matplotlib.pyplot.scatter(range(l), evals_sorted[0:l])
-    matplotlib.pyplot.savefig('%s/P%s_eigenvalues.png'%(figure_path, label))
+    matplotlib.pyplot.savefig('%s/eigenvalues.png'%(figure_path))
     matplotlib.pyplot.close()

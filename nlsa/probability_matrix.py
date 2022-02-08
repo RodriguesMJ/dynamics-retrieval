@@ -13,7 +13,7 @@ def density_normalisation_memopt(W_sym, datatype):
     print 'Q', Q.shape
     W_norm = numpy.zeros((s,s), dtype=datatype)
     start = time.time()
-    for i in range(100):#(s):
+    for i in range(s):
         if i%1000 == 0:
             print i, '/', s
         Q_i = Q[i]
@@ -51,6 +51,23 @@ def row_normalisation_memopt(W_norm, datatype):
         Q_i = Q[i]
         P[i,:] = W_norm[i,:]/Q_i
     return P, Q
+
+def get_W_tilde_memopt(W_norm, datatype):   
+    s = W_norm.shape[0]
+    sqrt_Q = numpy.sqrt(numpy.sum(W_norm, axis=1))
+    W_tilde = numpy.zeros((s,s), dtype=datatype)
+    for i in range(s):
+        if i%1000 == 0:
+            print i, '/', s
+        sqrt_Q_i = sqrt_Q[i]
+        W_tilde[i,:] = W_norm[i,:]/sqrt_Q_i
+    for i in range(s):
+        if i%1000 == 0:
+            print i, '/', s
+        sqrt_Q_i = sqrt_Q[i]
+        W_tilde[:,i] = W_tilde[:,i]/sqrt_Q_i
+    return W_tilde
+
 
 
 def row_normalisation_timeopt(W_norm):   
@@ -113,61 +130,45 @@ def main(settings):
     results_path = settings.results_path
     datatype = settings.datatype
     
-    flag_W_norm = 0
+    flag_W_norm = 1
     if flag_W_norm == 1:
         print 'Load W_sym'
-        W_sym = joblib.load('%s/W_sym_local_distances.jbl'%results_path)
-        
-        #print 'Set NaN values to zero'
-        #W_sym[numpy.isnan(W_sym)] = 0
-        print 'Convert to dense'
-        W_sym = W_sym.todense()
-        
-        print 'W_sym', W_sym.shape, W_sym.dtype
-    
-        print 'Check that W_sym is symmetric:'
-        diff = W_sym - W_sym.T
-        print numpy.amax(diff), numpy.amin(diff)
-        
+        W_sym = joblib.load('%s/W_sym.jbl'%results_path) 
         print 'Density normalization (low memory use, long running time)'
         W_norm = density_normalisation_memopt(W_sym, datatype) 
-        joblib.dump(W_norm, '%s/W_norm_local_distances.jbl'%results_path)
+        joblib.dump(W_norm, '%s/W_norm.jbl'%results_path)
     
-    flag_check_W_norm = 0
+    flag_check_W_norm = 1
     if flag_check_W_norm == 1:
-        W_norm = joblib.load('%s/W_norm_local_distances.jbl'%results_path)
-        
+        W_norm = joblib.load('%s/W_norm.jbl'%results_path)        
         print 'Check that W_norm is symmetric'            
         diff = W_norm - W_norm.T
-        print numpy.amax(diff), numpy.amin(diff)       
-    
-    #print 'Density normalization (optimised, short running time but highmemory use)'
-    #W_norm = density_normalisation_opt(W_sym)
-    # print 'Check that W_norm is symmetric'            
-    # diff = W_norm - W_norm.T
-    # print numpy.amax(diff), numpy.amin(diff)   
-#    print 'Check results'      
-#    diff = W_norm - W_norm_opt
-#    print numpy.amax(diff), numpy.amin(diff)
-#   
-
-
-    flag_P = 1
-    if flag_P == 1:
-        W_norm = joblib.load('%s/W_norm_local_distances.jbl'%results_path)
-        print 'Row normalisation (low memory use)'
-        P, Q = row_normalisation_memopt(W_norm, datatype)
-    
-    # print 'Row normalisation (optimised, but high memory use)'
-    # P, Q = row_normalisation_opt(W_norm)
-    # print 'P: ', P.shape, P.dtype
-    # print 'Q: ', Q.shape, Q.dtype
-#    print 'Check results'      
-#    diff = P - P_opt
-#    print numpy.amax(diff), numpy.amin(diff)
+        print numpy.amax(diff), numpy.amin(diff)     
         
-        joblib.dump(P, '%s/P_local_distances.jbl'%results_path)
-        joblib.dump(Q, '%s/Q_local_distances.jbl'%results_path)
+    flag_W_tilde = 1
+    if flag_W_tilde == 1:
+        W_norm = joblib.load('%s/W_norm.jbl'%results_path)
+        print 'Get W_tilde'
+        W_tilde = get_W_tilde_memopt(W_norm, datatype)        
+        joblib.dump(W_tilde, '%s/W_tilde.jbl'%results_path)
+        
+    flag_check_W_tilde = 1
+    if flag_check_W_tilde == 1:
+        W_tilde = joblib.load('%s/W_tilde.jbl'%results_path)        
+        print 'Check that W_tilde is symmetric'            
+        diff = W_tilde - W_tilde.T
+        print numpy.amax(diff), numpy.amin(diff)     
+        
+    
+    # flag_P = 0
+    # if flag_P == 1:
+    #     W_norm = joblib.load('%s/W_norm.jbl'%results_path)
+    #     print 'Row normalisation (low memory use)'
+    #     P, Q = row_normalisation_memopt(W_norm, datatype)        
+    #     joblib.dump(P, '%s/P.jbl'%results_path)
+    #     joblib.dump(Q, '%s/Q.jbl'%results_path)
+        
+        
     #P = joblib.load('%s/P.jbl'%results_path)
     #Q = joblib.load('%s/Q.jbl'%results_path)
     

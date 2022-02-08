@@ -14,30 +14,14 @@ def f(loop_idx, settings):
     datatype = settings.datatype
     results_path = settings.results_path    
     step = settings.paral_step_A 
-    nmodes = settings.nmodes
-    toproject = settings.toproject
+    
     data_file = settings.data_file
     
-    # mu = joblib.load('%s/mu.jbl'%(results_path))
-    # print 'mu (s, ): ', mu.shape
-    
-    evecs = joblib.load('%s/evecs_sorted.jbl'%(results_path))
+    evecs = joblib.load('%s/F_on_qr.jbl'%(results_path))
     print 'evecs (s, s): ', evecs.shape
-    Phi = numpy.zeros((evecs.shape[0], nmodes), dtype=datatype)
-    for j in range(nmodes):
-        ev_toproject = toproject[j]
-        print 'Evec: ', ev_toproject
-        Phi[:, j] = evecs[:, ev_toproject]
-    
-#    f = open('%s/T_anomaly.pkl'%results_path,'rb')
-#    x = pickle.load(f)
-#    f.close()
-#    
-#    # For sparse data
-#    if numpy.any(numpy.isnan(x)):
-#        print 'NaN values in x'    
-#        x[numpy.isnan(x)] = 0
-#        print 'Set X NaNs to zero'
+    f_max = settings.f_max_considered
+    Phi = evecs[:,0:2*f_max+1]
+
     try:
         T_sparse = joblib.load(data_file)
         x = T_sparse[:,:].todense()
@@ -61,14 +45,13 @@ def f(loop_idx, settings):
         q_end = q
     print 'q_start: ', q_start, 'q_end: ', q_end
     
-    A = numpy.zeros((n,nmodes), dtype=datatype)
-    # mu_Phi = numpy.matmul(numpy.diag(mu), Phi)
-    # print 'mu_Phi (s, nmodes): ', mu_Phi.shape
+    A = numpy.zeros((n,2*f_max+1), dtype=datatype)
+    
     starttime = time.time()
     for i in range(q_start, q_end):
         if i%100 == 0:
             print i
-        A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-i : q-i+s], Phi) #mu_Phi)
+        A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-i : q-i+s], Phi) 
             
     print 'Time: ', time.time() - starttime   
     

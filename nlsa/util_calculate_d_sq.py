@@ -3,10 +3,15 @@ import numpy
 import joblib
 import scipy.sparse
 
-def f_sparse_m_T_m(settings, M_sparse):
-    mask = M_sparse[:,:].todense()    
-    mask = numpy.asarray(mask, dtype=settings.datatype)
-    print 'mask (dense): ', mask.shape, mask.dtype    
+def f_sparse_m_T_m(settings, mask):
+    
+    try:
+        mask = mask[:,:].todense()    
+        mask = numpy.asarray(mask, dtype=settings.datatype)
+        print 'mask (dense): ', mask.shape, mask.dtype    
+    except:
+        print 'mask is not sparse', mask.shape, mask.dtype    
+        
     mask_T = mask.T
     n_dsq_elements = numpy.matmul(mask_T, mask)
     print 'n_dsq_elements:', n_dsq_elements.shape, n_dsq_elements.dtype
@@ -174,8 +179,7 @@ def f_dense(settings, x, mask):
           + numpy.matmul(mask.T, x_sq) \
           - 2 * numpy.matmul(x.T, x)
           
-    print 'Saving d_sq'    
-    joblib.dump(d_sq, '%s/d_sq_tmp.jbl'%settings.results_path)
+    return d_sq      
     
     
     

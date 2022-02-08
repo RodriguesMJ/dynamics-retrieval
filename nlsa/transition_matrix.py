@@ -105,30 +105,6 @@ def check(settings):
     matplotlib.pyplot.plot(range(W_sym.shape[0]), counts)
     matplotlib.pyplot.savefig('%s/W_sym_nns.png'%results_path)
     matplotlib.pyplot.close()
-    
-    
-def main_test(settings):
-    
-    print '\n****** RUNNING tansition_matrix ****** '
-    
-    sigma_sq = settings.sigma_sq
-    print 'Sigma_sq: ', sigma_sq
-    epsilon = sigma_sq/2
-    print 'Epsilon: ', epsilon
-        
-    results_path = settings.results_path
-    
-    W = joblib.load('%s/D_sq_parallel.jbl'%results_path)  
-    print 'D_sq:', W.shape, W.dtype   
-     
-    W = numpy.exp(-W/sigma_sq)
-    
-    thresh = numpy.exp(-3)
-    W[W<thresh]=0
-    
-    W = sparse.csr_matrix(W)
-    print 'W:', W.shape, W.dtype
-    joblib.dump(W, '%s/W_sym.jbl'%results_path)
 
 
 def main(settings):
@@ -145,10 +121,10 @@ def main(settings):
     results_path = settings.results_path
     datatype = settings.datatype
     
-    N = joblib.load('%s/N_loop.jbl'%results_path)
-    D = joblib.load('%s/D_loop.jbl'%results_path)
-#    v = joblib.load('%s/v.jbl'%results_path)
-#    
+    N = joblib.load('%s/N.jbl'%results_path)
+    D = joblib.load('%s/D.jbl'%results_path)
+    
+#    v = joblib.load('%s/v.jbl'%results_path)    
 #    print 'Calculate W (local speeds)'
 #    W = calculate_W_localspeeds(D, N, v, results_path, datatype, sigma_sq)
 #    joblib.dump(W, '%s/W.jbl'%results_path)
@@ -157,62 +133,41 @@ def main(settings):
     W = calculate_W(D, N, results_path, datatype, sigma_sq)
     joblib.dump(W, '%s/W.jbl'%results_path)
 
-#    W = joblib.load('%s/W.jbl'%results_path)
-
-#    print 'Symmetrise W'
-#    W_sym = symmetrise_W(W, datatype)
-#    joblib.dump(W_sym, '%s/W_sym.jbl'%results_path)
-    
     print 'Symmetrise W (optimised)'
     W_sym = symmetrise_W_optimised(W, datatype)
+    
+    print 'W_sym: Set NaN values to zero'
+    W_sym[numpy.isnan(W_sym)] = 0
+    
+    print 'W_sym', W_sym.shape, W_sym.dtype
+
+    print 'Check that W_sym is symmetric:'
+    diff = W_sym - W_sym.T
+    print numpy.amax(diff), numpy.amin(diff)
+    
     joblib.dump(W_sym, '%s/W_sym.jbl'%results_path)
-
-
-##### CHECKS #####
-#    W_sym_opt = joblib.load('%s/W_sym_opt.jbl'%results_path)
-    
-#    print 'Checks:'
-#    
-#    W[numpy.isnan(W)] = 0
-#    W_sym[numpy.isnan(W_sym)] = 0
-#    W_sym_opt[numpy.isnan(W_sym_opt)] = 0
-#    
-#    print 'Check that W is not symmetric:'
-#    W_T = W.T
-#    diff = W-W_T
-#    print numpy.amax(diff), numpy.amin(diff)
-#        
-#    print 'Check that W_sym is symmetric:'
-#    W_sym_T = W_sym.T
-#    diff = W_sym - W_sym_T
-#    print numpy.amax(diff), numpy.amin(diff)
-#    
-#    print 'Check W_sym_opt is symmetric '
-#    W_sym_opt_T = W_sym_opt.T    
-#    diff = W_sym_opt - W_sym_opt_T    
-#    print numpy.amax(diff), numpy.amin(diff)
-#    
-#    print 'Check that W_sym = W_sym_opt'
-#    diff = W_sym - W_sym_opt
-#    print numpy.amax(diff), numpy.amin(diff)
     
     
-#    import pickle
-#    
-#    print 'Check W-W_ref'
-#    f = open('../data_Giannakis_PNAS_2012/results_test_8/W.pkl', 'rb')
-#    W_ref = pickle.load(f)
-#    f.close()
-#    
-#    W_ref[numpy.isnan(W_ref)] = 0    
-#    diff = W_ref - W
-#    print numpy.amax(diff), numpy.amin(diff)
-#
-#    print 'Check W_sym_opt - W_sym_ref'
-#    f = open('../data_Giannakis_PNAS_2012/results_test_8/W_sym.pkl', 'rb')
-#    W_sym_ref = pickle.load(f)
-#    f.close()
-#     
-#    W_sym_ref[numpy.isnan(W_sym_ref)] = 0
-#    diff = W_sym_ref - W_sym_opt
-#    print numpy.amax(diff), numpy.amin(diff)   
+    
+# def main_test(settings):
+    
+#     print '\n****** RUNNING tansition_matrix ****** '
+    
+#     sigma_sq = settings.sigma_sq
+#     print 'Sigma_sq: ', sigma_sq
+#     epsilon = sigma_sq/2
+#     print 'Epsilon: ', epsilon
+        
+#     results_path = settings.results_path
+    
+#     W = joblib.load('%s/D_sq_parallel.jbl'%results_path)  
+#     print 'D_sq:', W.shape, W.dtype   
+     
+#     W = numpy.exp(-W/sigma_sq)
+    
+#     thresh = numpy.exp(-3)
+#     W[W<thresh]=0
+    
+#     W = sparse.csr_matrix(W)
+#     print 'W:', W.shape, W.dtype
+#     joblib.dump(W, '%s/W_sym.jbl'%results_path)

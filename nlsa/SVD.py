@@ -6,6 +6,7 @@ import numpy.linalg
 def SVD_f(A):
     print 'SVD'
     U, S, VH = numpy.linalg.svd(A, full_matrices=False)
+    print 'done'
     return U, S, VH
 
 def SVD_f_manual(A):
@@ -13,8 +14,11 @@ def SVD_f_manual(A):
     AtA = numpy.matmul(A.T, A)
     print 'A.T A: ', AtA.shape
     print 'Eigendecompose'
-    evals_AtA, evecs_AtA = numpy.linalg.eig(AtA)
-    print 'Done'    
+    evals_AtA, evecs_AtA = numpy.linalg.eigh(AtA)
+    print 'Done'
+    for i in evals_AtA:
+        print i
+    evals_AtA[numpy.argwhere(evals_AtA<0)]=0  
     S = numpy.sqrt(evals_AtA)
     VH = evecs_AtA.T
     U_temp = numpy.matmul(evecs_AtA, numpy.diag(1.0/S))
@@ -83,16 +87,16 @@ def main(settings):
 #    diff = abs(VH)-abs(VH_m)
 #    print numpy.amax(abs(diff))
         
-    P_evecs_norm = joblib.load('%s/P_sym_ARPACK_evecs_normalised.jbl'%(results_path))
+    evecs = joblib.load('%s/evecs_sorted.jbl'%(results_path))
 
     nmodes = VH.shape[0]
     print 'nmodes: ', nmodes
 
-    Phi = numpy.zeros((P_evecs_norm.shape[0], nmodes), dtype=datatype)
+    Phi = numpy.zeros((evecs.shape[0], nmodes), dtype=datatype)
     for j in range(nmodes):
         ev_toproject = toproject[j]
         print 'Evec: ', ev_toproject
-        Phi[:, j] = P_evecs_norm[:, ev_toproject]
+        Phi[:, j] = evecs[:, ev_toproject]
     
     VT_final = project_chronos(VH, Phi)    
     print 'VT_final: ', VT_final.shape

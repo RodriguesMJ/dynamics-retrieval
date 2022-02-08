@@ -18,16 +18,22 @@ def f(loop_idx, settings):
     toproject = settings.toproject
     data_file = settings.data_file
     
-    # mu = joblib.load('%s/mu.jbl'%(results_path))
-    # print 'mu (s, ): ', mu.shape
+    f_max_considered = settings.f_max_considered
+    filterfuncs = joblib.load('%s/F_on_qr.jbl'%results_path)
+    filterfuncs = filterfuncs[:,:(2*f_max_considered+1)]
+    print 'Filterfuncs:', filterfuncs.shape
+
     
-    evecs = joblib.load('%s/evecs_sorted.jbl'%(results_path))
-    print 'evecs (s, s): ', evecs.shape
-    Phi = numpy.zeros((evecs.shape[0], nmodes), dtype=datatype)
+    mu = joblib.load('%s/mu.jbl'%(results_path))
+    print 'mu (s, ): ', mu.shape
+    
+    evecs_norm = joblib.load('%s/P_evecs_normalised.jbl'%(results_path))
+    print 'evecs_norm (s, s): ', evecs_norm.shape
+    Phi = numpy.zeros((evecs_norm.shape[0], nmodes), dtype=datatype)
     for j in range(nmodes):
         ev_toproject = toproject[j]
         print 'Evec: ', ev_toproject
-        Phi[:, j] = evecs[:, ev_toproject]
+        Phi[:, j] = evecs_norm[:, ev_toproject]
     
 #    f = open('%s/T_anomaly.pkl'%results_path,'rb')
 #    x = pickle.load(f)
@@ -47,7 +53,8 @@ def f(loop_idx, settings):
     except:
         x = joblib.load(data_file)
         print 'x (dense): ', x.shape, x.dtype
-            
+        
+       
     m = x.shape[0]
     S = x.shape[1]
     s = S-q
@@ -62,13 +69,18 @@ def f(loop_idx, settings):
     print 'q_start: ', q_start, 'q_end: ', q_end
     
     A = numpy.zeros((n,nmodes), dtype=datatype)
-    # mu_Phi = numpy.matmul(numpy.diag(mu), Phi)
-    # print 'mu_Phi (s, nmodes): ', mu_Phi.shape
+    mu_Phi = numpy.matmul(numpy.diag(mu), Phi)
+    print 'mu_Phi (s, nmodes): ', mu_Phi.shape
+    
+    temp = numpy.matmul(filterfuncs.T, mu_Phi)
+    filtered_mu_Phi = numpy.matmul(filterfuncs, temp)
+    print 'filtered_mu_Phi (s, nmodes): ', mu_Phi.shape
+    
     starttime = time.time()
     for i in range(q_start, q_end):
         if i%100 == 0:
             print i
-        A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-i : q-i+s], Phi) #mu_Phi)
+        A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-i : q-i+s], filtered_mu_Phi)
             
     print 'Time: ', time.time() - starttime   
     

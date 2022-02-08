@@ -59,7 +59,7 @@ def main(args=None):
     # Dynamic import based on the command line argument
     settings = importlib.import_module(args.settings)
 
-    print("Label: %s"%settings.label)
+    #print("Label: %s"%settings.label)
     print("Concatenation n: %d"%settings.q)
     
     f(int(args.worker_ID), settings)
