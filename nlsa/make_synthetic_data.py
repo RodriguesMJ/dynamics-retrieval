@@ -251,12 +251,12 @@ if flag == 1:
     import nlsa.transition_matrix
     nlsa.transition_matrix.main(settings)
     
-flag = 1
+flag = 0
 if flag == 1:
     import nlsa.probability_matrix
     nlsa.probability_matrix.main(settings)
     
-flag = 1
+flag = 0
 if flag == 1:
     import nlsa.eigendecompose
     nlsa.eigendecompose.main(settings)
@@ -569,7 +569,77 @@ if flag == 1:
         
         CCs.append(CC)
     joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
+
+
+# Test U to u
+flag = 0
+if flag == 1:
+    U = joblib.load('%s/U.jbl'%settings.results_path)
+    print 'U:', U.shape
+    ntopos=20
+    U = U[:,0:ntopos]
+    print 'U:', U.shape
+    u = numpy.zeros((settings.m, ntopos))
+    for i in range(ntopos):
+        print i
+        U_i = U[:,i]
+        print 'U_i:', U_i.shape
+        print U_i[0,], U_i[1], U_i[settings.m]
+        
+        u_i = U_i.reshape((settings.m, settings.q), order='F')
+        print u_i[0,0], u_i[1,0], u_i[0,1]
+        u_i = numpy.average(u_i, axis=1)
+        print u_i.shape
+        u[:,i] = u_i
+    joblib.dump(u, '%s/u.jbl'%settings.results_path)
+
+flag = 0
+if flag == 1:
     
+    # benchmark = joblib.load('../../synthetic_data_4/test5/x.jbl')
+    # print benchmark.shape
+    # benchmark = benchmark.flatten()
+    
+    #CCs = []
+    
+    # reconstruct
+    modes = range(20)#[0,1,2,3]
+    U = joblib.load('%s/u.jbl'%settings.results_path)
+    S = joblib.load('%s/S.jbl'%settings.results_path)
+    VH = joblib.load('%s/VT_final.jbl'%settings.results_path)
+    print U.shape, S.shape, VH.shape
+    x_r_tot = 0
+    for mode in modes:
+        print mode
+        u = U[:, mode]
+        sv = S[mode]
+        vT = VH[mode, :]
+        #print u.shape, sv.shape, vT.shape
+        x_r = sv*numpy.outer(u, vT)
+        print x_r.shape
+        
+        matplotlib.pyplot.imshow(x_r, cmap='jet')
+        matplotlib.pyplot.colorbar()
+        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+        matplotlib.pyplot.close()  
+        x_r_tot += x_r
+    
+        matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
+        matplotlib.pyplot.colorbar()
+        
+        print x_r_tot.shape
+        
+        #x_r_tot_flat = x_r_tot.flatten()
+        
+        # CC = Correlate(benchmark, x_r_tot_flat)
+        # print CC
+        # CCs.append(CC)
+        
+        #matplotlib.pyplot.title('%.4f'%CC)
+        matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
+        matplotlib.pyplot.close() 
+        
+    #joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)   
 ###################
 ######  SSA  ######  
 ###################

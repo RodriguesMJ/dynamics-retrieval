@@ -4,7 +4,7 @@ import math
 
 
 
-results_path = '../../synthetic_data_4/test5/nlsa/b_4000_eu_nns' 
+results_path = '../../synthetic_data_4/test5/fourier/U_to_u'#'nlsa/b_4000_eu_nns' 
 m = 7000
 S = 30000
 q = 4000
@@ -23,7 +23,7 @@ b = 3000 #1500
 # # # # # # # # paral_step_lp_filter_Dsq = 1000
 # # # # # # # # n_workers_lp_filter_Dsq = int(math.ceil((S-q)/paral_step_lp_filter_Dsq)) #26
 
-log10eps = 7.2
+log10eps = 6.6
 sigma_sq = 2*10**log10eps
 
 l = 31
