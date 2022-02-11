@@ -20,11 +20,11 @@ def plot(settings):
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
     
-    for i in range(nmodes):
+    for i in range(20):#(nmodes):
         print i
         chrono = VT_final[i,:]
         matplotlib.pyplot.figure(figsize=(30,10))
-        matplotlib.pyplot.plot(range(s), chrono, 'o-', markersize=8)
+        matplotlib.pyplot.plot(range(s), chrono, 'o-', 'b', markersize=8)
         #matplotlib.pyplot.plot(range(120), chrono[0:120], 'o-', markersize=8)
         ax = matplotlib.pyplot.gca()
         ax.tick_params(axis='x', labelsize=25)

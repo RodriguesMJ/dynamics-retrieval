@@ -18,7 +18,7 @@ def main(settings):
         os.mkdir(out_folder)
     
     matplotlib.pyplot.figure()
-    matplotlib.pyplot.scatter(range(nmodes), S, s=1)
+    matplotlib.pyplot.scatter(range(nmodes), S, s=1, c='b')
     matplotlib.pyplot.savefig('%s/SVs.png'%out_folder, dpi=96*2)
     matplotlib.pyplot.close()
     
@@ -26,6 +26,6 @@ def main(settings):
     S_norm = S/s0
     
     matplotlib.pyplot.figure()
-    matplotlib.pyplot.scatter(range(nmodes), numpy.log10(S_norm), s=1)
+    matplotlib.pyplot.scatter(range(nmodes), numpy.log10(S_norm), s=1, c='b')
     matplotlib.pyplot.savefig('%s/SVs_norm_log.png'%out_folder, dpi=96*2)
     matplotlib.pyplot.close()

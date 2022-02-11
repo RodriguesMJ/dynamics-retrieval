@@ -6,20 +6,7 @@ import joblib
 import os
 import time 
 import settings_synthetic_data as settings
-
-# -*- coding: utf-8 -*-
-import numpy
-
-def Correlate(x1, x2):
-    x1Avg = numpy.average(x1)
-    x2Avg = numpy.average(x2)
-    numTerm = numpy.multiply(x1-x1Avg, x2-x2Avg)
-    num = numTerm.sum()
-    resX1Sq = numpy.multiply(x1-x1Avg, x1-x1Avg)
-    resX2Sq = numpy.multiply(x2-x2Avg, x2-x2Avg)
-    den = numpy.sqrt(numpy.multiply(resX1Sq.sum(), resX2Sq.sum()))
-    CC = num/den
-    return CC
+import correlate
 
 def plot_components(settings):
     m = settings.m
@@ -338,7 +325,7 @@ if flag == 1:
         
         x_r_tot_flat = x_r_tot.flatten()
         
-        CC = Correlate(benchmark, x_r_tot_flat)
+        CC = correlate.Correlate(benchmark, x_r_tot_flat)
         print CC
         
         CCs.append(CC)
@@ -385,7 +372,7 @@ if flag == 1:
     
     print D_1.shape
     print D_2.shape
-    CC = Correlate(D_1,D_2)
+    CC = correlate.Correlate(D_1,D_2)
     print CC
 
 
@@ -455,7 +442,7 @@ if flag == 1:
         
         x_r_tot_flat = x_r_tot.flatten()
         
-        CC = Correlate(benchmark, x_r_tot_flat)
+        CC = correlate.Correlate(benchmark, x_r_tot_flat)
         print CC
         CCs.append(CC)
         
@@ -560,7 +547,7 @@ if flag == 1:
                
         x_r_tot_flat = x_r_tot.flatten()
         
-        CC = Correlate(benchmark, x_r_tot_flat)
+        CC = correlate.Correlate(benchmark, x_r_tot_flat)
         print CC
         
         # matplotlib.pyplot.title('%.4f'%CC)
