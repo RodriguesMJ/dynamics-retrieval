@@ -24,29 +24,21 @@ def make_lp_filter_functions(settings):
     joblib.dump(Q, '%s/F_on_qr.jbl'%settings.results_path)
 
 
-root_path = '../../synthetic_data_4/test5/fourier_para_search' 
+root_path = '../../synthetic_data_4/test6/fourier_para_search' 
 m = 7000
 S = 30000
 paral_step_A = 400
-#n_workers_A = int(math.ceil(float(q)/paral_step_A))
-
-# ncopies = 4000#1#400#4000
-# modes_to_reconstruct = range(20) #(20)
-
 paral_step_reconstruction = 1000
-# n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
-
 f_max = 100
 f_max_considered = f_max
 
 
-    
 # Fourier filtering para search
 
 x = joblib.load('%s/x.jbl'%root_path)
 print x.shape
 
-qs = [50, 100, 500, 1000, 2000, 3000, 4000, 5000, 6000]
+qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000, 6000]
 
 flag = 0
 if flag == 1:
@@ -54,6 +46,11 @@ if flag == 1:
         q_path = '%s/f_max_%d_q_%d'%(root_path, f_max, q)
         if not os.path.exists(q_path):
             os.mkdir(q_path)
+            
+flag = 0
+if flag == 1:
+    for q in qs:
+        q_path = '%s/f_max_%d_q_%d'%(root_path, f_max, q)
         fopen = open('/das/work/units/LBR-Xray/p17491/Cecilia_Casadei/NLSA/code/nlsa/settings_q_%d.py'%q, 'w')
         fopen.write('# -*- coding: utf-8 -*-\n')
         fopen.write('import numpy\n')
@@ -79,7 +76,6 @@ if flag == 1:
         n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
         fopen.write('n_workers_reconstruction = %d\n'%n_workers_reconstruction)
         fopen.close()
-    
 
 flag = 0
 if flag == 1:    
@@ -103,7 +99,6 @@ if flag == 1:
         end_worker = settings.n_workers_A - 1
         os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_A_fourier.sh %s'
                   %(end_worker, settings.__name__)) 
-   
 
 
 flag = 0
@@ -151,7 +146,7 @@ if flag == 1:
         VT_final = nlsa.SVD.project_chronos(VH, Phi)    
         print 'VT_final: ', VT_final.shape
         joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
-   
+  
 flag = 0
 if flag == 1:  
     import nlsa.plot_SVs
@@ -164,7 +159,8 @@ if flag == 1:
         print 'q: ', settings.q
         nlsa.plot_SVs.main(settings)       
         nlsa.plot_chronos.main(settings)
-   
+        
+
 flag = 0
 if flag == 1:
     for q in qs:
@@ -176,6 +172,8 @@ if flag == 1:
         end_worker = settings.n_workers_reconstruction - 1
         os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
                   %(end_worker, settings.__name__))    
+        
+
 
 flag = 0
 if flag == 1:
@@ -186,10 +184,11 @@ if flag == 1:
         print 'q: ', settings.q
         for mode in settings.modes_to_reconstruct:
             nlsa.util_merge_x_r.f(settings, mode) 
-            
+ 
+qs = [2000]
 flag = 1
 if flag == 1:
-    for q in [1000, 2000, 3000, 4000, 5000, 6000]:#qs:
+    for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)        
         print 'q: ', settings.q
@@ -206,14 +205,14 @@ if flag == 1:
         for mode in range(12):#settings.modes_to_reconstruct:
             print mode
             x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
-            # matplotlib.pyplot.imshow(x_r, cmap='jet')
-            # matplotlib.pyplot.colorbar()
-            # matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
-            # matplotlib.pyplot.close()  
+            matplotlib.pyplot.imshow(x_r, cmap='jet')
+            matplotlib.pyplot.colorbar()
+            matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+            matplotlib.pyplot.close()  
             x_r_tot += x_r
         
-            # matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
-            # matplotlib.pyplot.colorbar()
+            matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
+            matplotlib.pyplot.colorbar()
             
             print x_r_tot.shape
                    
@@ -222,9 +221,9 @@ if flag == 1:
             CC = correlate.Correlate(benchmark, x_r_tot_flat)
             print CC
             
-            # matplotlib.pyplot.title('%.4f'%CC)
-            # matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
-            # matplotlib.pyplot.close() 
+            matplotlib.pyplot.title('%.4f'%CC)
+            matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
+            matplotlib.pyplot.close() 
             
             CCs.append(CC)
         joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
@@ -233,7 +232,7 @@ if flag == 1:
  
 flag = 0
 if flag == 1:
-    for q in [500]:#qs:
+    for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)        
         print 'q: ', settings.q
@@ -241,3 +240,23 @@ if flag == 1:
         matplotlib.pyplot.scatter(range(1, len(CCs)+1), CCs, c='b')
         matplotlib.pyplot.xticks(range(1,len(CCs)+1,2))
         matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_%d.png'%(settings.results_path, q))
+        matplotlib.pyplot.close()
+
+flag = 0
+if flag == 1:
+    #matplotlib.pyplot.style.use('classic') 
+    n_qs = len(qs)
+    import matplotlib.pylab
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0,1,n_qs))   
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    n = 12   
+    matplotlib.pyplot.xticks(range(1,n+1,2))   
+    for i, q in enumerate(qs):
+        modulename = 'settings_q_%d'%q
+        settings = __import__(modulename)        
+        print 'q: ', settings.q
+        CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
+        matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='q=%d'%q)  
+    matplotlib.pyplot.legend(frameon=False)
+    matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_scan.png'%(root_path), dpi=96*3)
+    matplotlib.pyplot.close()
