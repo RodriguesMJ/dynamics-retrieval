@@ -12,7 +12,7 @@ import numpy
 
 results_path = '../../synthetic_data_4/test6'
 
-flag = 1
+flag = 0
 if flag == 1:
     CCs_SVD = joblib.load('%s/svd/reconstruction_CC_vs_nmodes.jbl'%results_path)
     CCs_fourier = joblib.load('%s/fourier/reconstruction_CC_vs_nmodes.jbl'%results_path)
@@ -70,9 +70,12 @@ if flag == 1:
     matplotlib.pyplot.xticks(range(1,Nmodes,2))
     matplotlib.pyplot.savefig('%s/reconstruction_NLSA_eu_CC_vs_nmodes.png'%results_path, dpi=96*3)
     matplotlib.pyplot.close()
+
     
 flag = 0
 if flag == 1:
+    #matplotlib.pyplot.style.use('classic') 
+    f_max = 100
     qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000, 6000]
     n_qs = len(qs)
     import matplotlib.pylab
@@ -82,11 +85,28 @@ if flag == 1:
     matplotlib.pyplot.xticks(range(1,n+1,2))   
     matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
     for i, q in enumerate(qs):
-        modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
-        CCs = joblib.load('../../synthetic_data_4/test5/fourier_para_search/f_max_100_q_%d/reconstruction_CC_vs_nmodes.jbl'%q)
+        CCs = joblib.load('../../synthetic_data_4/test5/fourier_para_search/f_max_%d_q_%d/reconstruction_CC_vs_nmodes.jbl'%(f_max, q))
         matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='q=%d'%q)  
-    matplotlib.pyplot.legend(frameon=False)
-    matplotlib.pyplot.savefig('../../synthetic_data_4/reconstruction_CC_vs_nmodes_fourier_benchmark_q_scan.png', dpi=96*4)
+    matplotlib.pyplot.legend(frameon=False, loc='lower right')
+    matplotlib.pyplot.savefig('../../synthetic_data_4/test_reconstruction_CC_vs_nmodes_fourier_benchmark_q_scan_fmax_%d.png'%f_max, dpi=96*4)
+    matplotlib.pyplot.close()
+
+
+flag = 1
+if flag == 1:
+    #matplotlib.pyplot.style.use('classic')     
+    q = 4000
+    f_max_s = [1, 5, 10, 50, 100, 150, 200]
+    n_f_max_s = len(f_max_s)
+    import matplotlib.pylab
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0,1,n_f_max_s))   
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    n = 12   
+    matplotlib.pyplot.xticks(range(1,n+1,2))   
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    for i, f_max in enumerate(f_max_s):
+        CCs = joblib.load('../../synthetic_data_4/test5/fourier_para_search/f_max_%d_q_%d/reconstruction_CC_vs_nmodes.jbl'%(f_max, q))
+        matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='f_max=%d'%f_max)  
+    matplotlib.pyplot.legend(frameon=False, loc='lower right')
+    matplotlib.pyplot.savefig('../../synthetic_data_4/test_reconstruction_CC_vs_nmodes_fourier_benchmark_fmax_scan_q_%d.png'%q, dpi=96*4)
     matplotlib.pyplot.close()

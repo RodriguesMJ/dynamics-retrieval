@@ -8,28 +8,29 @@ import joblib
 
 
 def plot(settings, M, label):
-       
-    fig = matplotlib.pyplot.figure(figsize=(35,40))
-    ax = fig.add_subplot(6, 1, 1)
-    ax.plot(range(M.shape[0]), M[:,0], color='m')    
-    for j in range(1, 6):
-        ax = fig.add_subplot(6, 1, j+1)
-        ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
-        ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
-        ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-    matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5.png'%(settings.results_path, label))
-    matplotlib.pyplot.close()  
+    if M.shape[1] >= 11:
+        fig = matplotlib.pyplot.figure(figsize=(35,40))
+        ax = fig.add_subplot(6, 1, 1)
+        ax.plot(range(M.shape[0]), M[:,0], color='m')    
+        for j in range(1, 6):
+            ax = fig.add_subplot(6, 1, j+1)
+            ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
+            ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
+            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5.png'%(settings.results_path, label))
+        matplotlib.pyplot.close()  
     
-    fig = matplotlib.pyplot.figure(figsize=(35,40))
-    ax = fig.add_subplot(11, 1, 1)
-    ax.plot(range(M.shape[0]), M[:,0], color='m')    
-    for j in range(10, 101, 10):
-        ax = fig.add_subplot(11, 1, j/10+1)
-        ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
-        ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
-        ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-    matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100.png'%(settings.results_path, label))
-    matplotlib.pyplot.close()  
+    if M.shape[1] >= 201:
+        fig = matplotlib.pyplot.figure(figsize=(35,40))
+        ax = fig.add_subplot(11, 1, 1)
+        ax.plot(range(M.shape[0]), M[:,0], color='m')    
+        for j in range(10, 101, 10):
+            ax = fig.add_subplot(11, 1, j/10+1)
+            ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
+            ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
+            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100.png'%(settings.results_path, label))
+        matplotlib.pyplot.close()  
     
     # fig = matplotlib.pyplot.figure(figsize=(35,40))
     # ax = fig.add_subplot(11, 1, 1)
