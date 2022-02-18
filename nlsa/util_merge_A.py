@@ -15,18 +15,18 @@ def main(settings):
     
     fn = '%s/A_chunck_idx_0.jbl'%(results_path)
     A = joblib.load(fn)
-    print A.shape, A.dtype
-    nrows = A.shape[0]
-    ncols = A.shape[1]
+    # print A.shape, A.dtype
+    # nrows = A.shape[0]
+    # ncols = A.shape[1]
     
-    print 'Merge A'
-    A = numpy.zeros((nrows, ncols), dtype=datatype)
-    for i in range(n_workers_A):
+    # print 'Merge A'
+    # A = numpy.zeros((nrows, ncols), dtype=datatype)
+    for i in range(1, n_workers_A):
         print i
         fn = '%s/A_chunck_idx_%d.jbl'%(results_path, i)
         print fn
         temp = joblib.load(fn)
-        A = A + temp
+        A += temp
     print 'Done.'
      
     print 'A: ', A.shape, A.dtype

@@ -7,6 +7,7 @@ Created on Fri Feb  4 15:35:30 2022
 """
 
 import matplotlib.pyplot
+import matplotlib.pylab
 import joblib
 import numpy
 
@@ -71,64 +72,215 @@ if flag == 1:
     matplotlib.pyplot.savefig('%s/reconstruction_NLSA_eu_CC_vs_nmodes.png'%results_path, dpi=96*3)
     matplotlib.pyplot.close()
 
-    
+def makelabel(test_number):
+    if test_number == 5:
+        l = 'benchmark'
+    elif test_number == 6:
+        l = 'sparsepartial'
+    else:
+        l = 'undefined'
+    return l
+
+root_f = '../../synthetic_data_4'
+
+#### q-scan, CC ####    
 flag = 1
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
     for test_n in [5, 6]:
-        if test_n == 5:
-            label = 'benchmark'
-        elif test_n == 6:
-            label = 'sparsepartial'
+        
+        label = makelabel(test_n)
+        test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
+        
+        n_m = 20
         f_max = 100
-        qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]#, 6000]
-        n_qs = len(qs)
-        import matplotlib.pylab
-        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_qs))   
+        qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
+        n_curves = len(qs)
+        
+        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves)) 
+        
         matplotlib.pyplot.figure(figsize=(10,10))  
-        n = 20   
-        matplotlib.pyplot.xticks(range(1,n+1,2))   
-        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.xticks(range(1,n_m+1,2))           
         matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
-        matplotlib.pyplot.xlim(left=0, right=n+1)
+        matplotlib.pyplot.xlim(left=0, right=n_m+1)
         matplotlib.pyplot.ylim(bottom=0.64, top=1.02)
         matplotlib.pyplot.xlabel('n. modes', fontsize=20)
         matplotlib.pyplot.ylabel('CC', fontsize=20)
+        
         for i, q in enumerate(qs):
-            CCs = joblib.load('../../synthetic_data_4/test%d/fourier_para_search/f_max_%d_q_%d/reconstruction_CC_vs_nmodes.jbl'%(test_n, f_max, q))
+            folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
+            CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%folder)
             matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='q=%d'%q)  
+            
         matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=18)
-        matplotlib.pyplot.savefig('../../synthetic_data_4/reconstruction_CC_vs_nmodes_fourier_%s_q_scan_fmax_%d.png'%(label, f_max), dpi=96*4)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.savefig('%s/reconstruct_CC_vs_nmodes_fourier_%s_q_scan_fmax_%d.png'%(root_f, label, f_max), dpi=96*4)
         matplotlib.pyplot.close()
 
-
+#### jmax-scan, CC ####
 flag = 1
 if flag == 1:
     matplotlib.pyplot.style.use('classic')  
-    test_n = 5
-    if test_n == 5:
-        label = 'benchmark'
-    elif test_n == 6:
-        label = 'sparsepartial'
-    q = 4000
-    f_max_s = [1, 5, 10, 50, 100, 150, 200]
-    n_f_max_s = len(f_max_s)
-    import matplotlib.pylab
-    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_f_max_s))   
-    matplotlib.pyplot.figure(figsize=(10,10))  
-    n = 12   
-    matplotlib.pyplot.xticks(range(1,n+1,2))   
-    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
-    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
-    matplotlib.pyplot.xlim(left=0, right=n+1)
-    matplotlib.pyplot.ylim(bottom=0.64, top=1.02)
-    matplotlib.pyplot.xlabel('n. modes', fontsize=20)
-    matplotlib.pyplot.ylabel('CC', fontsize=20)
-    for i, f_max in enumerate(f_max_s):
-        CCs = joblib.load('../../synthetic_data_4/test%d/fourier_para_search/f_max_%d_q_%d/reconstruction_CC_vs_nmodes.jbl'%(test_n, f_max, q))
-        if f_max == 100:            
-            CCs = CCs[0:n]
-        matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
-    matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=18)
-    matplotlib.pyplot.savefig('../../synthetic_data_4/reconstruction_CC_vs_nmodes_fourier_%s_fmax_scan_q_%d.png'%(label, q), dpi=96*4)
-    matplotlib.pyplot.close()
+    for test_n in [6]:
+    
+        label = makelabel(test_n)
+        test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
+        
+        n_m = 20
+        q = 4000
+        f_max_s = [1, 5, 10, 50, 100, 150, 300]
+        n_curves = len(f_max_s)
+        
+        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
+        
+        matplotlib.pyplot.figure(figsize=(10,10))      
+        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+        matplotlib.pyplot.xlim(left=0, right=n_m+1)
+        matplotlib.pyplot.ylim(bottom=0.64, top=1.02)
+        matplotlib.pyplot.xlabel('n. modes', fontsize=20)
+        matplotlib.pyplot.ylabel('CC', fontsize=20)
+        
+        for i, f_max in enumerate(f_max_s):
+            folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
+            CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%folder)
+            matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
+        
+        matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=18)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.savefig('%s/reconstruct_CC_vs_nmodes_fourier_%s_fmax_scan_q_%d.png'%(root_f, label, q), dpi=96*4)
+        matplotlib.pyplot.close()
+
+#### q-scan, L ####    
+flag = 1
+if flag == 1:
+    matplotlib.pyplot.style.use('classic') 
+    for test_n in [5, 6]:
+        
+        label = makelabel(test_n)
+        test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
+        
+        n_m = 20
+        f_max = 100
+        qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
+        n_curves = len(qs)
+        
+        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
+        
+        matplotlib.pyplot.figure(figsize=(10,10))          
+        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.xlim(left=0, right=n_m+1)
+        matplotlib.pyplot.xlabel('n. modes', fontsize=20)
+        matplotlib.pyplot.ylabel('log$_{10}(L)$', fontsize=20)
+        
+        for i, q in enumerate(qs):
+            folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
+            lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%folder)
+            matplotlib.pyplot.plot(range(1, len(lls)+1), numpy.log10(lls), '-o', c=colors[i], label='q=%d'%q)  
+        
+        matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=18)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.savefig('%s/reconstruct_L_vs_nmodes_fourier_%s_q_scan_fmax_%d.png'%(root_f, label, f_max), dpi=96*4)
+        matplotlib.pyplot.close()
+        
+#### jmax-scan, L ####    
+flag = 1
+if flag == 1:
+    matplotlib.pyplot.style.use('classic') 
+    for test_n in [6]:
+        
+        label = makelabel(test_n)
+        test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
+        
+        n_m = 20
+        q = 4000
+        f_max_s = [1, 5, 10, 50, 100, 150, 300]
+        n_curves = len(f_max_s)
+        
+        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))  
+        
+        matplotlib.pyplot.figure(figsize=(10,10))  
+        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.xlim(left=0, right=n_m+1)       
+        matplotlib.pyplot.xlabel('n. modes', fontsize=20)
+        matplotlib.pyplot.ylabel('log$_{10}(L)$', fontsize=20)
+        
+        for i, f_max in enumerate(f_max_s):
+            folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
+            lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%folder)
+            matplotlib.pyplot.plot(range(1, len(lls)+1), numpy.log10(lls), '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
+        
+        matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=18)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.savefig('%s/reconstruct_L_vs_nmodes_fourier_%s_fmax_scan_q_%d.png'%(root_f, label, q), dpi=96*4)
+        matplotlib.pyplot.close()
+
+
+#### q-scan, SVs ####        
+flag = 1
+if flag == 1:
+    matplotlib.pyplot.style.use('classic') 
+    for test_n in [5, 6]:
+        
+        label = makelabel(test_n)
+        test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
+        
+        n_m = 20
+        f_max = 100
+        qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
+        n_curves = len(qs)
+        
+        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
+        
+        matplotlib.pyplot.figure(figsize=(10,10))  
+        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.xlim(left=0, right=n_m+1)
+        matplotlib.pyplot.xlabel('mode', fontsize=20)
+        matplotlib.pyplot.ylabel('log$_{10}(\sigma/\sigma_0)$', fontsize=20)
+        
+        for i, q in enumerate(qs):
+            folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
+            S = joblib.load('%s/S.jbl'%folder)
+            matplotlib.pyplot.plot(range(1, n_m+1), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='q=%d'%q)  
+        
+        matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=18)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.savefig('%s/SVs_fourier_%s_q_scan_fmax_%d.png'%(root_f, label, f_max), dpi=96*4)
+        matplotlib.pyplot.close()
+        
+
+#### jmax-scan, SVs ####        
+flag = 1
+if flag == 1:
+    matplotlib.pyplot.style.use('classic') 
+    for test_n in [6]:
+        
+        label = makelabel(test_n)
+        test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
+        
+        n_m = 20
+        q = 4000
+        f_max_s = [1, 5, 10, 50, 100, 150, 300]
+        n_curves = len(f_max_s)
+        
+        colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
+        
+        matplotlib.pyplot.figure(figsize=(10,10))  
+        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.xlim(left=0, right=n_m+1)
+        matplotlib.pyplot.xlabel('mode', fontsize=20)
+        matplotlib.pyplot.ylabel('log$_{10}(\sigma/\sigma_0)$', fontsize=20)
+        
+        for i, f_max in enumerate(f_max_s):
+            folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
+            S = joblib.load('%s/S.jbl'%folder)
+            if S.shape[0] < 20:
+                n_m = S.shape[0]
+            else:
+                n_m = 20
+            matplotlib.pyplot.plot(range(1, n_m+1), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
+        
+        matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=18)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+        matplotlib.pyplot.savefig('%s/SVs_fourier_%s_fmax_scan_q_%d.png'%(root_f, label, q), dpi=96*4)
+        matplotlib.pyplot.close()

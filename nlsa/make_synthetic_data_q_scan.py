@@ -10,7 +10,9 @@ import numpy
 import math
 import joblib
 import matplotlib.pyplot
+
 import correlate
+import local_linearity
 
 def make_lp_filter_functions(settings):
     import make_lp_filter
@@ -24,7 +26,7 @@ def make_lp_filter_functions(settings):
     joblib.dump(Q, '%s/F_on_qr.jbl'%settings.results_path)
 
 
-root_path = '../../synthetic_data_4/test5/fourier_para_search' 
+root_path = '../../synthetic_data_4/test6/fourier_para_search' 
 m = 7000
 S = 30000
 paral_step_A = 400
@@ -69,7 +71,7 @@ if flag == 1:
         fopen.write('n_workers_A = %d\n'%n_workers_A)
         ncopies = q
         fopen.write('ncopies = %d\n'%ncopies)
-        fopen.write('modes_to_reconstruct = range(12, 20)\n')
+        fopen.write('modes_to_reconstruct = range(20)\n')
         fopen.write('paral_step_reconstruction = %d\n'%paral_step_reconstruction)
 
 
@@ -229,7 +231,7 @@ if flag == 1:
         joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
 
 
-flag = 1
+flag = 0
 if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
@@ -244,95 +246,43 @@ if flag == 1:
         
 flag = 0
 if flag == 1:
-    for q in [4000]:
+    for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)        
         print 'q: ', settings.q
-        
         
         local_linearity_lst = []
         
         x_r_tot = 0
-        for mode in range(20):#settings.modes_to_reconstruct:
-            print mode
+        for mode in settings.modes_to_reconstruct:
+            print 'mode: ', mode
             x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
-            x_r_tot += x_r
-        
-            
-            print x_r_tot.shape
-            
-            # a
-            slopes = x_r_tot[:, 1:] - x_r_tot[:, 0:-1]
-            print 'done slopes'
-            d_slope_l = slopes[:, 1:-1] - slopes[:, 0:-2]
-            d_slope_r = slopes[:, 1:-1] - slopes[:, 2:]
-            local_linearity = 0.5*(abs(d_slope_l)+abs(d_slope_r))
-            print local_linearity.shape
-            ll = numpy.sqrt(numpy.multiply(local_linearity, local_linearity).sum())
-            print ll
-            local_linearity_lst.append(ll)
-            
-            # d_l = x_r_tot[:, 1:-1] - x_r_tot[:, 0:-2]
-            # d_r = x_r_tot[:, 1:-1] - x_r_tot[:, 2:]
-            # print 'done d'
-            # d = d_l - d_r
-            # norm = 0.5*(d_l+d_r)
-            # d = d/norm
-            # print d.shape, norm.shape
-            
-            # ll = numpy.multiply(d, d).sum()
-            # print ll
-            # local_linearity_lst.append(ll)
-            
-            # d   = x_r_tot[:, 2:-1] - x_r_tot[:, 1:-2]
-            # d_l = x_r_tot[:, 1:-2] - x_r_tot[:, 0:-3]
-            # d_r = x_r_tot[:, 3:  ] - x_r_tot[:, 2:-1]
-            # d_1 = abs(d-d_l)
-            # d_2 = abs(d-d_r)
-            # d_avg = 0.5*(d_1+d_2)
-            # #d_norm = d_avg/d
-            
-            
-            
-            # ll = numpy.multiply(d_avg, d_avg).sum()
-            # print ll
-            # local_linearity_lst.append(ll)
-            
-            # d   = (x_r_tot[:, 3:] - x_r_tot[:, 0:-3])/3
-            # d_l = x_r_tot[:, 3:] - x_r_tot[:, 2:-1] 
-            # d_c = x_r_tot[:, 2:-1] - x_r_tot[:, 1:-2]
-            # d_r = x_r_tot[:, 1:-2] - x_r_tot[:, 0:-3]
-            # d_1 = abs(d-d_l)
-            # d_2 = abs(d-d_c)
-            # d_3 = abs(d-d_r)
-            # d_avg = numpy.sqrt((d_1*d_1+d_2*d_2+d_3*d_3)/3)
-            # print d_avg.shape
-            
-            # ll = numpy.multiply(d_avg, d_avg).sum()
-            # print ll
-            # local_linearity_lst.append(ll)
-            
-            
-            # d   = (x_r_tot[:, 21:] - x_r_tot[:, 0:-21])/21
-            # d_c = x_r_tot[:, 11:-10] - x_r_tot[:, 10:-11]
-            # print d.shape, d_c.shape
-            # diff = d-d_c
-            # froeb = numpy.multiply(diff, diff).sum()
-            # print froeb
-            # local_linearity_lst.append(froeb)
-            
-            
-        joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes_a.jbl'%settings.results_path)        
+            x_r_tot += x_r  
+            L = local_linearity.local_linearity_measure(x_r_tot)
+            #print 'x_r_tot:', x_r_tot.shape
+           
+            # approx_l = x_r_tot[:, 0:-3] - \
+            #            (   x_r_tot[:, 1:-2] - 1*(x_r_tot[:,2:-1]-x_r_tot[:,1:-2])  )
+            # #print 'approx_l:', approx_l.shape
+            # approx_r = x_r_tot[:, 3:]   - \
+            #            (   x_r_tot[:, 1:-2] + 2*(x_r_tot[:,2:-1]-x_r_tot[:,1:-2])  )
+            # #print 'approx_r:', approx_r.shape
+            # L = 0.5*(abs(approx_l) + abs(approx_r))
+            # #print L.shape
+            # L = numpy.average(L)
+            # print L
+            local_linearity_lst.append(L)
+        joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes.jbl'%settings.results_path)        
  
 flag = 0
 if flag == 1:
-    for q in [4000]:
+    for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)        
         print 'q: ', settings.q
-        lls = joblib.load('%s/local_linearity_vs_nmodes_a.jbl'%settings.results_path)
-        matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log10(lls), c='b')
+        lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%settings.results_path)
+        matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log(lls), c='b')
         matplotlib.pyplot.xticks(range(1,len(lls)+1,2))
-        matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes_q_%d_a.png'%(settings.results_path, q))
+        matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes_q_%d.png'%(settings.results_path, q))
         matplotlib.pyplot.close()   
  

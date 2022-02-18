@@ -9,7 +9,10 @@ def main(settings):
     results_path = settings.results_path
         
     S = joblib.load('%s/S.jbl'%results_path)
-    nmodes = 20#S.shape[0]
+    if S.shape[0] >= 20:
+        nmodes = 20
+    else:
+        nmodes = S.shape[0]
     print 'nmodes: ', nmodes
     print S
     

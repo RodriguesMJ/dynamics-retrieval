@@ -10,7 +10,9 @@ import numpy
 import math
 import joblib
 import matplotlib.pyplot
+
 import correlate
+import local_linearity
 
 def make_lp_filter_functions(settings):
     import make_lp_filter
@@ -24,14 +26,15 @@ def make_lp_filter_functions(settings):
     joblib.dump(Q, '%s/F_on_qr.jbl'%settings.results_path)
 
 
-root_path = '../../synthetic_data_4/test5/fourier_para_search' 
+root_path = '../../synthetic_data_4/test6/fourier_para_search' 
 m = 7000
 S = 30000
 paral_step_A = 400
-paral_step_reconstruction = 2000
+paral_step_reconstruction = 1000
 q = 4000
 #f_max_s = [1, 5, 10, 50, 100, 150, 200]
-f_max_s = [1, 5, 10, 50, 150, 200]
+#f_max_s = [1, 5, 10, 50, 150]
+f_max_s = [300]
 
 
 
@@ -69,14 +72,14 @@ if flag == 1:
         fopen.write('n_workers_A = %d\n'%n_workers_A)
         ncopies = q
         fopen.write('ncopies = %d\n'%ncopies)
-        fopen.write('modes_to_reconstruct = range(12)\n')
+        fopen.write('modes_to_reconstruct = range(20)\n')
         fopen.write('paral_step_reconstruction = %d\n'%paral_step_reconstruction)
 
         n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
         fopen.write('n_workers_reconstruction = %d\n'%n_workers_reconstruction)
         fopen.close()
 
-flag = 0
+flag =  0
 if flag == 1:    
     for f_max in f_max_s:
         modulename = 'settings_f_max_%d'%f_max
@@ -144,23 +147,23 @@ if flag == 1:
         print 'VT_final: ', VT_final.shape
         joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
   
-# flag = 0
-# if flag == 1:  
-#     import nlsa.plot_SVs
-#     import nlsa.plot_chronos
+flag = 0
+if flag == 1:  
+    import nlsa.plot_SVs
+    import nlsa.plot_chronos
     
-#     for q in qs:
+    for f_max in f_max_s:
+        modulename = 'settings_f_max_%d'%f_max
+        settings = __import__(modulename)        
+        print settings.f_max
         
-#         modulename = 'settings_q_%d'%q
-#         settings = __import__(modulename)        
-#         print 'q: ', settings.q
-#         nlsa.plot_SVs.main(settings)       
-#         nlsa.plot_chronos.main(settings)
+        nlsa.plot_SVs.main(settings)       
+        #nlsa.plot_chronos.main(settings)
         
 
 flag = 0
 if flag == 1:
-    for f_max in f_max_s:
+    for f_max in [300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -170,11 +173,11 @@ if flag == 1:
                   %(end_worker, settings.__name__))    
         
 
-f_max_s = [200]
+
 flag = 0
 if flag == 1:
     import nlsa.util_merge_x_r  
-    for f_max in f_max_s:
+    for f_max in [300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -185,7 +188,7 @@ if flag == 1:
 
 flag = 0
 if flag == 1:
-    for f_max in [200]:#f_max_s:
+    for f_max in [300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -199,7 +202,7 @@ if flag == 1:
         CCs = []
         
         x_r_tot = 0
-        for mode in range(12):#12#settings.modes_to_reconstruct:
+        for mode in range(20):
             print mode
             x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
             matplotlib.pyplot.imshow(x_r, cmap='jet')
@@ -227,9 +230,9 @@ if flag == 1:
         
         
  
-flag = 1
+flag = 0
 if flag == 1:
-    for f_max in [200]:
+    for f_max in [300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -238,3 +241,36 @@ if flag == 1:
         matplotlib.pyplot.xticks(range(1,len(CCs)+1,2))
         matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_%d.png'%(settings.results_path, q))
         matplotlib.pyplot.close()
+        
+        
+flag = 0
+if flag == 1:
+    for f_max in [10, 50, 150, 300]:
+        modulename = 'settings_f_max_%d'%f_max
+        settings = __import__(modulename)        
+        print settings.f_max
+        
+        local_linearity_lst = []
+        
+        x_r_tot = 0
+        for mode in range(20):#settings.modes_to_reconstruct:
+            print 'mode: ', mode
+            x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+            x_r_tot += x_r  
+            L = local_linearity.local_linearity_measure(x_r_tot)
+            
+            local_linearity_lst.append(L)
+        joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes.jbl'%settings.results_path)        
+ 
+flag = 0
+if flag == 1:
+    for f_max in [10, 50, 150, 300]:
+        modulename = 'settings_f_max_%d'%f_max
+        settings = __import__(modulename)        
+        print settings.f_max
+        lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%settings.results_path)
+        matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log(lls), c='b')
+        matplotlib.pyplot.xticks(range(1,len(lls)+1,2))
+        matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes_q_%d.png'%(settings.results_path, q))
+        matplotlib.pyplot.close()   
+ 

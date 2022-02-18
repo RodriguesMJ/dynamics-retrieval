@@ -12,12 +12,13 @@ def f(loop_idx, settings):
     step = settings.paral_step_reconstruction
     datatype = settings.datatype
     modes = settings.modes_to_reconstruct
-            
+    U = joblib.load('%s/U.jbl'%results_path)
+        
     for k in modes:
         print 'Mode: ', k    
         print 'loop_idx: ', loop_idx
         
-        U = joblib.load('%s/U.jbl'%results_path)
+        #U = joblib.load('%s/U.jbl'%results_path)
         S = joblib.load('%s/S.jbl'%results_path)
         VT_final = joblib.load('%s/VT_final.jbl'%results_path)
         
