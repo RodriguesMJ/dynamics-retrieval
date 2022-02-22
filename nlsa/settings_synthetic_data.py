@@ -4,7 +4,7 @@ import math
 
 
 
-results_path = '../../synthetic_data_4/test5/fourier/U_to_u'#'nlsa/b_4000_eu_nns' 
+results_path = '../../synthetic_data_4/test5/ssa/q_4000'#'nlsa/b_4000_eu_nns' 
 m = 7000
 S = 30000
 q = 4000
@@ -32,11 +32,11 @@ toproject = range(nmodes) #[0, 1, 2, 3, 4, 29, 30]
 paral_step_A = 400
 n_workers_A = int(math.ceil(float(q)/paral_step_A))
 
-ncopies = 4000#1#400#4000
-modes_to_reconstruct = range(20) #(20)
+ncopies = q
+modes_to_reconstruct = range(20) 
 
 paral_step_reconstruction = 1000
 n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
 
-f_max = 100
-f_max_considered = 100
+# f_max = 100
+# f_max_considered = 100

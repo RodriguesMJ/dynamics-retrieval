@@ -14,7 +14,8 @@ def main(settings):
     else:
         nmodes = S.shape[0]
     print 'nmodes: ', nmodes
-    print S
+    for i in range(nmodes):
+        print 'mode', i, 'S', S[i]
     
     out_folder = '%s/chronos'%results_path
     if not os.path.exists(out_folder):

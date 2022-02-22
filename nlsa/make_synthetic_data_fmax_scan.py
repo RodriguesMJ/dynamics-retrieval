@@ -30,11 +30,10 @@ root_path = '../../synthetic_data_4/test6/fourier_para_search'
 m = 7000
 S = 30000
 paral_step_A = 400
-paral_step_reconstruction = 1000
-q = 4000
+paral_step_reconstruction = 10000
+q = 1
 #f_max_s = [1, 5, 10, 50, 100, 150, 200]
-#f_max_s = [1, 5, 10, 50, 150]
-f_max_s = [300]
+f_max_s = [1, 5, 10, 50, 150, 300]
 
 
 
@@ -72,14 +71,14 @@ if flag == 1:
         fopen.write('n_workers_A = %d\n'%n_workers_A)
         ncopies = q
         fopen.write('ncopies = %d\n'%ncopies)
-        fopen.write('modes_to_reconstruct = range(20)\n')
+        fopen.write('modes_to_reconstruct = range(0, 20)\n')
         fopen.write('paral_step_reconstruction = %d\n'%paral_step_reconstruction)
 
         n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
         fopen.write('n_workers_reconstruction = %d\n'%n_workers_reconstruction)
         fopen.close()
 
-flag =  0
+flag = 0
 if flag == 1:    
     for f_max in f_max_s:
         modulename = 'settings_f_max_%d'%f_max
@@ -99,7 +98,7 @@ if flag == 1:
         print settings.f_max
         
         end_worker = settings.n_workers_A - 1
-        os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_A_fourier.sh %s'
+        os.system('sbatch -p shared -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_A_fourier.sh %s'
                   %(end_worker, settings.__name__)) 
 
 
@@ -158,18 +157,18 @@ if flag == 1:
         print settings.f_max
         
         nlsa.plot_SVs.main(settings)       
-        #nlsa.plot_chronos.main(settings)
+        nlsa.plot_chronos.main(settings)
         
 
 flag = 0
 if flag == 1:
-    for f_max in [300]:
+    for f_max in f_max_s:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
         
         end_worker = settings.n_workers_reconstruction - 1
-        os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
+        os.system('sbatch -p shared -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
                   %(end_worker, settings.__name__))    
         
 
@@ -177,18 +176,18 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import nlsa.util_merge_x_r  
-    for f_max in [300]:
+    for f_max in [10, 50, 150, 300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
         
-        for mode in settings.modes_to_reconstruct:
+        for mode in range(20):#settings.modes_to_reconstruct:
             nlsa.util_merge_x_r.f(settings, mode) 
  
 
 flag = 0
 if flag == 1:
-    for f_max in [300]:
+    for f_max in [10, 50, 150, 300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -205,14 +204,14 @@ if flag == 1:
         for mode in range(20):
             print mode
             x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
-            matplotlib.pyplot.imshow(x_r, cmap='jet')
-            matplotlib.pyplot.colorbar()
-            matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
-            matplotlib.pyplot.close()  
+            # matplotlib.pyplot.imshow(x_r, cmap='jet')
+            # matplotlib.pyplot.colorbar()
+            # matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+            # matplotlib.pyplot.close()  
             x_r_tot += x_r
         
-            matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
-            matplotlib.pyplot.colorbar()
+            #matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
+            #matplotlib.pyplot.colorbar()
             
             print x_r_tot.shape
                    
@@ -220,10 +219,10 @@ if flag == 1:
             
             CC = correlate.Correlate(benchmark, x_r_tot_flat)
             print CC
-            
-            matplotlib.pyplot.title('%.4f'%CC)
-            matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
-            matplotlib.pyplot.close() 
+           
+            # matplotlib.pyplot.title('%.4f'%CC)
+            # matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
+            # matplotlib.pyplot.close() 
             
             CCs.append(CC)
         joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
@@ -232,7 +231,7 @@ if flag == 1:
  
 flag = 0
 if flag == 1:
-    for f_max in [300]:
+    for f_max in [10, 50, 150, 300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -264,7 +263,7 @@ if flag == 1:
  
 flag = 0
 if flag == 1:
-    for f_max in [10, 50, 150, 300]:
+    for f_max in [1, 5, 10, 50, 150, 300]:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max

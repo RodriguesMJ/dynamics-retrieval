@@ -121,7 +121,7 @@ if flag == 1:
 flag = 1
 if flag == 1:
     matplotlib.pyplot.style.use('classic')  
-    for test_n in [6]:
+    for test_n in [5,6]:
     
         label = makelabel(test_n)
         test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
@@ -187,7 +187,7 @@ if flag == 1:
 flag = 1
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:
+    for test_n in [5,6]:
         
         label = makelabel(test_n)
         test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
@@ -233,7 +233,7 @@ if flag == 1:
         colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
         
         matplotlib.pyplot.figure(figsize=(10,10))  
-        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.xticks(range(0,n_m,2))   
         matplotlib.pyplot.xlim(left=0, right=n_m+1)
         matplotlib.pyplot.xlabel('mode', fontsize=20)
         matplotlib.pyplot.ylabel('log$_{10}(\sigma/\sigma_0)$', fontsize=20)
@@ -241,7 +241,7 @@ if flag == 1:
         for i, q in enumerate(qs):
             folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
             S = joblib.load('%s/S.jbl'%folder)
-            matplotlib.pyplot.plot(range(1, n_m+1), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='q=%d'%q)  
+            matplotlib.pyplot.plot(range(0, n_m), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='q=%d'%q)  
         
         matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=18)
         matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
@@ -253,7 +253,7 @@ if flag == 1:
 flag = 1
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:
+    for test_n in [5,6]:
         
         label = makelabel(test_n)
         test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
@@ -266,7 +266,7 @@ if flag == 1:
         colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
         
         matplotlib.pyplot.figure(figsize=(10,10))  
-        matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+        matplotlib.pyplot.xticks(range(0,n_m,2))   
         matplotlib.pyplot.xlim(left=0, right=n_m+1)
         matplotlib.pyplot.xlabel('mode', fontsize=20)
         matplotlib.pyplot.ylabel('log$_{10}(\sigma/\sigma_0)$', fontsize=20)
@@ -278,7 +278,7 @@ if flag == 1:
                 n_m = S.shape[0]
             else:
                 n_m = 20
-            matplotlib.pyplot.plot(range(1, n_m+1), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
+            matplotlib.pyplot.plot(range(0, n_m), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
         
         matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=18)
         matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)

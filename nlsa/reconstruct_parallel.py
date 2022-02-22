@@ -13,6 +13,7 @@ def f(loop_idx, settings):
     datatype = settings.datatype
     modes = settings.modes_to_reconstruct
     U = joblib.load('%s/U.jbl'%results_path)
+    U = U[:,0:20]
         
     for k in modes:
         print 'Mode: ', k    

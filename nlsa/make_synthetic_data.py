@@ -7,6 +7,7 @@ import os
 import time 
 import settings_synthetic_data as settings
 import correlate
+import local_linearity
 
 def plot_components(settings):
     m = settings.m
@@ -635,10 +636,10 @@ if flag == 1:
 flag = 0
 if flag == 1:
     x = joblib.load('%s/x.jbl'%settings.results_path)
-    print x.shape
+    print 'x: ', x.shape
     xTx = numpy.matmul(x.T, x)
     joblib.dump(xTx, '%s/xTx.jbl'%settings.results_path)
-    print xTx.shape
+    print 'xTx: ', xTx.shape
 
 # Calc XTX
 flag = 0
@@ -646,10 +647,12 @@ if flag == 1:
     s = settings.S - settings.q    
     XTX = numpy.zeros((s, s))
     xTx = joblib.load('%s/xTx.jbl'%settings.results_path)
-    print xTx.shape, XTX.shape
-    for i in range(1, settings.q+1):
+    print 'xTx: ', xTx.shape, 'XTX: ', XTX.shape
+    start = time.time()
+    for i in range(1, settings.q+1): # Time ~q seconds
         print i
         XTX += xTx[i:i+s, i:i+s]
+    print 'Time: ', time.time()-start
     joblib.dump(XTX, '%s/XTX.jbl'%settings.results_path)
 
 # SVD XTX
@@ -661,20 +664,43 @@ if flag == 1:
     for i in evals_XTX:
         print i
     evals_XTX[numpy.argwhere(evals_XTX<0)]=0  
-    S = numpy.sqrt(evals_XTX)
+    SVs = numpy.sqrt(evals_XTX)
     VT = evecs_XTX.T
-    #U_temp = numpy.matmul(evecs_XtX, numpy.diag(1.0/S))
-    #U = numpy.matmul(A, U_temp)     
-    #joblib.dump(U, '%s/U.jbl'%settings.results_path)
-    joblib.dump(S, '%s/S.jbl'%settings.results_path)
-    joblib.dump(VT, '%s/VT.jbl'%settings.results_path)
+    print 'Sorting'
+    sort_idxs = numpy.argsort(SVs)[::-1]
+    SVs_sorted = SVs[sort_idxs]
+    VT_sorted = VT[sort_idxs,:]
+    joblib.dump(SVs_sorted, '%s/S.jbl'%settings.results_path)
+    joblib.dump(VT_sorted, '%s/VT_final.jbl'%settings.results_path)
 
+flag = 0
+if flag == 1:    
+    SVs = joblib.load('%s/S.jbl'%settings.results_path)
+    VT  = joblib.load('%s/VT_final.jbl'%settings.results_path)
+    U_temp = numpy.matmul(VT.T, numpy.diag(1.0/SVs))
+    print 'VS-1: ', U_temp.shape
+    U_temp = U_temp[:,0:20]
+    x = joblib.load('%s/x.jbl'%settings.results_path)
+    m = x.shape[0]
+    q = settings.q
+    s = x.shape[1]-q
+    U = numpy.zeros((m*q, 20))
+    start = time.time()
+    for j in range(0,q):
+        #j=0
+        #U[0:m,:] = numpy.matmul(x[:,q:q+s], U_temp)
+        U[j*m:(j+1)*m,:] = numpy.matmul(x[:,q-j:q+s-j], U_temp)
+    #U = numpy.matmul(A, U_temp)     
+    print 'Time: ', time.time()-start
+    joblib.dump(U, '%s/U.jbl'%settings.results_path)
+    
+    
 
 flag = 0
 if flag == 1:  
     import nlsa.plot_SVs
     nlsa.plot_SVs.main(settings)    
-    VT_final = joblib.load('%s/VT.jbl'%(settings.results_path))
+    VT_final = joblib.load('%s/VT_final.jbl'%(settings.results_path))
     
     nmodes = VT_final.shape[0]
     s = VT_final.shape[1]
@@ -686,7 +712,7 @@ if flag == 1:
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
     
-    for i in range(nmodes-6,nmodes):
+    for i in range(20):
         print i
         chrono = VT_final[i,:]
         matplotlib.pyplot.figure(figsize=(30,10))
@@ -697,7 +723,78 @@ if flag == 1:
         ax.tick_params(axis='y', labelsize=25)
         matplotlib.pyplot.savefig('%s/chrono_%d.png'%(out_folder, i), dpi=2*96)
         matplotlib.pyplot.close()
+        
+flag = 0
+if flag == 1:
+    end_worker = settings.n_workers_reconstruction - 1
+    os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
+              %(end_worker, settings.__name__))    
+    
+flag = 0
+if flag == 1:
+    import nlsa.util_merge_x_r    
+    for mode in settings.modes_to_reconstruct:
+        nlsa.util_merge_x_r.f(settings, mode) 
+  
+flag = 0
+if flag == 1:
+    
+    benchmark = joblib.load('../../synthetic_data_4/test5/x.jbl')
+    print benchmark.shape
+    benchmark = benchmark[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)]
+    print benchmark.shape
+    benchmark = benchmark.flatten()
+    
+    CCs = []
+    
+    x_r_tot = 0
+    for mode in settings.modes_to_reconstruct:
+        print 'Mode:', mode
+        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+        matplotlib.pyplot.imshow(x_r, cmap='jet')
+        matplotlib.pyplot.colorbar()
+        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+        matplotlib.pyplot.close()  
+        x_r_tot += x_r
+    
+        matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
+        matplotlib.pyplot.colorbar()
+        
+        print x_r_tot.shape
+               
+        x_r_tot_flat = x_r_tot.flatten()
+        
+        CC = correlate.Correlate(benchmark, x_r_tot_flat)
+        print 'CC: ', CC
+        
+        matplotlib.pyplot.title('%.4f'%CC)
+        matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
+        matplotlib.pyplot.close() 
+        
+        CCs.append(CC)
+    joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
 
+flag = 0
+if flag == 1:
+    CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
+    matplotlib.pyplot.scatter(range(1, len(CCs)+1), CCs, c='b')
+    matplotlib.pyplot.xticks(range(1,len(CCs)+1,2))
+    matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_%d.png'%(settings.results_path, settings.q))
+    matplotlib.pyplot.close()
+  
+flag = 1
+if flag == 1:
+        
+    local_linearity_lst = []   
+    x_r_tot = 0
+    for mode in settings.modes_to_reconstruct:
+        print 'mode: ', mode
+        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+        x_r_tot += x_r  
+        L = local_linearity.local_linearity_measure(x_r_tot)
+        
+        local_linearity_lst.append(L)
+    joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes.jbl'%settings.results_path)    
 # # NLSA WITH LOW-PASS FILTERING    
 # flag = 0
 # if flag == 1:
