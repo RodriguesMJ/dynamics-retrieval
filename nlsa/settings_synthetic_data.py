@@ -2,41 +2,44 @@
 import numpy
 import math
 
-
-
-results_path = '../../synthetic_data_4/test5/ssa/q_4000'#'nlsa/b_4000_eu_nns' 
 m = 7000
 S = 30000
 q = 4000
 
-# D_sq
-paral_step = 400
-n_workers = int(math.ceil(float(q)/paral_step))
+results_path = '../../synthetic_data_5/test3/binning'
 
-data_file = '%s/x.jbl'%results_path
-datatype = numpy.float64
+# # D_sq
+# paral_step = 400
+# n_workers = int(math.ceil(float(q)/paral_step))
 
-b = 3000 #1500
+# datatype = numpy.float64
 
-# # # # # # # # n_workers_aj = (2*f_max) + 1
+# b = 1500 
+
+
+# # # # # # # # # # n_workers_aj = (2*f_max) + 1
     
-# # # # # # # # paral_step_lp_filter_Dsq = 1000
-# # # # # # # # n_workers_lp_filter_Dsq = int(math.ceil((S-q)/paral_step_lp_filter_Dsq)) #26
+# # # # # # # # # # paral_step_lp_filter_Dsq = 1000
+# # # # # # # # # # n_workers_lp_filter_Dsq = int(math.ceil((S-q)/paral_step_lp_filter_Dsq)) #26
 
-log10eps = 6.6
-sigma_sq = 2*10**log10eps
+# log10eps = 1.0
+# sigma_sq = 2*10**log10eps
+# results_path = '../../synthetic_data_4/test5/nlsa/q_%d'%q#'distance_calculation_onlymeasured_normalised/b_%d_eu_nns/log10eps_1p0'%(q, b)#'b_%d_time_nns/log10eps_6p0'%(q, b)
 
-l = 31
-nmodes = l #7 
-toproject = range(nmodes) #[0, 1, 2, 3, 4, 29, 30] 
-paral_step_A = 400
-n_workers_A = int(math.ceil(float(q)/paral_step_A))
+# data_file = '%s/x.jbl'%results_path
 
-ncopies = q
-modes_to_reconstruct = range(20) 
+# l = 50
 
-paral_step_reconstruction = 1000
-n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
+# nmodes = l 
+# toproject = range(nmodes) 
+# paral_step_A = 400
+# n_workers_A = int(math.ceil(float(q)/paral_step_A))
 
-# f_max = 100
-# f_max_considered = 100
+# ncopies = q
+# modes_to_reconstruct = range(20) 
+
+# paral_step_reconstruction = 2000
+# n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
+
+# # f_max = 100
+# # f_max_considered = 100

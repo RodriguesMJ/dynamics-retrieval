@@ -10,6 +10,8 @@ import numpy
 import math
 import joblib
 import matplotlib.pyplot
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import ticker
 
 import correlate
 import local_linearity
@@ -26,7 +28,7 @@ def make_lp_filter_functions(settings):
     joblib.dump(Q, '%s/F_on_qr.jbl'%settings.results_path)
 
 
-root_path = '../../synthetic_data_4/test6/fourier_para_search' 
+root_path = '../../synthetic_data_5/test3/fourier_para_search' 
 m = 7000
 S = 30000
 paral_step_A = 400
@@ -41,6 +43,7 @@ x = joblib.load('%s/x.jbl'%root_path)
 print x.shape
 
 qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
+
 
 flag = 0
 if flag == 1:
@@ -106,7 +109,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import nlsa.util_merge_A
-    for q in qs:
+    for q in [5000]:
         print q
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
@@ -172,7 +175,7 @@ if flag == 1:
         print 'q: ', settings.q
         
         end_worker = settings.n_workers_reconstruction - 1
-        os.system('sbatch -p shared -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
+        os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
                   %(end_worker, settings.__name__))    
         
 
@@ -188,14 +191,14 @@ if flag == 1:
             nlsa.util_merge_x_r.f(settings, mode) 
  
 
-flag = 0
+flag = 1
 if flag == 1:
-    for q in qs:
+    for q in [4000]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)        
         print 'q: ', settings.q
         
-        benchmark = joblib.load('../../synthetic_data_4/test5/x.jbl')
+        benchmark = joblib.load('../../synthetic_data_5/test1/x.jbl')
         print benchmark.shape
         benchmark = benchmark[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)]
         print benchmark.shape
@@ -204,31 +207,53 @@ if flag == 1:
         CCs = []
         
         x_r_tot = 0
-        for mode in range(20):#settings.modes_to_reconstruct:
+        for mode in settings.modes_to_reconstruct:
             print mode
             x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
-            # matplotlib.pyplot.imshow(x_r, cmap='jet')
-            # matplotlib.pyplot.colorbar()
-            # matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
-            # matplotlib.pyplot.close()  
-            x_r_tot += x_r
-        
-            # matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
-            # matplotlib.pyplot.colorbar()
             
+            x_r_large = numpy.zeros((settings.m, settings.S))
+            x_r_large[:] = numpy.nan
+            x_r_large[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)] = x_r
+            cmap = matplotlib.cm.jet
+            cmap.set_bad('white')
+            im = matplotlib.pyplot.imshow(x_r_large, cmap=cmap)
+            ax = matplotlib.pyplot.gca()
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)   
+            cb = matplotlib.pyplot.colorbar(im, cax=cax)
+            tick_locator = ticker.MaxNLocator(nbins=3)
+            cb.locator = tick_locator
+            cb.update_ticks()                
+            matplotlib.pyplot.savefig('%s/x_r_mode_%d_jet_nan.png'%(settings.results_path, mode), dpi=96*3)
+            matplotlib.pyplot.close() 
+            
+            x_r_tot += x_r
             print x_r_tot.shape
                    
-            x_r_tot_flat = x_r_tot.flatten()
-            
+            x_r_tot_flat = x_r_tot.flatten()           
             CC = correlate.Correlate(benchmark, x_r_tot_flat)
             print CC
-            
-            # matplotlib.pyplot.title('%.4f'%CC)
-            # matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
-            # matplotlib.pyplot.close() 
+                       
+            x_r_large = numpy.zeros((settings.m, settings.S))
+            x_r_large[:] = numpy.nan
+            x_r_large[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)] = x_r_tot
+            cmap = matplotlib.cm.jet
+            cmap.set_bad('white')
+            im = matplotlib.pyplot.imshow(x_r_large, cmap=cmap)
+            matplotlib.pyplot.title('%.4f'%CC)
+            ax = matplotlib.pyplot.gca()
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)   
+            cb = matplotlib.pyplot.colorbar(im, cax=cax)
+            tick_locator = ticker.MaxNLocator(nbins=3)
+            cb.locator = tick_locator
+            cb.update_ticks()
+                
+            matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes_jet_nan.png'%(settings.results_path, mode+1), dpi=96*3)
+            matplotlib.pyplot.close() 
             
             CCs.append(CC)
-        joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
+        #joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
 
 
 flag = 0

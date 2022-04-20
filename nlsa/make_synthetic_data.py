@@ -5,6 +5,9 @@ import random
 import joblib
 import os
 import time 
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import ticker
+
 import settings_synthetic_data as settings
 import correlate
 import local_linearity
@@ -79,24 +82,16 @@ def make_x(settings):
     T = S-q
     omega = 2*numpy.pi/T
     
-    # min_period = T/10
-    # jitter_std_dev = 0.33*min_period
-    # ts = ts + numpy.random.normal(scale=jitter_std_dev, size=S)
+    min_period = T/11
+    jitter_factor = 0.3
+    jitter_std_dev = jitter_factor*min_period
+    ts = ts + numpy.random.normal(scale=jitter_std_dev, size=S)
     
     tc = float(S)/2
     e1 = 1-numpy.exp(-ts/tc)
     e2 = 1-e1
     
     for i in range(m):        
-        
-        #errors = numpy.random.normal(size=S)
-        
-        # A_i = numpy.cos(0.6*(2*numpy.pi/m)*i) 
-        # B_i = numpy.sin(3*(2*numpy.pi/m)*i+numpy.pi/5) 
-        # C_i = numpy.sin(0.8*(2*numpy.pi/m)*i+numpy.pi/7)         
-        # x_i = (A_i*numpy.cos(3*omega*ts) + 
-        #       B_i*numpy.sin(10*omega*ts) + 
-        #       C_i*numpy.sin(4*omega*ts) )
               
         
         A_i = numpy.cos(0.6*(2*numpy.pi/m)*i) 
@@ -129,16 +124,10 @@ def make_x(settings):
         mask[i,:] = sparsities
         x[i,:] = x_i
         
-        # # C = 5
-        # # x_i = C + A_i*(numpy.cos(3*omega*ts)+0.6*numpy.sin(10*omega*ts))
-        # # x_i = x_i*partialities
-        # # x_i_gauss = numpy.random.normal(loc=x_i, scale=numpy.sqrt(x_i))
-        # # x[i,:] = x_i_gauss*sparsities
-        # # mask[i,:] = sparsities
         
     matplotlib.pyplot.imshow(x, cmap='jet')
     matplotlib.pyplot.colorbar()
-    matplotlib.pyplot.savefig('%s/x.png'%(results_path), dpi=96*3)
+    matplotlib.pyplot.savefig('%s/x_jitter_factor_%.2f.png'%(results_path, jitter_factor), dpi=96*3)
     matplotlib.pyplot.close()    
     
     joblib.dump(x, '%s/x.jbl'%results_path)  
@@ -161,6 +150,21 @@ flag = 0
 if flag == 1:    
     make_x(settings)
 
+flag = 0
+if flag == 1:
+    x = joblib.load('%s/x.jbl'%settings.results_path)  
+    im = matplotlib.pyplot.imshow(x, cmap='jet')
+    
+    ax = matplotlib.pyplot.gca()
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+   
+    cb = matplotlib.pyplot.colorbar(im, cax=cax)
+    tick_locator = ticker.MaxNLocator(nbins=3)
+    cb.locator = tick_locator
+    cb.update_ticks()
+    matplotlib.pyplot.savefig('%s/x_jet.svg'%(settings.results_path), dpi=96*3)
+    matplotlib.pyplot.close() 
 
 ################
 ###   NLSA   ###
@@ -204,12 +208,12 @@ if flag == 1:
     os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel.sh %s'
               %(end_worker, settings.__name__)) 
     os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_n_Dsq_elements.sh %s'
-               %(end_worker, settings.__name__)) 
+              %(end_worker, settings.__name__)) 
    
 flag = 0
 if flag == 1:    
     import nlsa.util_merge_D_sq
-    #nlsa.util_merge_D_sq.f(settings)   
+    nlsa.util_merge_D_sq.f(settings)   
     nlsa.util_merge_D_sq.f_N_D_sq_elements(settings)   
     import nlsa.calculate_distances_utilities
     nlsa.calculate_distances_utilities.normalise(settings)
@@ -310,17 +314,17 @@ if flag == 1:
     CCs = []
     
     x_r_tot = 0
-    for mode in range(20):#settings.modes_to_reconstruct:
+    for mode in settings.modes_to_reconstruct:
         print mode
         x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
-        # matplotlib.pyplot.imshow(x_r, cmap='jet')
-        # matplotlib.pyplot.colorbar()
-        # matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
-        # matplotlib.pyplot.close()  
+        matplotlib.pyplot.imshow(x_r, cmap='jet')
+        matplotlib.pyplot.colorbar()
+        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+        matplotlib.pyplot.close()  
         x_r_tot += x_r
     
-        # matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
-        # matplotlib.pyplot.colorbar()
+        matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
+        matplotlib.pyplot.colorbar()
         
         print x_r_tot.shape
         
@@ -331,9 +335,9 @@ if flag == 1:
         
         CCs.append(CC)
         
-        # matplotlib.pyplot.title('%.4f'%CC)
-        # matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
-        # matplotlib.pyplot.close() 
+        matplotlib.pyplot.title('%.4f'%CC)
+        matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
+        matplotlib.pyplot.close() 
         
     joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
 
@@ -342,9 +346,11 @@ if flag == 1:
 # Cmp
 flag = 0
 if flag == 1:
-    Dsq_1 = joblib.load('../../synthetic_data_4/test1/nlsa/D_sq_parallel.jbl')
+    Dsq_1 = joblib.load('../../synthetic_data_4/test5/nlsa/q_4000/D_sq_parallel.jbl')
     print Dsq_1.shape
-    Dsq_2 = joblib.load('%s/D_sq_normalised.jbl'%settings.results_path)
+    Dsq_2 = joblib.load('../../synthetic_data_4/test6/nlsa/q_4000/distance_calculation_allterms/D_sq_parallel.jbl')
+    print Dsq_2.shape
+    Dsq_3 = joblib.load('../../synthetic_data_4/test6/nlsa/q_4000/distance_calculation_onlymeasured_normalised/D_sq_normalised.jbl')
     print Dsq_2.shape
     
     
@@ -361,20 +367,43 @@ if flag == 1:
     print numpy.amax(Dsq_2), numpy.amin(Dsq_2)
     Dsq_2[Dsq_2<0]=0
     print numpy.amax(Dsq_2), numpy.amin(Dsq_2)
-        
+    
+    Dsq_3[Dsq_3<0]=0
+    
     D_1 = numpy.sqrt(Dsq_1)
     D_2 = numpy.sqrt(Dsq_2)
-        
+    D_3 = numpy.sqrt(Dsq_3)  
+    
     print D_1.shape
     print D_2.shape
     
     D_1 = D_1.flatten()
     D_2 = D_2.flatten()
+    D_3 = D_3.flatten()
     
     print D_1.shape
     print D_2.shape
     CC = correlate.Correlate(D_1,D_2)
     print CC
+    CC = correlate.Correlate(D_1,D_3)
+    print CC
+
+    # fig, axs = matplotlib.pyplot.subplots(6, 1, sharex=True, sharey=False)
+    # fig.suptitle('CC: %.4f'%CC)
+    # # marker symbol
+    # axs[0].plot(range(Dsq_1.shape[1]), Dsq_1[5000,:],  'o-', c='b', markersize=3, markeredgewidth=0.0)
+    # #axs[0, 0].set_title("marker='>'")
+    # axs[1].plot(range(Dsq_1.shape[1]), Dsq_2[5000,:],  'o-', c='b', markersize=3, markeredgewidth=0.0)
+    # #axs[0, 1].set_title("marker='>'")
+    # axs[2].plot(range(Dsq_1.shape[1]), Dsq_1[15000,:], 'o-', c='b', markersize=3, markeredgewidth=0.0)
+    # #axs[0, 2].set_title("marker='>'")
+    # axs[3].plot(range(Dsq_1.shape[1]), Dsq_2[15000,:], 'o-', c='b', markersize=3, markeredgewidth=0.0)
+    # #axs[1, 0].set_title("marker='>'")
+    # axs[4].plot(range(Dsq_1.shape[1]), Dsq_1[25000,:], 'o-', c='b', markersize=3, markeredgewidth=0.0)
+    # #axs[1, 1].set_title("marker='>'")
+    # axs[5].plot(range(Dsq_1.shape[1]), Dsq_2[25000,:], 'o-', c='b', markersize=3, markeredgewidth=0.0)
+    # #axs[1, 2].set_title("marker='>'")
+    # matplotlib.pyplot.savefig('../../synthetic_data_4/Distances_benchmark_to_sparsepartial.png', dpi=4*96)
 
 
 #############################    
@@ -733,7 +762,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import nlsa.util_merge_x_r    
-    for mode in settings.modes_to_reconstruct:
+    for mode in range(20):
         nlsa.util_merge_x_r.f(settings, mode) 
   
 flag = 0
@@ -768,7 +797,7 @@ if flag == 1:
         print 'CC: ', CC
         
         matplotlib.pyplot.title('%.4f'%CC)
-        matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
+        matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
         matplotlib.pyplot.close() 
         
         CCs.append(CC)
@@ -782,7 +811,7 @@ if flag == 1:
     matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_%d.png'%(settings.results_path, settings.q))
     matplotlib.pyplot.close()
   
-flag = 1
+flag = 0
 if flag == 1:
         
     local_linearity_lst = []   
@@ -794,7 +823,85 @@ if flag == 1:
         L = local_linearity.local_linearity_measure(x_r_tot)
         
         local_linearity_lst.append(L)
-    joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes.jbl'%settings.results_path)    
+    joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes.jbl'%settings.results_path)   
+    
+flag = 0
+if flag == 1:
+    
+    lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%settings.results_path)
+    matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log(lls), c='b')
+    matplotlib.pyplot.xticks(range(1,len(lls)+1,2))
+    matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes_q_%d.png'%(settings.results_path, settings.q))
+    matplotlib.pyplot.close()   
+
+    
+# BINNING
+flag = 1
+if flag == 1:
+    x = joblib.load('%s/x.jbl'%settings.results_path)
+    print 'x: ', x.shape
+    
+    benchmark = joblib.load('../../synthetic_data_5/test1/x.jbl')
+    print benchmark.shape
+    
+    bin_sizes = []
+    CCs = []
+    
+    # bin_size = 1
+    # CC = correlate.Correlate(benchmark.flatten(), x.flatten())
+    # bin_sizes.append(bin_size)
+    # CCs.append(CC)
+    # print CC
+    # print benchmark.shape, x.shape
+    
+    for n in [600]:#]range(100, 2100, 100):#range(200,2200,200):
+        bin_size = 2*n + 1
+        x_binned = numpy.zeros((settings.m, settings.S-bin_size+1))
+        print x_binned.shape
+        for i in range(x_binned.shape[1]):
+            #print i
+            x_avg = numpy.average(x[:,i:i+bin_size], axis=1)
+            x_binned[:,i] = x_avg
+            
+        CC = correlate.Correlate(benchmark[:, n:-n].flatten(), x_binned.flatten())
+        print n, CC
+        bin_sizes.append(bin_size)
+        CCs.append(CC)
+                
+        x_large = numpy.zeros((settings.m, settings.S))
+        x_large[:] = numpy.nan
+        x_large[:, n:-n] = x_binned
+        cmap = matplotlib.cm.jet
+        cmap.set_bad('white')
+        im = matplotlib.pyplot.imshow(x_large, cmap=cmap)
+        matplotlib.pyplot.title('Bin size: %d CC: %.4f'%(bin_size, CC))
+        ax = matplotlib.pyplot.gca()
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)   
+        cb = matplotlib.pyplot.colorbar(im, cax=cax)
+        tick_locator = ticker.MaxNLocator(nbins=3)
+        cb.locator = tick_locator
+        cb.update_ticks()
+        
+        matplotlib.pyplot.savefig('%s/x_r_binsize_%d_jet_nan.png'%(settings.results_path, bin_size), dpi=96*3)
+        matplotlib.pyplot.close()  
+        
+    #joblib.dump(bin_sizes, '%s/binsizes.jbl'%settings.results_path)
+    #joblib.dump(CCs, '%s/reconstruction_CC_vs_binsize.jbl'%settings.results_path)
+        
+flag = 0
+if flag == 1:
+    bin_sizes = joblib.load('%s/binsizes.jbl'%settings.results_path)
+    CCs = joblib.load('%s/reconstruction_CC_vs_binsize.jbl'%settings.results_path)
+    matplotlib.pyplot.plot(bin_sizes, CCs, 'o-', c='b')
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    #matplotlib.pyplot.xticks(range(1,len(CCs)+1,2))
+    matplotlib.pyplot.xlabel('bin size', fontsize=14)
+    matplotlib.pyplot.ylabel('CC', fontsize=14)
+    matplotlib.pyplot.xlim(left=bin_sizes[0]-100, right=bin_sizes[-1]+100)
+    matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_binsize.pdf'%(settings.results_path), dpi=4*96)
+    matplotlib.pyplot.close()    
+
 # # NLSA WITH LOW-PASS FILTERING    
 # flag = 0
 # if flag == 1:

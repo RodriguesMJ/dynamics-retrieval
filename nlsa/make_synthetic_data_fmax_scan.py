@@ -32,8 +32,8 @@ S = 30000
 paral_step_A = 400
 paral_step_reconstruction = 10000
 q = 1
-#f_max_s = [1, 5, 10, 50, 100, 150, 200]
-f_max_s = [1, 5, 10, 50, 150, 300]
+#f_max_s = [1, 5, 10, 50, 100, 150, 300]
+f_max_s = [100]
 
 
 
@@ -185,9 +185,9 @@ if flag == 1:
             nlsa.util_merge_x_r.f(settings, mode) 
  
 
-flag = 0
+flag = 1
 if flag == 1:
-    for f_max in [10, 50, 150, 300]:
+    for f_max in f_max_s:
         modulename = 'settings_f_max_%d'%f_max
         settings = __import__(modulename)        
         print settings.f_max
@@ -210,8 +210,8 @@ if flag == 1:
             # matplotlib.pyplot.close()  
             x_r_tot += x_r
         
-            #matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
-            #matplotlib.pyplot.colorbar()
+            matplotlib.pyplot.imshow(x_r_tot, cmap='jet')
+            matplotlib.pyplot.colorbar()
             
             print x_r_tot.shape
                    
@@ -220,12 +220,12 @@ if flag == 1:
             CC = correlate.Correlate(benchmark, x_r_tot_flat)
             print CC
            
-            # matplotlib.pyplot.title('%.4f'%CC)
-            # matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
-            # matplotlib.pyplot.close() 
+            matplotlib.pyplot.title('%.4f'%CC)
+            matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes.png'%(settings.results_path, mode+1), dpi=96*3)
+            matplotlib.pyplot.close() 
             
             CCs.append(CC)
-        joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
+        #joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
         
         
  
