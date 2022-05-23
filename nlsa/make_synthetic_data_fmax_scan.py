@@ -71,7 +71,8 @@ if flag == 1:
         fopen.write('n_workers_A = %d\n'%n_workers_A)
         ncopies = q
         fopen.write('ncopies = %d\n'%ncopies)
-        fopen.write('modes_to_reconstruct = range(0, 20)\n')
+        n_modes = min(20, 2*f_max+1)
+        fopen.write('modes_to_reconstruct = range(0, %d)\n'%n_modes)
         fopen.write('paral_step_reconstruction = %d\n'%paral_step_reconstruction)
 
         n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))

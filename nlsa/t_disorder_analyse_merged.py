@@ -9,16 +9,23 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # VALUES FOR RHODOPSIN
-t_d_y = 0.244
-a =   61.45
-b =   90.81
-c =  150.82
+t_d_y = 0.245
+# a =   61.45
+# b =   90.81
+# c =  150.82
+# Rho data set: swissfel_combined_dark_xshere_precise_1ps-dark
+a =   61.51
+b =   91.01
+c =  151.11
 
 def get_reso_P222(a, b, c, h, k, l):
     return 1.0/numpy.sqrt( (float(h)/a)**2 + (float(k)/b)**2 + (float(l)/c)**2 )
 
 def f(x, A, B):
     return A + B*numpy.cos(2*numpy.pi*x*t_d_y)
+
+# def f_new(x, frac):
+#     return (2*frac*frac - 2*frac + 1) + (2*frac*(1-frac))*numpy.cos(2*numpy.pi*x*t_d_y)
 
 def get_I_avg_vs_k(fn):
     # The first 4 columns must be: h k l I
@@ -61,6 +68,8 @@ def fit(Is_avg, k_range):
     fraction = 0.5 - fraction
     
     return A_opt, B_opt, fraction
+    
+    
 
 def correct(f_w, f_r, A, B):
     print 'Writing corrected intensities in: ', f_w
@@ -82,6 +91,8 @@ def correct(f_w, f_r, A, B):
     
     fo_w.close()
     fo_r.close()
+
+
     
 def rewrite(f_w, f_r,):
     fo_w = open(f_w, 'w')
@@ -101,11 +112,13 @@ def rewrite(f_w, f_r,):
 
 def plot(I_avg, fign):
     print 'Plotting average intensities in: ', fign
-    matplotlib.pyplot.figure(figsize=(40, 10))  
+    matplotlib.pyplot.figure(figsize=(20, 8))  
     matplotlib.pyplot.plot(range(len(Is_avg)), Is_avg, '-o')
-    matplotlib.pyplot.xlabel(r'k', fontsize=22),
-    matplotlib.pyplot.ylabel(r'<I>_k', fontsize=22)
-    matplotlib.pyplot.savefig(fign)  
+    matplotlib.pyplot.xlabel(r'$k$', fontsize=34),
+    matplotlib.pyplot.ylabel(r'$\left< I \right>_k$', fontsize=34, rotation=0, labelpad=30)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=28)
+    matplotlib.pyplot.tight_layout()
+    matplotlib.pyplot.savefig(fign,dpi=96*2)  
     matplotlib.pyplot.close()
 
 def get_A(fraction):
@@ -116,15 +129,15 @@ def get_B(fraction):
 
 if __name__ == '__main__':  
     
-    path = './test'
-    label = 'rho-alldark'
+    path = '/das/work/p17/p17491/Cecilia_Casadei/rho_translation_correction_paper'
+    label = 'swissfel_combined_dark_xsphere_precise_1ps-dark'
     
     # Get average I vs k
     filename = '%s/%s.txt'%(path, label)
     Is_avg = get_I_avg_vs_k(filename)
     
     # Plot
-    fign = '%s/%s_original_Is.png'%(path, label)
+    fign = '%s/%s_original_Is.pdf'%(path, label)
     plot(Is_avg, fign)
     
     # Rewrite original in different format
@@ -135,95 +148,125 @@ if __name__ == '__main__':
     fn_r = '%s/%s_original.txt'%(path, label)
     
 ### METHOD 1: FIT ###
-    # DOES NOT GUARANTEE A+B = 1
-    out_path = '%s/method_fit'%path
-    if not os.path.exists(out_path):
-        os.mkdir(out_path)
-    print '\n*** Method 1: fit (%s) ***'%out_path
-    print '(does not guarantee A+B=1)'
-    
-    # Fit 
-    k_max = 10 # For fitting purposes
-    A, B, fraction_fit = fit(Is_avg, k_max)
-    
-    print 'Translated domain fraction: ', fraction_fit
-    print 'A: ', A
-    print 'B: ', B
-    print 'A+B', A+B
-    
-    # Correct intensities
-    fn_w = '%s/%s_corrected.txt'%(out_path, label)
-    correct(fn_w, fn_r, A, B)
-    
-    # Get average corrected I vs k
-    Is_avg = get_I_avg_vs_k(fn_w)
-    
-    # Plot
-    fign = '%s/%s_corrected_Is.png'%(out_path, label)
-    plot(Is_avg, fign)
-            
-### METHOD 2: BRUTE FORCE ###
-    out_path = '%s/method_bf'%path
-    if not os.path.exists(out_path):
-        os.mkdir(out_path) 
-    print '\n*** Method 2: brute force (%s) ***'%out_path
-    print '(A+B=1)' 
-     
-    fractions = numpy.arange(0.01, 0.50, 0.01)
-    for fraction in fractions:
-        print '\nTesting translated domain fraction: %.2f'%fraction
-        A = get_A(fraction)
-        B = get_B(fraction)
+    flag = 1
+    if flag == 1:
+        # DOES NOT GUARANTEE A+B = 1
+        out_path = '%s/method_fit'%path
+        if not os.path.exists(out_path):
+            os.mkdir(out_path)
+        print '\n*** Method 1: fit (%s) ***'%out_path
+        print '(does not guarantee A+B=1)'
+        
+        # Fit 
+        k_max = 10 # For fitting purposes
+        A, B, fraction_fit = fit(Is_avg, k_max)
+        # fraction_fit = fit(Is_avg, k_max)
+        # A = get_A(fraction_fit)
+        # B = get_B(fraction_fit)
+        
+        print 'Translated domain fraction: ', fraction_fit
+        print 'A: ', A
+        print 'B: ', B
+        print 'A+B', A+B
         
         # Correct intensities
-        fn_w = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction)
+        fn_w = '%s/%s_corrected_fraction_%.3f.txt'%(out_path, label, fraction_fit)
         correct(fn_w, fn_r, A, B)
+        
         
         # Get average corrected I vs k
         Is_avg = get_I_avg_vs_k(fn_w)
         
         # Plot
-        fign = '%s/%s_corrected_Is_frac_%.2f.png'%(out_path, label, fraction)
-        plot(Is_avg, fign) 
+        fign = '%s/%s_corrected_Is_fraction_%.3f.pdf'%(out_path, label, fraction_fit)
+        plot(Is_avg, fign)
         
+### METHOD 2: BRUTE FORCE ###
+    flag = 0
+    if flag == 1:
+        out_path = '%s/method_bf'%path
+        if not os.path.exists(out_path):
+            os.mkdir(out_path) 
+        print '\n*** Method 2: brute force (%s) ***'%out_path
+        print '(A+B=1)' 
+         
+        fractions = numpy.arange(0.01, 0.50, 0.01)
+        for fraction in fractions:
+            print '\nTesting translated domain fraction: %.2f'%fraction
+            A = get_A(fraction)
+            B = get_B(fraction)
+            
+            # Correct intensities
+            fn_w = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction)
+            correct(fn_w, fn_r, A, B)
+            
+            # Get average corrected I vs k
+            Is_avg = get_I_avg_vs_k(fn_w)
+            
+            # Plot
+            fign = '%s/%s_corrected_Is_frac_%.2f.pdf'%(out_path, label, fraction)
+            plot(Is_avg, fign) 
+ 
     # Plot summary figure  
-    print '\n*** Summary figure ***'
-    matplotlib.pyplot.figure(figsize=(40, 10))
-    matplotlib.pyplot.xlabel(r'k', fontsize=22),
-    matplotlib.pyplot.ylabel(r'<I>_k', fontsize=22)
-    
-    fractions = numpy.arange(numpy.round(fraction_fit, 2)-0.04, numpy.round(fraction_fit, 2)+0.04, 0.01)
-    for fraction in fractions:            
-        # Get average corrected I vs k
-        fn = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction)
-        Is_avg = get_I_avg_vs_k(fn)           
-        # Plot
-        matplotlib.pyplot.plot(range(len(Is_avg)), Is_avg, '-o', label='%.2f'%fraction)
-    
-    matplotlib.pyplot.legend() 
-    fign = '%s/%s_corrected_Is_frac_range.png'%(out_path, label)
-    matplotlib.pyplot.savefig(fign)  
-    matplotlib.pyplot.close()
-    print 'Summary figure in:', fign
+    flag = 0
+    if flag == 1:
+        print '\n*** Summary figure ***'
+        out_path = '%s/method_bf'%path
+        
+        
+        # Get average I vs k
+        filename = '%s/%s.txt'%(path, label)
+        Is_uncorrected = get_I_avg_vs_k(filename)
+        
+        colors = matplotlib.pylab.cm.viridis(numpy.linspace(0,1,7)) 
+        
+        matplotlib.pyplot.figure(figsize=(20, 8))
+        
+        matplotlib.pyplot.xlabel(r'$k$', fontsize=34),
+        matplotlib.pyplot.ylabel(r'$\left< I \right>_k$', fontsize=34, rotation=0, labelpad=30)
+        matplotlib.pyplot.gca().tick_params(axis='both', labelsize=28)
+        
+            
+        matplotlib.pyplot.plot(range(len(Is_uncorrected)), Is_uncorrected, '-o', label='uncorrected', c=colors[0])
+        
+        fraction_best = 0.21
+        fractions = numpy.arange(numpy.round(fraction_best, 2)-0.03, numpy.round(fraction_best, 2)+0.03, 0.01)
+        for idx, fraction in enumerate(fractions):            
+            # Get average corrected I vs k
+            fn = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction)
+            Is_avg = get_I_avg_vs_k(fn)           
+            # Plot
+            matplotlib.pyplot.plot(range(len(Is_avg)), Is_avg, '-o', label=r'$\alpha=%.2f$'%fraction, c=colors[idx+1])
+        
+        matplotlib.pyplot.legend(frameon=False, fontsize=34) 
+        fign = '%s/%s_corrected_Is_frac_range.pdf'%(out_path, label)
+        matplotlib.pyplot.tight_layout()
+        matplotlib.pyplot.savefig(fign)  
+        matplotlib.pyplot.close()
+        print 'Summary figure in:', fign
 
 ### APPLY CORRECTION ###
 ### GUARANTEES A+B = 1
-    out_path = '%s/final'%path
-    if not os.path.exists(out_path):
-        os.mkdir(out_path)
-    print '\n*** Apply results from fit (%s) ***'%out_path
-    print '(enforcing A+B=1)'
+    flag = 0
+    if flag == 1:
+        fraction_best = 0.21
+        out_path = '%s/final'%path
+        if not os.path.exists(out_path):
+            os.mkdir(out_path)
+        print '\n*** Apply results from fit (%s) ***'%out_path
+        print '(enforcing A+B=1)'
+                
+        A = get_A(fraction_best)
+        B = get_B(fraction_best)
+        
+        # Correct intensities
+        fn_w = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction_best)
+        correct(fn_w, fn_r, A, B)
             
-    A = get_A(fraction_fit)
-    B = get_B(fraction_fit)
-    
-    # Correct intensities
-    fn_w = '%s/%s_corrected_frac_%.2f.txt'%(out_path, label, fraction_fit)
-    correct(fn_w, fn_r, A, B)
-        
-    # Get average corrected I vs k
-    Is_avg = get_I_avg_vs_k(fn_w)
-        
-    # Plot
-    fign = '%s/%s_corrected_Is_frac_%.2f.png'%(out_path, label, fraction_fit)
-    plot(Is_avg, fign) 
+        # Get average corrected I vs k
+        Is_avg = get_I_avg_vs_k(fn_w)
+            
+        # Plot
+        fign = '%s/%s_corrected_Is_frac_%.2f.png'%(out_path, label, fraction_best)
+        plot(Is_avg, fign) 
+       

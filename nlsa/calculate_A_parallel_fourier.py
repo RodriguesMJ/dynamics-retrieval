@@ -34,7 +34,8 @@ def f(loop_idx, settings):
             
     m = x.shape[0]
     S = x.shape[1]
-    s = S-q
+    #s = S-q # paper version
+    s = S-q+1
     n = m*q
     
     print 'Calculate A, index: ', loop_idx
@@ -51,7 +52,8 @@ def f(loop_idx, settings):
     for i in range(q_start, q_end):
         if i%100 == 0:
             print i
-        A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-i : q-i+s], Phi) 
+        #A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-i : q-i+s], Phi) # paper version
+        A[i*m : (i+1)*m, :] = numpy.matmul(x[:, q-1-i : q-1-i+s], Phi) 
             
     print 'Time: ', time.time() - starttime   
     

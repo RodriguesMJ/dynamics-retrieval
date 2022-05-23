@@ -32,17 +32,6 @@ def plot(settings, M, label):
         matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100.png'%(settings.results_path, label))
         matplotlib.pyplot.close()  
     
-    # fig = matplotlib.pyplot.figure(figsize=(35,40))
-    # ax = fig.add_subplot(11, 1, 1)
-    # ax.plot(range(M.shape[0]), M[:,0], color='m')    
-    # for j in range(20, 201, 20):
-    #     ax = fig.add_subplot(11, 1, j/20+1)
-    #     ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
-    #     ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
-    #     ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-    # matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to200.png'%(settings.results_path, label))
-    # matplotlib.pyplot.close()  
-    
     
     
 def get_F(settings):
@@ -65,6 +54,44 @@ def get_F(settings):
         else:
             lp_filter_cos_i = numpy.cos(i*omega*t)
             lp_filter_sin_i = numpy.sin(i*omega*t)
+            F[:,2*i-1] = lp_filter_cos_i
+            F[:,2*i]   = lp_filter_sin_i   
+    plot(settings, F, '')       
+    return F   
+
+
+def get_F_sv_t_range(settings):
+    S = settings.S
+    q = settings.q  
+    s = S-q+1
+    
+    ts_meas = joblib.load('%s/ts_meas.jbl'%settings.results_path)
+    
+    ts_svs = []
+    for i in range(s):
+        t_sv = numpy.average(ts_meas[i:i+q])
+        ts_svs.append(t_sv)
+        
+    ts_svs = numpy.asarray(ts_svs)
+    #t = numpy.asarray(range(s))
+    print 'ts_meas:', ts_meas.shape, ts_meas[0:10]
+    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:10]
+    
+    T = ts_svs[-1]-ts_svs[0]
+    omega = 2*numpy.pi / T
+    print 'T:', T
+        
+    # Make filter matrix F
+    f_max = settings.f_max
+    F = numpy.zeros((s,(2*f_max)+1))
+    
+    for i in range(0, f_max+1):
+        if i == 0:
+            lp_filter_cos_i = numpy.cos(i*omega*ts_svs)
+            F[:,i] = lp_filter_cos_i
+        else:
+            lp_filter_cos_i = numpy.cos(i*omega*ts_svs)
+            lp_filter_sin_i = numpy.sin(i*omega*ts_svs)
             F[:,2*i-1] = lp_filter_cos_i
             F[:,2*i]   = lp_filter_sin_i   
     plot(settings, F, '')       
