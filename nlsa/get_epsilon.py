@@ -23,7 +23,7 @@ def main(settings):
     D_sq = numpy.asarray(D_sq)
     print 'D_sq', D_sq.shape, D_sq.dtype
     
-    log_epsilon_list = numpy.linspace(0, 9, num=100)
+    log_epsilon_list = numpy.linspace(-3, 6, num=100)
     
     epsilons = []
     sigmas = []
@@ -64,6 +64,6 @@ def main(settings):
     matplotlib.pyplot.xlabel(r"log$_{10}\epsilon$")
     matplotlib.pyplot.ylabel(r"log$_{10}\sum W_{ij}$")
     #matplotlib.pyplot.axvline(x=log_epsilon_opt, ymin=0, ymax=1)
-    matplotlib.pyplot.savefig('%s/bilog.png'%(results_path))
+    matplotlib.pyplot.savefig('%s/bilog_2.png'%(results_path))
     matplotlib.pyplot.close()
 

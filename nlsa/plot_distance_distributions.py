@@ -92,7 +92,7 @@ def plot_d_0j(settings):
 def plot_D_0j(settings): 
     results_path = settings.results_path
     idxs = [0, 5000, 15000]
-    d_sq = joblib.load('%s/D_sq_parallel.jbl'%(results_path)) 
+    d_sq = joblib.load('%s/D_sq_normalised.jbl'%(results_path)) 
     print numpy.amax(d_sq), numpy.amin(d_sq)
     print 'Diag:', numpy.amax(numpy.diag(d_sq)), numpy.amin(numpy.diag(d_sq))
     
@@ -108,7 +108,7 @@ def plot_D_0j(settings):
         print 'd_0j: ', d_0j.shape, d_0j.dtype   
         
         matplotlib.pyplot.figure(figsize=(20,10))
-        matplotlib.pyplot.plot(range(d_0j.shape[0]), d_0j, c='b', s=1)        
+        matplotlib.pyplot.plot(range(d_0j.shape[0]), d_0j, c='b', ms=1)        
         ax = matplotlib.pyplot.gca()
         ax.tick_params(axis='both', which='major', labelsize=38)
         ax.tick_params(axis='both', which='minor', labelsize=38)

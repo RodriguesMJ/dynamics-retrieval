@@ -4,6 +4,7 @@ import numpy
 import matplotlib.pyplot
 import scipy.linalg
 import joblib
+numpy.set_printoptions(precision=2)
 
 
 
@@ -73,9 +74,11 @@ def get_F_sv_t_range(settings):
         ts_svs.append(t_sv)
         
     ts_svs = numpy.asarray(ts_svs)
+    joblib.dump(ts_svs, '%s/ts_svs.jbl'%settings.results_path)
+    
     #t = numpy.asarray(range(s))
-    print 'ts_meas:', ts_meas.shape, ts_meas[0:10]
-    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:10]
+    print 'ts_meas:', ts_meas.shape, ts_meas[0:5], '...', ts_meas[-2:]
+    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:5],  '...', ts_svs[-2:]
     
     T = ts_svs[-1]-ts_svs[0]
     omega = 2*numpy.pi / T

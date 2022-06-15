@@ -20,9 +20,9 @@ def f_unoptimised(D_sq, settings):
     print 'Extract velocities.'
     v = numpy.sqrt(numpy.diag(D_sq, 1))
     
-    if D_sq.shape[0] == S - q + 1:
-        print 'Remove first sample.'
-        D_sq = D_sq[1:, 1:]    
+    # if D_sq.shape[0] == S - q + 1:
+    #     print 'Remove first sample.'
+    #     D_sq = D_sq[1:, 1:]    
     print 'D_sq: ', D_sq.shape, D_sq.dtype    
     
     print 'Sqrt of D_sq.'
@@ -56,8 +56,8 @@ def f(D, b): # It is D_sq
 #    print 'Extract velocities.'
 #    v = numpy.sqrt(numpy.diag(D_sq, 1))
     
-    print 'Remove first sample.'
-    D = D[1:, 1:]    
+    # print 'Remove first sample.'
+    # D = D[1:, 1:]    
     print 'D_sq: ', D.shape, D.dtype    
     
     print 'Sqrt of D_sq.'
@@ -89,16 +89,11 @@ def f_opt(D, settings): # It is D_sq
     datatype = settings.datatype
     
     print 'D_sq: ', D.shape, D.dtype
+
+    # if D.shape[0] == S - q + 1:        
+    #     print 'Remove first sample.'
+    #     D = D[1:, 1:]    
     
-#    diff = D_sq - D_sq.T
-#    print 'D_sq is symmetric:'
-#    print numpy.amin(diff), numpy.amax(diff)    
-#    
-#    print 'Extract velocities.'
-#    v = numpy.sqrt(numpy.diag(D_sq, 1))
-    if D.shape[0] == S - q + 1:        
-        print 'Remove first sample.'
-        D = D[1:, 1:]    
     print 'D_sq: ', D.shape, D.dtype    
     
     print numpy.amax(D), numpy.amin(D)
@@ -136,4 +131,4 @@ def f_opt(D, settings): # It is D_sq
         
     print 'It took: ', time.time() - starttime
     
-    return D_sorted, N_sorted#, v
+    return D_sorted, N_sorted

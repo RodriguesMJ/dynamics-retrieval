@@ -338,11 +338,11 @@ if flag == 1:
 #########       Jitter study:       ############
 ################################################
 
-#### q-scan, L of central block ####    
+#### LPSA q-scan, L of central block ####    
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:
+    for test_n in [8]:
         root_f = '../../synthetic_data_jitter'
         test_f = '%s/test%d/LPSA_para_search'%(root_f, test_n)
         
@@ -350,11 +350,16 @@ if flag == 1:
             label = 'jitter_factor_0p3'
         if test_n == 6:
             label = 'jitter_factor_1p0'
+        if test_n == 7:
+            label = 'jitter_factor_0p1'
+        if test_n == 8:
+            label = 'jitter_factor_0p5'
               
         n_m = 20
         f_max = 100
         p = 0
-        qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001]
+        #qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001, 6001]
+        qs = [1, 101, 1001, 2001, 6001]
         n_curves = len(qs)
         
         colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
@@ -367,19 +372,19 @@ if flag == 1:
         
         for i, q in enumerate(qs):
             folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
-            lls = joblib.load('%s/p_%d_local_linearity_vs_nmodes.jbl'%(folder,p))
-            matplotlib.pyplot.plot(range(1, len(lls)+1), numpy.log10(lls), '-o', c=colors[i], label='$q$=%d'%q)  
+            Ls = joblib.load('%s/p_%d_local_linearity_vs_nmodes.jbl'%(folder,p))
+            matplotlib.pyplot.plot(range(1, len(Ls)+1), numpy.log10(Ls), '-o', c=colors[i], label='$q$=%d'%q)  
         
         matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=20)
         matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
         matplotlib.pyplot.savefig('%s/LPSA_p_%d_reconstruct_log10_L_vs_nmodes_%s_q_scan_fmax_%d.png'%(test_f, p, label, f_max), dpi=96*4)
         matplotlib.pyplot.close()
         
-#### q-scan, SVD of A ####    
+#### LPSA q-scan, SVD of A ####    
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:
+    for test_n in [8]:
         root_f = '../../synthetic_data_jitter'
         test_f = '%s/test%d/LPSA_para_search'%(root_f, test_n)
         
@@ -387,11 +392,15 @@ if flag == 1:
             label = 'jitter_factor_0p3'
         if test_n == 6:
             label = 'jitter_factor_1p0'   
+        if test_n == 7:
+            label = 'jitter_factor_0p1'
+        if test_n == 8:
+            label = 'jitter_factor_0p5'
             
         n_m = 20
         f_max = 100
-        
-        qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001]
+        #qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001, 6001]
+        qs = [1, 101, 1001, 2001, 6001]
         n_curves = len(qs)
         
         colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
@@ -413,11 +422,11 @@ if flag == 1:
         matplotlib.pyplot.close()
 
 
-#### jmax-scan, L of central block ####    
+#### LPSA jmax-scan, L of central block ####    
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:
+    for test_n in [8]:
         root_f = '../../synthetic_data_jitter'
         test_f = '%s/test%d/LPSA_para_search'%(root_f, test_n)
         
@@ -425,11 +434,15 @@ if flag == 1:
             label = 'jitter_factor_0p3'
         if test_n == 6:
             label = 'jitter_factor_1p0'   
-              
+        if test_n == 7:
+            label = 'jitter_factor_0p1'
+        if test_n == 8:
+            label = 'jitter_factor_0p5'
+            
         n_m = 20
-        q = 4001
+        q = 2001
         p = 0
-        f_max_s = [1, 5, 10, 50, 100, 150]#, 300] 
+        f_max_s = [1, 5, 10, 50, 100, 150, 300] 
         n_curves = len(f_max_s)
         
         colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
@@ -451,11 +464,11 @@ if flag == 1:
         matplotlib.pyplot.close()
         
         
-#### jmax-scan, SVD of A ####    
+#### LPSA jmax-scan, SVD of A ####    
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:
+    for test_n in [8]:
         root_f = '../../synthetic_data_jitter'
         test_f = '%s/test%d/LPSA_para_search'%(root_f, test_n)
         
@@ -463,11 +476,15 @@ if flag == 1:
             label = 'jitter_factor_0p3'
         if test_n == 6:
             label = 'jitter_factor_1p0'   
+        if test_n == 7:
+            label = 'jitter_factor_0p1'
+        if test_n == 8:
+            label = 'jitter_factor_0p5'
             
         n_m = 20
-        q = 4001
+        q = 2001
         p = 0
-        f_max_s = [1, 5, 10, 50, 100, 150]#, 300] 
+        f_max_s = [1, 5, 10, 50, 100, 150, 300] 
         n_curves = len(f_max_s)
         
         colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))   
@@ -493,22 +510,26 @@ if flag == 1:
         matplotlib.pyplot.close()
 
 
-# SVD of reconstructed signal        
+# LPSA, SVD of reconstructed signal        
 flag = 1
 if flag ==1:
     n_m = 20
-    q = 4001
+    q = 2001
     fmax = 100
-    test_n = 6
+    test_n = 8
     if test_n == 5:
         label = 'jitter_factor_0p3'
     if test_n == 6:
         label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+    if test_n == 8:
+        label = 'jitter_factor_0p5'
           
     root_path = '../../synthetic_data_jitter'
     results_path = '%s/test%d/LPSA_para_search/f_max_%d_q_%d'%(root_path, test_n, fmax, q)
     
-    ps = [0, 9, 100, 2000]
+    ps = [0, 9, (q-1)/2]
     
     n_curves = len(ps)        
     colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
@@ -531,7 +552,7 @@ if flag ==1:
         matplotlib.pyplot.plot(range(1, n_m+1), CCs, '-o', c=colors[i], label='$p$=%d'%p)  
     
     matplotlib.pyplot.ylim(min(CCs)-0.01, top=1.02)
-    matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=20)
+    matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=20)
     matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
     matplotlib.pyplot.savefig('%s/test%d/LPSA_para_search/%s_q_%d_fmax_%d_x_r_4modes_reconstruction_CC_vs_nmodes_p.png'%(root_path, test_n, label, q, fmax), dpi=96*4)
     matplotlib.pyplot.close() 
@@ -539,19 +560,23 @@ if flag ==1:
 flag = 1
 if flag ==1:
     n_m = 20
-    q = 4001
+    q = 2001
     fmax = 100
-    test_n = 6
+    test_n = 8
     
     if test_n == 5:
         label = 'jitter_factor_0p3'
     if test_n == 6:
         label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+    if test_n == 8:
+        label = 'jitter_factor_0p5'
         
     root_path = '../../synthetic_data_jitter'
     results_path = '%s/test%d/LPSA_para_search/f_max_%d_q_%d'%(root_path, test_n, fmax, q)
     
-    ps = [0, 9, 100, 2000]
+    ps = [0, 9, (q-1)/2]
     
     n_curves = len(ps)        
     colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
@@ -577,18 +602,22 @@ if flag ==1:
 flag = 1
 if flag ==1:
     n_m = 20
-    q = 4001
+    q = 2001
     fmax = 100
-    test_n = 6
+    test_n = 8
     if test_n == 5:
         label = 'jitter_factor_0p3'
     if test_n == 6:
         label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'  
+    if test_n == 8:
+        label = 'jitter_factor_0p5'
         
     root_path = '../../synthetic_data_jitter'
     results_path = '%s/test%d/LPSA_para_search/f_max_%d_q_%d'%(root_path, test_n, fmax, q)
     
-    ps = [0, 9, 100, 2000]
+    ps = [0, 9, (q-1)/2]
     
     n_curves = len(ps)        
     colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
@@ -607,3 +636,280 @@ if flag ==1:
     matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
     matplotlib.pyplot.savefig('%s/test%d/LPSA_para_search/%s_q_%d_fmax_%d_x_r_4modes_SVD_S_vs_nmodes_p.png'%(root_path, test_n, label, q, fmax), dpi=96*4)
     matplotlib.pyplot.close() 
+    
+# NLSA       
+flag = 0
+if flag == 1:
+    n_m = 20
+    q = 4001
+    b = 3000
+    log10eps = 1.0
+    
+    test_n = 6
+    if test_n == 5:
+        label = 'jitter_factor_0p3'
+    if test_n == 6:
+        label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+          
+    root_path = '../../synthetic_data_jitter'
+    results_path = '%s/test%d/NLSA/q_%d/b_%d/log10eps_%0.1f'%(root_path, test_n, q, b, log10eps)
+    
+    ps = [0, 9, (q-1)/2]
+    
+    n_curves = len(ps)        
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+    
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    matplotlib.pyplot.xlim(left=0, right=n_m+1)
+    
+    matplotlib.pyplot.xlabel('number of modes', fontsize=20)
+    
+    matplotlib.pyplot.ylabel('Correlation coefficient to benchmark', fontsize=20)
+    
+    for i, p in enumerate(ps):
+        folder = '%s/reconstruction_p_%d'%(results_path, p)
+        
+        CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%(folder))
+        
+        matplotlib.pyplot.plot(range(1, n_m+1), CCs, '-o', c=colors[i], label='$p$=%d'%p)  
+    
+    #matplotlib.pyplot.ylim(min(CCs)-0.01, top=1.02)
+    matplotlib.pyplot.ylim(0.62, top=0.80)
+    matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=20)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+    matplotlib.pyplot.savefig('%s/test%d/NLSA/%s_q_%d_b_%d_log10eps_%0.1f_reconstruction_CC_vs_nmodes_p.png'%(root_path, test_n, label, q, b, log10eps), dpi=96*4)
+    matplotlib.pyplot.close() 
+    
+flag = 0
+if flag ==1:
+    n_m = 20
+    
+    b = 3000
+    log10eps = 1.0
+    
+    test_n = 6
+    if test_n == 5:
+        label = 'jitter_factor_0p3'
+    if test_n == 6:
+        label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+          
+    root_path = '../../synthetic_data_jitter'  
+    
+    qs = [1, 501, 1001, 2001]#1001, 3001, 5001]
+    
+    n_curves = len(qs)        
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+    
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    matplotlib.pyplot.xlim(left=0, right=n_m+1)
+    
+    matplotlib.pyplot.xlabel('number of modes', fontsize=20)
+    
+    matplotlib.pyplot.ylabel('Correlation coefficient to benchmark', fontsize=20)
+    
+    for i, q in enumerate(qs):
+        p = (q-1)/2
+        results_path = '%s/test%d/NLSA/q_%d/b_%d/log10eps_%0.1f'%(root_path, test_n, q, b, log10eps)
+        folder = '%s/reconstruction_p_%d'%(results_path, p)
+        
+        CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%(folder))
+        matplotlib.pyplot.plot(range(1, n_m+1), CCs, '-o', c=colors[i], label='$q$=%d'%q)  
+    
+    matplotlib.pyplot.ylim(min(CCs)-0.01, top=0.8)
+    matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=20)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+    matplotlib.pyplot.savefig('%s/test%d/NLSA/%s_qscan_b_%d_log10eps_%0.1f_stdreconstruction_CC_vs_nmodes.png'%(root_path, test_n, label, b, log10eps), dpi=96*4)
+    matplotlib.pyplot.close() 
+    
+flag = 0
+if flag ==1:
+    n_m = 20
+    
+    b = 3000
+    log10eps = 1.0
+    
+    test_n = 6
+    if test_n == 5:
+        label = 'jitter_factor_0p3'
+    if test_n == 6:
+        label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+          
+    root_path = '../../synthetic_data_jitter'  
+    
+    qs = [1, 501, 1001, 2001]#1001, 3001, 5001]
+    
+    n_curves = len(qs)        
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+    matplotlib.pyplot.xlim(left=0, right=n_m+1)
+    matplotlib.pyplot.xlabel('mode', fontsize=20)
+    matplotlib.pyplot.ylabel('log$_{10}(\sigma/\sigma_1)$', fontsize=20)
+    
+    
+    for i, q in enumerate(qs):
+        
+        results_path = '%s/test%d/NLSA/q_%d/b_%d/log10eps_%0.1f'%(root_path, test_n, q, b, log10eps)
+        
+        
+        S = joblib.load('%s/S.jbl'%results_path)
+        matplotlib.pyplot.plot(range(1, n_m+1), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='$q$=%d'%q)  
+        
+    
+    matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=20)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+    matplotlib.pyplot.savefig('%s/test%d/NLSA/%s_qscan_b_%d_log10eps_%0.1f_SVs.png'%(root_path, test_n, label, b, log10eps), dpi=96*4)
+    matplotlib.pyplot.close() 
+    
+flag = 0
+if flag == 1:
+    n_m = 20
+    
+    q = 1001
+    bs = [10, 100, 500, 1000, 2000, 3000]
+    log10eps = 1.0
+    p = 500
+    
+    test_n = 6
+    if test_n == 5:
+        label = 'jitter_factor_0p3'
+    if test_n == 6:
+        label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+          
+    root_path = '../../synthetic_data_jitter'  
+    
+    n_curves = len(bs)        
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+    
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    matplotlib.pyplot.xlim(left=0, right=n_m+1)
+    
+    matplotlib.pyplot.xlabel('number of modes', fontsize=20)
+    
+    matplotlib.pyplot.ylabel('Correlation coefficient to benchmark', fontsize=20)
+    
+    for i, b in enumerate(bs):
+        
+        results_path = '%s/test%d/NLSA/q_%d/b_%d/log10eps_%0.1f'%(root_path, test_n, q, b, log10eps)
+        folder = '%s/reconstruction_p_%d'%(results_path, p)
+        
+        CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%(folder))
+        matplotlib.pyplot.plot(range(1, n_m+1), CCs, '-o', c=colors[i], label='$b$=%d'%b)  
+    
+    #matplotlib.pyplot.ylim(min(CCs)-0.01, top=1.02)
+    matplotlib.pyplot.ylim(0.64, top=0.8)
+    matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=20)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+    matplotlib.pyplot.savefig('%s/test%d/NLSA/%s_bscan_q_%d_log10eps_%0.1f_stdreconstruction_CC_vs_nmodes.png'%(root_path, test_n, label, q, log10eps), dpi=96*4)
+    matplotlib.pyplot.close() 
+    
+    
+flag = 0
+if flag == 1:
+    n_m = 20
+    
+    q = 1001
+    b = 100
+    log10eps_lst = [-2.0, -1.0, 0.0, 1.0, 3.0, 8.0]
+    p = 500
+    
+    test_n = 6
+    if test_n == 5:
+        label = 'jitter_factor_0p3'
+    if test_n == 6:
+        label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+          
+    root_path = '../../synthetic_data_jitter'  
+    
+    n_curves = len(log10eps_lst)        
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+    
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    matplotlib.pyplot.xlim(left=0, right=n_m+1)
+    
+    matplotlib.pyplot.xlabel('number of modes', fontsize=20)
+    
+    matplotlib.pyplot.ylabel('Correlation coefficient to benchmark', fontsize=20)
+    
+    for i, log10eps in enumerate(log10eps_lst):
+        
+        results_path = '%s/test%d/NLSA/q_%d/b_%d/log10eps_%0.1f'%(root_path, test_n, q, b, log10eps)
+        folder = '%s/reconstruction_p_%d'%(results_path, p)
+        
+        CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%(folder))
+        matplotlib.pyplot.plot(range(1, n_m+1), CCs, '-o', c=colors[i], label=r'log$_{10}\epsilon$=%0.1f'%log10eps)  
+    
+    #matplotlib.pyplot.ylim(min(CCs)-0.01, top=1.02)
+    matplotlib.pyplot.ylim(0.60, top=0.80)
+    matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=20)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+    matplotlib.pyplot.savefig('%s/test%d/NLSA/%s_log10epsscan_q_%d_b_%d_stdreconstruction_CC_vs_nmodes.png'%(root_path, test_n, label, q, b), dpi=96*4)
+    matplotlib.pyplot.close() 
+    
+flag = 0
+if flag == 1:
+    n_m = 20
+    
+    q = 1001
+    b = 100
+    log10eps = 1.0
+    ls = [5, 10, 30, 50]
+    p = 500
+    
+    test_n = 6
+    if test_n == 5:
+        label = 'jitter_factor_0p3'
+    if test_n == 6:
+        label = 'jitter_factor_1p0'
+    if test_n == 7:
+        label = 'jitter_factor_0p1'
+          
+    root_path = '../../synthetic_data_jitter'  
+    
+    n_curves = len(ls)        
+    colors = matplotlib.pylab.cm.Blues(numpy.linspace(0.15,1,n_curves))      
+    matplotlib.pyplot.figure(figsize=(10,10))  
+    matplotlib.pyplot.xticks(range(1,n_m+1,2))   
+    
+    matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
+    matplotlib.pyplot.xlim(left=0, right=n_m+1)
+    
+    matplotlib.pyplot.xlabel('number of modes', fontsize=20)
+    
+    matplotlib.pyplot.ylabel('Correlation coefficient to benchmark', fontsize=20)
+    
+    for i, l in enumerate(ls):
+        
+        results_path = '%s/test%d/NLSA/q_%d/b_%d/log10eps_%0.1f/l_%d'%(root_path, test_n, q, b, log10eps, l)
+        folder = '%s/reconstruction_p_%d'%(results_path, p)
+        
+        CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%(folder))
+        matplotlib.pyplot.plot(range(1, len(CCs)+1), CCs, '-o', c=colors[i], label='l=%d'%l)  
+    
+    #matplotlib.pyplot.ylim(min(CCs)-0.01, top=1.02)
+    matplotlib.pyplot.ylim(0.5, top=0.8)
+    matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=20)
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=18)
+    matplotlib.pyplot.savefig('%s/test%d/NLSA/%s_lscan_q_%d_b_%d_log10eps_%0.1f_stdreconstruction_CC_vs_nmodes.png'%(root_path, test_n, label, q, b, log10eps), dpi=96*4)
+    matplotlib.pyplot.close() 
+    
+    
+    

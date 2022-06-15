@@ -16,8 +16,6 @@ def SVD_f_manual(A):
     print 'Eigendecompose'
     evals_AtA, evecs_AtA = numpy.linalg.eigh(AtA)
     print 'Done'
-    for i in evals_AtA:
-        print i
     evals_AtA[numpy.argwhere(evals_AtA<0)]=0  
     S = numpy.sqrt(evals_AtA)
     VH = evecs_AtA.T
@@ -68,24 +66,9 @@ def main(settings):
     print 'S: ', S.shape
     print 'VH: ', VH.shape
 
-    joblib.dump(U, '%s/U.jbl'%results_path)
+    joblib.dump(U[:,0:20], '%s/U.jbl'%results_path)
     joblib.dump(S, '%s/S.jbl'%results_path)
     joblib.dump(VH, '%s/VH.jbl'%results_path)
-    
-#    U_m, S_m, VH_m = SVD_f_manual(A)
-#    U_m, S_m, VH_m = sorting(U_m, S_m, VH_m)
-#    
-#    print 'Done'
-#    print 'U: ', U_m.shape
-#    print 'S: ', S_m.shape
-#    print 'VH: ', VH_m.shape
-#    
-#    diff = abs(U)-abs(U_m)
-#    print numpy.amax(abs(diff))
-#    diff = S-S_m
-#    print numpy.amax(abs(diff))
-#    diff = abs(VH)-abs(VH_m)
-#    print numpy.amax(abs(diff))
         
     evecs = joblib.load('%s/evecs_sorted.jbl'%(results_path))
 
@@ -101,10 +84,3 @@ def main(settings):
     VT_final = project_chronos(VH, Phi)    
     print 'VT_final: ', VT_final.shape
     joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
-    
-#    VT_final_loop = project_chronos(VH, Phi)    
-#    print 'VT_final (loop): ', VT_final_loop.shape
-#    joblib.dump(VT_final_loop, '%s/VT_final_loop.jbl'%results_path)
-#    
-#    diff = abs(VT_final)-abs(VT_final_loop)
-#    print numpy.amax(abs(diff))

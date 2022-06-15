@@ -123,12 +123,7 @@ def main(settings):
     
     N = joblib.load('%s/N.jbl'%results_path)
     D = joblib.load('%s/D.jbl'%results_path)
-    
-#    v = joblib.load('%s/v.jbl'%results_path)    
-#    print 'Calculate W (local speeds)'
-#    W = calculate_W_localspeeds(D, N, v, results_path, datatype, sigma_sq)
-#    joblib.dump(W, '%s/W.jbl'%results_path)
-         
+
     print 'Calculate W'
     W = calculate_W(D, N, results_path, datatype, sigma_sq)
     joblib.dump(W, '%s/W.jbl'%results_path)
@@ -146,28 +141,3 @@ def main(settings):
     print numpy.amax(diff), numpy.amin(diff)
     
     joblib.dump(W_sym, '%s/W_sym.jbl'%results_path)
-    
-    
-    
-# def main_test(settings):
-    
-#     print '\n****** RUNNING tansition_matrix ****** '
-    
-#     sigma_sq = settings.sigma_sq
-#     print 'Sigma_sq: ', sigma_sq
-#     epsilon = sigma_sq/2
-#     print 'Epsilon: ', epsilon
-        
-#     results_path = settings.results_path
-    
-#     W = joblib.load('%s/D_sq_parallel.jbl'%results_path)  
-#     print 'D_sq:', W.shape, W.dtype   
-     
-#     W = numpy.exp(-W/sigma_sq)
-    
-#     thresh = numpy.exp(-3)
-#     W[W<thresh]=0
-    
-#     W = sparse.csr_matrix(W)
-#     print 'W:', W.shape, W.dtype
-#     joblib.dump(W, '%s/W_sym.jbl'%results_path)

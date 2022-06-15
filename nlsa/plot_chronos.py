@@ -20,7 +20,7 @@ def plot(settings):
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
     
-    for i in range(20):#(nmodes):
+    for i in range(0, min(20, nmodes)):
         print i
         chrono = VT_final[i,:]
         matplotlib.pyplot.figure(figsize=(30,10))

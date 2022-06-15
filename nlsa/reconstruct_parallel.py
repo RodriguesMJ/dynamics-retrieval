@@ -14,19 +14,17 @@ def f(loop_idx, settings):
     modes = settings.modes_to_reconstruct
     U = joblib.load('%s/U.jbl'%results_path)
     U = U[:,0:20]
+    S = joblib.load('%s/S.jbl'%results_path)
+    VT_final = joblib.load('%s/VT_final.jbl'%results_path)
+        
+    s = VT_final.shape[1]
+    VT_final = VT_final.T      
+    m = U.shape[0]/q
         
     for k in modes:
         print 'Mode: ', k    
         print 'loop_idx: ', loop_idx
         
-        #U = joblib.load('%s/U.jbl'%results_path)
-        S = joblib.load('%s/S.jbl'%results_path)
-        VT_final = joblib.load('%s/VT_final.jbl'%results_path)
-        
-        s = VT_final.shape[1]
-        VT_final = VT_final.T      
-        m = U.shape[0]/q
-       
         start_j = loop_idx*step
         end_j = (loop_idx+1)*step
     
@@ -35,9 +33,8 @@ def f(loop_idx, settings):
         print 'Loop: ', start_j, end_j
          
         starttime = time.time()
-        #x_r = numpy.zeros((m,s-q), dtype=datatype)
         x_r = numpy.zeros((m,s-ncopies+1), dtype=datatype)
-        for j in range(start_j, end_j):#(0, s-q): or (0, s-ncopies)
+        for j in range(start_j, end_j):
             if j%1000==0:
                 print j
             for i in range(ncopies):

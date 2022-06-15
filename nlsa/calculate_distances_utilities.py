@@ -114,7 +114,6 @@ def sort_D_sq(settings):
     results_path = settings.results_path
     
     D_sq = joblib.load('%s/D_sq_normalised.jbl'%results_path)
-    #D_sq = joblib.load('%s/D_sq_lp_filtered_fmax_%d.jbl'%(results_path, settings.f_max_considered))
     D, N = util_sort_D_sq.f_opt(D_sq, settings)
     
     print 'Saving'    

@@ -67,17 +67,8 @@ def f_ts(settings):
     q = settings.q  
     s = S-q+1
     
-    ts_meas = joblib.load('%s/ts_meas.jbl'%settings.results_path)
-    
-    ts_svs = []
-    for i in range(s):
-        t_sv = numpy.average(ts_meas[i:i+q])
-        ts_svs.append(t_sv)
-        
-    ts_svs = numpy.asarray(ts_svs)
-    #t = numpy.asarray(range(s))
-    print 'ts_meas:', ts_meas.shape, ts_meas[0:10]
-    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:10]
+    ts_svs = joblib.load('%s/ts_svs.jbl'%settings.results_path)
+    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:5], '..', ts_svs[-2:]
     
     p = settings.p
     
@@ -100,7 +91,7 @@ def f_ts(settings):
     t_r = t_r/ncopies
     joblib.dump(t_r, '%s/t_r_p_%d.jbl'%(settings.results_path, p))
     
-    print 't_r:',  t_r.shape,  t_r[0:10], '...', t_r[-1]
+    print 't_r:',  t_r.shape,  t_r[0:5], '...', t_r[-2:]
     
         
 
