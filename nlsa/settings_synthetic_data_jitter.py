@@ -2,7 +2,7 @@
 import numpy
 import math
 
-jitter_factor = 1.0
+jitter_factor = 0.5
 if jitter_factor == 0.3:
     test_n = 5   
 if jitter_factor == 1.0:
@@ -27,14 +27,14 @@ tc = float(S)/2
 ############
 
 #PARAS SCANS
-# results_path = '%s/LPSA_para_search'%root_f
-# f_max_q_scan = 100
-# q_f_max_scan = 2001
+results_path = '%s/LPSA_para_search'%root_f
+f_max_q_scan = 100
+q_f_max_scan = 4001
 
 #SELECTED VALUES
-q = 4001
-f_max = 100
-f_max_considered = f_max
+# q = 4001
+# f_max = 100
+# f_max_considered = f_max
 
 # #A
 # data_file = '%s/x.jbl'%results_path
@@ -42,9 +42,9 @@ f_max_considered = f_max
 # n_workers_A = int(math.ceil(float(q)/paral_step_A))
 
 #RECONSTRUCTION
-modes_to_reconstruct = range(20) 
-p = 0
-results_path = '%s/LPSA_para_search/f_max_%d_q_%d/reconstruction_p_%d/x_r_SVD'%(root_f, f_max, q, p)
+#modes_to_reconstruct = range(20) 
+#p = 0
+#results_path = '%s/LPSA_para_search/f_max_%d_q_%d/reconstruction_p_%d/x_r_SVD'%(root_f, f_max, q, p)
 # STANDARD RECONSTRUCTION 
 # p = (q-1)/2
 # ncopies = q

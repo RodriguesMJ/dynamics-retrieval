@@ -28,7 +28,7 @@ def sorting(U, S, VH):
     sort_idxs = numpy.argsort(S)[::-1]
     S_sorted = S[sort_idxs]
     VH_sorted = VH[sort_idxs,:]
-    U_sorted = U[:,sort_idxs]
+    U_sorted = U[:,sort_idxs[0:20]]
     return U_sorted, S_sorted, VH_sorted
 
 def project_chronos(VH, Phi):

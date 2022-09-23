@@ -1,3 +1,3 @@
 #!/bin/bash
 module load phenix
-for i in rho_light_mode_0_2_timestep_*.mtz; do ./maps_phenix_rho.sh $i rho_alldark_mode_0_avg.mtz 2.0; done
+for i in bR_light_p_0_6_modes_timestep_*.mtz; do ./maps_phenix_bR.sh $i I_dark_avg.mtz 1.8; done

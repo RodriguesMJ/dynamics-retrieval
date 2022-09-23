@@ -15,7 +15,7 @@ FWHM = 2.355 * sigma                                                       %#ok<
 % LOAD DATA
 path = './';
 folder = '';
-fn = 'data_bR_light_int_SCL_nS219559_nBrg53620';          
+fn = 'data_bR_light_int_SCL_rescut_20A_to_1p8A_nS219559_nBrg22727';          
 data_file = [path, folder, fn, '.mat'];
 load(data_file, 'M_scl', ...
                 'T_scl', ...
@@ -141,7 +141,7 @@ for j=1:length(thr_factors)
     uniqueID_light_uniform = uniqueID_light_uniform(I);
     
     % SAVE
-    fn = sprintf('data_bR_light_int_unifdelay_SCL_nS%d_nBrg%d', ...
+    fn = sprintf('data_bR_light_int_SCL_rescut_20A_to_1p8A_unifdelay_nS%d_nBrg%d', ...
                   n_uniform, ...
                   size(M_uniform, 2));         
     flat_data_file = [path, folder, fn, '.mat'];

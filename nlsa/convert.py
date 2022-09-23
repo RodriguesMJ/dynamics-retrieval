@@ -26,10 +26,10 @@ def main(settings):
     if 'light' in label:
         file_mat = '%s/t_uniform_light.mat'%folder
         dictionary = scipy.io.loadmat(file_mat)
-        t_uniform = dictionary['t_uniform']
-        
-        joblib.dump(t_uniform, '%s/t_uniform_light.jbl'%folder)
-
+        ts = dictionary['t_uniform']
+        print 'ts', ts.shape
+        joblib.dump(ts, '%s/t_light.jbl'%folder)
+    
     file_mat = '%s/T_%s_full.mat'%(folder, label)
     f = h5py.File(file_mat, 'r') 
     T_full = f['/T']
@@ -68,3 +68,4 @@ def main(settings):
     print 'M_sparse: ', M_sparse.shape, M_sparse.dtype
     print 'M_sparse nonzero: ', M_sparse.count_nonzero()
     print 'M_sparse done'
+  

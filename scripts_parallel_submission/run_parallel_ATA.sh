@@ -9,4 +9,4 @@ conda activate myenv_nlsa
 WORKER_ID=$SLURM_ARRAY_TASK_ID   # From 0 to ... 
 
 # pass sbatch arguments to python
-python -m nlsa.calculate_lp_filter_ATA $WORKER_ID "$@"
+python -m nlsa.calculate_ATA $WORKER_ID "$@"

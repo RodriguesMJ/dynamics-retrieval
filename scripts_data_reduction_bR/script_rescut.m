@@ -22,15 +22,18 @@ load(fileData,'T_scl',...
               'miller_k',...
               'miller_l');
 
-drl = 1.5;  % Angstrom
 
 % lattice sizes for group P6(3):
 a = 62.36;  % in Angstrom
 b = 62.39;  % in Angstrom
 c = 111.18; % in Angstrom
 
+drl = 1.8;  % Angstrom
 qmax = 1./drl ; % notice that diff_res_lim is in Angstrom
  
+%lowres_cutoff = 20.0; %A
+%qmin = 1./lowres_cutoff;
+
 % q-vector in reciprocal space:
 qvec = [miller_h./a, miller_h./(sqrt(3)*a) + 2*miller_k./(sqrt(3)*b), miller_l./c];
 q2   = qvec(:,1).^2 + qvec(:,2).^2 + qvec(:,3).^2; 
@@ -42,9 +45,17 @@ M_scl = M_scl(:,IND);
 miller_h = miller_h(IND);
 miller_k = miller_k(IND);
 miller_l = miller_l(IND);
+% q = q(IND);
+% 
+% IND = find(q > qmin);
+% T_scl = T_scl(:,IND);
+% M_scl = M_scl(:,IND);
+% miller_h = miller_h(IND);
+% miller_k = miller_k(IND);
+% miller_l = miller_l(IND);
 
 nBrg = int2str(size(T_scl, 2));
-fileData_rescut = ['data_bR_', datatype, '_int_SCL_rescut_nS', n, '_nBrg', nBrg, '.mat']; 
+fileData_rescut = ['data_bR_', datatype, '_int_SCL_rescut_20A_to_1p8A_nS', n, '_nBrg', nBrg, '.mat']; 
 
 save(fileData_rescut, ...
      'T_scl', ...

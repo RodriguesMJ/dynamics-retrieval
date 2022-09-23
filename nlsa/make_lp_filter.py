@@ -33,7 +33,64 @@ def plot(settings, M, label):
         matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100.png'%(settings.results_path, label))
         matplotlib.pyplot.close()  
     
+   
+def plot_t_sv_range(settings, M, label):
+    ts_svs = joblib.load('%s/ts_svs.jbl'%settings.results_path) 
+    if M.shape[1] >= 11:
+        fig = matplotlib.pyplot.figure(figsize=(35,40))
+        ax = fig.add_subplot(6, 1, 1)
+        ax.plot(ts_svs, M[:,0], color='m')    
+        ax.tick_params(axis='both', labelsize=26)
+        for j in range(1, 6):
+            ax = fig.add_subplot(6, 1, j+1)
+            ax.plot(ts_svs, M[:,2*j-1], color='m')
+            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.tick_params(axis='both', labelsize=34)
+            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.close()  
     
+    if M.shape[1] >= 41:
+        fig = matplotlib.pyplot.figure(figsize=(35,40))
+        ax = fig.add_subplot(5, 1, 1)
+        ax.plot(ts_svs, M[:,0], color='m')  
+        ax.tick_params(axis='both', labelsize=26)
+        for j in range(5, 21, 5):
+            ax = fig.add_subplot(5, 1, j/5+1)
+            ax.plot(ts_svs, M[:,2*j-1], color='m')
+            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.tick_params(axis='both', labelsize=34)
+            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to20_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.close()  
+    
+    if M.shape[1] >= 101:
+        fig = matplotlib.pyplot.figure(figsize=(35,40))
+        ax = fig.add_subplot(6, 1, 1)
+        ax.plot(ts_svs, M[:,0], color='m')  
+        ax.tick_params(axis='both', labelsize=26)
+        for j in range(10, 51, 10):
+            ax = fig.add_subplot(6, 1, j/10+1)
+            ax.plot(ts_svs, M[:,2*j-1], color='m')
+            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.tick_params(axis='both', labelsize=34)
+            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to50_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.close()  
+        
+    if M.shape[1] >= 201:
+        fig = matplotlib.pyplot.figure(figsize=(35,40))
+        ax = fig.add_subplot(11, 1, 1)
+        ax.plot(ts_svs, M[:,0], color='m')  
+        ax.tick_params(axis='both', labelsize=26)
+        for j in range(10, 101, 10):
+            ax = fig.add_subplot(11, 1, j/10+1)
+            ax.plot(ts_svs, M[:,2*j-1], color='m')
+            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.tick_params(axis='both', labelsize=34)
+            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.close()  
     
 def get_F(settings):
     S = settings.S
@@ -66,6 +123,7 @@ def get_F_sv_t_range(settings):
     q = settings.q  
     s = S-q+1
     
+    #ts_meas = joblib.load('%s/ts_sel_light.jbl'%settings.results_path)
     ts_meas = joblib.load('%s/ts_meas.jbl'%settings.results_path)
     
     ts_svs = []
@@ -97,7 +155,7 @@ def get_F_sv_t_range(settings):
             lp_filter_sin_i = numpy.sin(i*omega*ts_svs)
             F[:,2*i-1] = lp_filter_cos_i
             F[:,2*i]   = lp_filter_sin_i   
-    plot(settings, F, '')       
+    plot_t_sv_range(settings, F, '')       
     return F   
 
 
@@ -119,7 +177,7 @@ def on(settings, Z):
         # for j in range(0, i):            
         #     print 'Orthogonality: %0.2f'%numpy.inner(Z[:,i], Z[:,j])
             
-    plot(settings, Z, '_o_n')
+    plot_t_sv_range(settings, Z, '_o_n')
     return Z
 
 def on_modified(settings, Z):    
@@ -136,12 +194,12 @@ def on_modified(settings, Z):
         for j in range(0, start):            
             print 'Orthogonality: %0.2f'%numpy.inner(Z[:,start], Z[:,j])
             
-    plot(settings, Z, '_o_n_modified')
+    plot_t_sv_range(settings, Z, '_o_n_modified')
     return Z
 
 def on_qr(settings, Z):
     q_ortho, r = scipy.linalg.qr(Z, mode='economic')
-    plot(settings, q_ortho, '_qr')
+    plot_t_sv_range(settings, q_ortho, '_qr')
     return q_ortho, r
 
 def check_on(Z):

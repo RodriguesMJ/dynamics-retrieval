@@ -33,42 +33,66 @@ def myfunc_bins():
     cmd.show('lines', 'sel')    
     cmd.show('spheres', 'sel')
     cmd.set('sphere_scale', 0.10, 'all')
-    f = open('list.txt', 'r')
-    for i in f:
-	print i.split()
-	fn = i.split()[8]
+#     f = open('list.txt', 'r')
+#     for i in f:
+# 	print i.split()
+# 	fn = i.split()[8]
     
     #for i in range(18):
         #bin_left = str(i)
         #bin_right = str(i+2)
         
         #cmd.load('./map_bins/modes_1_3_bin_%s_%s.ccp4'%(bin_left, bin_right), 'nlsa_map')
-	cmd.load('./map_bins/%s'%(fn), 'nlsa_map')
-        cmd.zoom('sel')
-        cmd.set_view('\
-                     0.306473434,    0.183651671,   -0.933994949,\
-                     -0.874885261,   0.440932453,   -0.200377792,\
-                     0.375029773,    0.878551126,    0.295809299,\
-                     0.000000000,    0.000000000,   -52.589275360,\
-                     17.967073441,   40.217617035,   33.910476685,\
-                     40.623615265,   64.554939270,  -20.000000000' )
         
-        cmd.isomesh('map_modes_1_2_p4', 'nlsa_map', 4.0, 'sel', carve=2.0)
-        cmd.color('cyan', 'map_modes_1_2_p4')
-        cmd.isomesh('map_modes_1_2_m4', 'nlsa_map', -4.0, 'sel', carve=2.0)
-        cmd.color('purple', 'map_modes_1_2_m4')
-        cmd.set('mesh_width', 0.5)
-        cmd.set('fog_start', 0.1)
-        cmd.show('mesh', 'map_modes_1_2_p4')
-        cmd.show('mesh', 'map_modes_1_2_m4')
-        cmd.ray(2048, 1024)
-        #cmd.png('bin_%s_%s_nlsa_modes_1_3.png'%(bin_left, bin_right))
-        cmd.png('./FRAMES_bin_wat/%s.png'%fn)
+    cmd.load('./1.8_I_late_avg_light--dark_I_dark_avg.ccp4', 'map')
+    cmd.zoom('sel')
+    # cmd.set_view('\
+    #                   0.306473434,    0.183651671,   -0.933994949,\
+    #                   -0.874885261,   0.440932453,   -0.200377792,\
+    #                   0.375029773,    0.878551126,    0.295809299,\
+    #                   0.000000000,    0.000000000,   -52.589275360,\
+    #                   17.967073441,   40.217617035,   33.910476685,\
+    #                   40.623615265,   64.554939270,  -20.000000000' )
+                      
+    # cmd.set_view ('\
+    #  0.252402902,    0.840824425,   -0.478860587,\
+    # -0.849358559,    0.429601699,    0.306643665,\
+    #  0.463552684,    0.329325765,    0.822596014,\
+    #  0.000000000,    0.000000000,  -40.348606110,\
+    # 16.124301910,   44.466548920,   32.474205017,\
+    # 31.811149597,   48.886062622,  -20.000000000')
+    
+    # cmd.set_view ('\
+    #  0.303303361,    0.330118239,   -0.893883944,\
+    # -0.799947739,    0.597930849,   -0.050609607,\
+    #  0.517773747,    0.730411172,    0.445432097,\
+    # -2.000000000,    0.000000000,  -40.348606110,\
+    # 16.124301910,   44.466548920,   32.474205017,\
+    # 31.811149597,   48.886062622,  -20.000000000 ')
+    cmd.set_view ('\
+     0.031440444,    0.163291126,   -0.986077130,\
+    -0.890680611,    0.452252597,    0.046491794,\
+     0.453546643,    0.876818836,    0.159659103,\
+    -2.000000000,    0.000000000,  -40.348606110,\
+    16.124301910,   44.466548920,   32.474205017,\
+    31.811149597,   48.886062622,  -20.000000000 ')
+     
+    cmd.isomesh('map_p', 'map', 4.0, 'sel', carve=2.0)
+    cmd.color('cyan', 'map_p')
+    cmd.isomesh('map_m', 'map', -4.0, 'sel', carve=2.0)
+    cmd.color('purple', 'map_m')
+    cmd.set('mesh_width', 0.5)
+    cmd.set('fog_start', 0.1)
+    cmd.show('mesh', 'map_p')
+    cmd.show('mesh', 'map_m')
+    cmd.ray(2048, 1024)
+    #cmd.png('bin_%s_%s_nlsa_modes_1_3.png'%(bin_left, bin_right))
+    cmd.png('./1.8_I_late_avg_light--dark_I_dark_avg_4p0sig.png')
 
 
-        cmd.delete('map_modes_1_2_p4')
-        cmd.delete('map_modes_1_2_m4')
-        cmd.delete('nlsa_map')
+    cmd.delete('map_p')
+    cmd.delete('map_m')
+    cmd.delete('map')
         
         #cmd.load('../binning_Science/bin_%s_%s.ccp4'%(bin_left, bin_right), 'bin_map')
         #cmd.zoom('sel')
@@ -120,9 +144,9 @@ def myfunc_step(myArguments):
     cmd.show('spheres', 'sel')    
     cmd.set('sphere_scale', 0.10, 'all')
     
-    for time in range(0, 114600, 100):
+    for time in range(0, 104600, 100):
 		        
-        cmd.load('./1.5_bR_light_mode_0_%d_timestep_%0.6d_light--dark_bR_dark_mode_0_avg.ccp4'%(mode, time), 'nlsa_map')
+        cmd.load('./1.8_bR_light_p_0_%d_modes_timestep_%0.6d_light--dark_I_dark_avg.ccp4'%(mode, time), 'nlsa_map')
 		
         cmd.set_view ('\
 		               0.306473434,    0.183651671,   -0.933994949,\
@@ -131,19 +155,19 @@ def myfunc_step(myArguments):
 		               0.200000018,    2.000000000,  -43.038898468,\
 		              17.967073441,   40.217617035,   33.910476685,\
 		             -45.510078430,  131.587860107,  -20.000000000 ')        
-        cmd.isomesh('map_modes_0_x_p4', 'nlsa_map', 4.0, 'sel', carve=2.0)
-        cmd.color('cyan', 'map_modes_0_x_p4')
-        cmd.isomesh('map_modes_0_x_m4', 'nlsa_map', -4.0, 'sel', carve=2.0)
-        cmd.color('purple', 'map_modes_0_x_m4')
+        cmd.isomesh('map_p', 'nlsa_map', 3.0, 'sel', carve=2.0)
+        cmd.color('cyan', 'map_p')
+        cmd.isomesh('map_n', 'nlsa_map', -3.0, 'sel', carve=2.0)
+        cmd.color('purple', 'map_n')
         cmd.set('mesh_width', 0.3)
         cmd.set('fog_start', 0.1)
-        cmd.show('mesh', 'map_modes_0_x_p4')
-        cmd.show('mesh', 'map_modes_0_x_m4')
+        cmd.show('mesh', 'map_p')
+        cmd.show('mesh', 'map_n')
         cmd.ray(2048, 1024)
-        cmd.png('./FRAMES_light_mode_0_%d_4sig/nlsa_light_modes_0_%d_time_%d_4sigma.png'%(mode, mode, time))
+        cmd.png('./FRAMES_light_p_0_%d_modes_3sig/time_%0.6d_3sigma.png'%( mode, time))
 		
-        cmd.delete('map_modes_0_x_p4')
-        cmd.delete('map_modes_0_x_m4')
+        cmd.delete('map_p')
+        cmd.delete('map_n')
         cmd.delete('nlsa_map')
         
 def myfunc_C20():    
@@ -339,5 +363,6 @@ cmd.extend('myfunc_bcolor',  myfunc_bcolor)
 
 print "\n**** CALLING myfunc_step ****"
 myfunc_step(sys.argv[1:])  
+#myfunc_bins()  
 
 

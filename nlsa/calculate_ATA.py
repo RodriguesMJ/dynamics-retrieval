@@ -9,20 +9,20 @@ import joblib
 def f(loop_idx, settings):
     results_path = settings.results_path
     f_max = settings.f_max
-    n_lp_vectors = 2*f_max + 1
-    ATA_lp_filter = numpy.zeros((n_lp_vectors, n_lp_vectors))
-    print ATA_lp_filter.shape, ATA_lp_filter.dtype
+    n_vectors = 2*f_max + 1
+    ATA = numpy.zeros((n_vectors, n_vectors))
+    print ATA.shape, ATA.dtype
     start = time.time()
-    for i in range(loop_idx, loop_idx+1):#(n_lp_vectors):
+    for i in range(loop_idx, loop_idx+1):#(n_vectors):
         print i
         ai = joblib.load('%s/aj/a_%d.jbl'%(results_path,i))  
-        for j in range(i, n_lp_vectors):            
+        for j in range(i, n_vectors):            
             aj = joblib.load('%s/aj/a_%d.jbl'%(results_path,j))       
             ATA_ij = numpy.inner(ai, aj)
-            ATA_lp_filter[i,j] = ATA_ij
-            ATA_lp_filter[j,i] = ATA_ij
+            ATA[i,j] = ATA_ij
+            ATA[j,i] = ATA_ij
     print 'Time:', time.time() - start
-    joblib.dump(ATA_lp_filter, '%s/ATA_lp_filter/chunck_%d.jbl'%(results_path, loop_idx))
+    joblib.dump(ATA, '%s/ATA/chunck_%d.jbl'%(results_path, loop_idx))
     
 def main(args=None):
     parser = argparse.ArgumentParser(description="")

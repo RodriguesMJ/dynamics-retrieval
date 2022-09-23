@@ -5,10 +5,10 @@ clear
 
 % to load:
 path = './';
-fn = 'data_bR_light_int_unifdelay_SCL_rescut_nS133115_nBrg39172.mat'; 
+fn = 'data_bR_light_int_SCL_rescut_nS219559_nBrg39172.mat'; 
 fileData = [path, fn];
 
-load(fileData, 'M_scl', 'T_scl', 'miller_h', 'miller_k', 'miller_l', 't_uniform');
+load(fileData, 'M_scl', 'T_scl', 'miller_h', 'miller_k', 'miller_l');
 M_light = M_scl;
 T_light = T_scl;
 
@@ -38,7 +38,7 @@ l_selected = miller_l(s_light>1 & s_dark>1);
 
 % to save:
 path = './';
-fn = ['data_bR_light_selected_int_unifdelay_SCL_rescut_nS133115_nBrg', num2str(size(l_selected, 1)), '.mat']; 
+fn = ['data_bR_light_selected_int_SCL_rescut_nS219559_nBrg', num2str(size(l_selected, 1)), '.mat']; 
 fileData = [path, fn];
 
 save(fileData, 'T_light_selected', ...
@@ -46,7 +46,6 @@ save(fileData, 'T_light_selected', ...
                'h_selected', ...
                'k_selected', ...
                'l_selected', ...
-               't_uniform', ...
                '-v7.3'); 
            
 fn = ['data_bR_dark_selected_int_SCL_rescut_nS259423_nBrg', num2str(size(l_selected, 1)), '.mat']; 

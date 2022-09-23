@@ -36,7 +36,7 @@ redundancy = zeros((h_max+1),(k_max+1),(l_max+1));
        h = hklI(kk,1);
        k = hklI(kk,2);
        l = hklI(kk,3);
-       redundancy(h+1,k+1partialator-cxiklp,l+1) = redundancy(h+1,k+1,l+1)+1;
+       redundancy(h+1,k+1,l+1) = redundancy(h+1,k+1,l+1)+1;
      end
      fclose(fid_hklI);
  end

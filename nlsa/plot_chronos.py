@@ -139,9 +139,39 @@ def plot_abs(settings):
 #         matplotlib.pyplot.plot(range(m), topo)
 #         matplotlib.pyplot.savefig('%s/topo_%d.png'%(results_path, i))
 #         matplotlib.pyplot.close()
-
+def plot_ts(settings):
+    results_path = settings.results_path
+    
+    
+    VT_final = joblib.load('%s/VT_final.jbl'%results_path)
+    ts = joblib.load('%s/ts_svs.jbl'%results_path)
+    
+    nmodes = VT_final.shape[0]
+    s = VT_final.shape[1]
+    
+    print 'nmodes: ', nmodes
+    print 's: ', s
+    
+    out_folder = '%s/chronos'%(results_path)
+    if not os.path.exists(out_folder):
+        os.mkdir(out_folder)
+    
+    
+    for i in range(0, min(20, nmodes)):
+        print i
+        chrono = VT_final[i,:]
+        matplotlib.pyplot.figure(figsize=(30,10))
+        #matplotlib.pyplot.scatter(range(s), chrono)
+        matplotlib.pyplot.plot(ts, chrono, c='b', markeredgewidth=0)
+        #matplotlib.pyplot.plot(range(120), chrono[0:120], 'o-', markersize=8)
+        ax = matplotlib.pyplot.gca()
+        ax.tick_params(axis='x', labelsize=25)
+        ax.tick_params(axis='y', labelsize=25)
+        #matplotlib.pyplot.xlim([0, 30000])
+        matplotlib.pyplot.savefig('%s/chrono_ts_%d.png'%(out_folder, i), dpi=2*96)
+        matplotlib.pyplot.close()
 
 
 def main(settings):   
-    plot(settings)
+    plot_ts(settings)
     #plot_abs(settings)
