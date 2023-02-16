@@ -9,11 +9,9 @@ def myfunc_sphere():
     cmd.load('./bov_nlsa_refine_96_chainA.pdb')
     cmd.color('blue', selection=' (name C*)')
     cmd.color('lightblue', selection=' (name N*)')
-    #cmd.load('./1ps_chainA_superposed.pdb')
     cmd.show('sticks', 'all')
     cmd.bg_color('white')
     cmd.hide('all')
-    #cmd.select('sel', '((chain A and (resi 212 or resi 216 or resn RET) and not h.) or (chain A and (resi 407 or resi 411 or resi 415)))')
     cmd.select('sel', 'resn RET or resi 296')
     cmd.show('lines', 'sel')    
     cmd.show('spheres', 'sel')    
@@ -23,10 +21,7 @@ def myfunc_sphere():
    			    COLOR,    0.5, 1, 1,
    			    ALPHA, 0.5,
                 SPHERE,   9.69,  25.67,  26.92, 1.70, # Positive peak
-   			    #SPHERE,   8.18,  25.74,  27.02, 1.70, # C11
-                #SPHERE,   8.52,  24.50,  26.59, 1.70, # C12
-                #SPHERE,  10.84,  24.19,  27.63, 1.70  # C20 
-    		      ]	
+                ]	
 
     cmd.load_cgo(spherelist, 'segment',   1)
     
@@ -65,7 +60,6 @@ def myfunc_step(myArguments):
     cmd.load('./bov_nlsa_refine_96_chain%s.pdb'%chainID)
     cmd.color('blue', selection=' (name C*)')
     cmd.color('lightblue', selection=' (name N*)')
-    #cmd.load('./1ps_chainA_superposed.pdb')
     cmd.show('sticks', 'all')
     cmd.bg_color('white')
     cmd.hide('all')
@@ -142,7 +136,6 @@ def myfunc_bin(myArguments):
     cmd.load('./bov_nlsa_refine_96_chain%s.pdb'%chainID)
     cmd.color('blue', selection=' (name C*)')
     cmd.color('lightblue', selection=' (name N*)')
-    #cmd.load('./1ps_chainA_superposed.pdb')
     cmd.show('sticks', 'all')
     cmd.bg_color('white')
     cmd.hide('all')
@@ -154,10 +147,10 @@ def myfunc_bin(myArguments):
     
     map_folder = '.'
     out_folder = '.'
-    time_bin_labels = ['-331_to_-185_fs', '-185_to_22_fs', '22_to_381_fs']
+    time_bin_labels = ['early', 'late']
     for time_bin_label in time_bin_labels:    
-        cmd.load('%s/2.0_light_merged_%s_light--dark_alldark_merged.ccp4'%(map_folder, 
-                                                                           time_bin_label), 'nlsa_map')
+        cmd.load('%s/2.0_I_%s_avg_light--dark_I_dark_avg.ccp4'%(map_folder, 
+                                                                time_bin_label), 'mymap')
         cmd.zoom('sel')
         
         # RET A
@@ -183,24 +176,24 @@ def myfunc_bin(myArguments):
                            31.775022507,   48.101264954,  -20.000000000 ')
             cmd.move( 'x', -3 )
         
-        cmd.isomesh('map_modes_0_x_p', 'nlsa_map', sig, 'sel', carve=2.0)
-        cmd.color('cyan', 'map_modes_0_x_p')
-        cmd.isomesh('map_modes_0_x_m', 'nlsa_map', -sig, 'sel', carve=2.0)
-        cmd.color('purple', 'map_modes_0_x_m')
+        cmd.isomesh('map_plus', 'mymap', sig, 'sel', carve=2.0)
+        cmd.color('cyan', 'map_plus')
+        cmd.isomesh('map_minus', 'mymap', -sig, 'sel', carve=2.0)
+        cmd.color('purple', 'map_minus')
         cmd.set('mesh_width', 0.3)
         #cmd.set('fog_start', 0.1)
-        cmd.show('mesh', 'map_modes_0_x_p')
-        cmd.show('mesh', 'map_modes_0_x_m')
+        cmd.show('mesh', 'map_plus')
+        cmd.show('mesh', 'map_minus')
         cmd.ray(2048, 1024)
         
-        cmd.png('%s/2.0_light_merged_%s_light--dark_alldark_merged_chain%s_%.2fsig.png'%(out_folder, 
-                                                                                 time_bin_label, 
-                                                                                 chainID,
-                                                                                 sig))
+        cmd.png('%s/2.0_I_%s_avg_light--dark_I_dark_avg_chain%s_%.2fsig.png'%(out_folder, 
+                                                                              time_bin_label, 
+                                                                              chainID,
+                                                                              sig))
         
-        cmd.delete('map_modes_0_x_p')
-        cmd.delete('map_modes_0_x_m')
-        cmd.delete('nlsa_map')
+        cmd.delete('map_plus')
+        cmd.delete('map_minus')
+        cmd.delete('mymap')
 
 # def myfunc_step_pocket():    
 #     cmd.load('../bov_nlsa_refine_39_chainB.pdb')

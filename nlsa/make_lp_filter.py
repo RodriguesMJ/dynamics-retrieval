@@ -119,12 +119,12 @@ def get_F(settings):
 
 
 def get_F_sv_t_range(settings):
-    S = settings.S
+    
+    ts_meas = joblib.load('%s/ts_sel_light_mirrored.jbl'%settings.results_path)
+    #ts_meas = joblib.load('%s/ts_meas.jbl'%settings.results_path)
+    S = ts_meas.shape[0]
     q = settings.q  
     s = S-q+1
-    
-    #ts_meas = joblib.load('%s/ts_sel_light.jbl'%settings.results_path)
-    ts_meas = joblib.load('%s/ts_meas.jbl'%settings.results_path)
     
     ts_svs = []
     for i in range(s):
@@ -135,8 +135,8 @@ def get_F_sv_t_range(settings):
     joblib.dump(ts_svs, '%s/ts_svs.jbl'%settings.results_path)
     
     #t = numpy.asarray(range(s))
-    print 'ts_meas:', ts_meas.shape, ts_meas[0:5], '...', ts_meas[-2:]
-    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:5],  '...', ts_svs[-2:]
+    print 'ts_meas:', ts_meas.shape, ts_meas[0:5], '...', ts_meas[-3:]
+    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:5],  '...', ts_svs[-3:]
     
     T = ts_svs[-1]-ts_svs[0]
     omega = 2*numpy.pi / T

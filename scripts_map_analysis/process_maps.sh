@@ -10,11 +10,12 @@
 # INPUT
 # Note! Also set cell work, grid work, xyzlim in maprot command.
 #----------------------------------------------------------------------------------
-here=/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis
+#here=/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis
+here=/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI
 filetype='ccp4'    #'map' or 'ccp4'
 
-indir=$here/input_m_0_1_step_10_range_50000_99990
-outdir=$here/output_m_0_1_step_10_range_50000_99990
+indir=$here
+outdir=$here/output
 scriptdir=/das/work/p17/p17491/Cecilia_Casadei/NLSA/code/scripts_map_analysis
 #----------------------------------------------------------------------------------
 
@@ -43,6 +44,7 @@ mapmask mapin $f \
 XYZLIM CELL
 eof
 
+echo mapmask successful
 
 
 # 2. TRANSLATE MAP TO CARTESIAN COORDINATES
@@ -73,12 +75,15 @@ eof
 # GRID WORK 592 520 728
 # XYZLIM -348 244 -32 488 -63 665
 
+
+echo $outdir/tmp/$name'_fullcell.ccp4'
+
 maprot mapin $outdir/tmp/$name'_fullcell.ccp4' \
        wrkout $outdir/$name'_cartesian.map' << eof >> $outdir/log/$name'_cartesian.log'
 MODE FROM
-CELL WORK 74 65 91 90 90 90
-GRID WORK 592 520 728
-XYZLIM -348 244 -32 488 -63 665
+CELL WORK 42 54 78 90 90 90
+GRID WORK 336 432 624
+XYZLIM -40 296 77 509 7 631
 SYMM WORK 1
 AVER
 ROTA POLAR 0 0 0

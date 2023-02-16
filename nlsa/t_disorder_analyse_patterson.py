@@ -6,13 +6,17 @@
 # mapslicer blahblah_patt.ccp4
 
 ### To use this code:
-# source activate myenv_gemmi
+# conda activate myenv_gemmi
 # python t_disorder_analyse_patterson
-# source deactivate
+# conda deactivate
 
 import gemmi
 import numpy
 import matplotlib
+
+matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
+
+
 import joblib
 from matplotlib import pyplot
 import matplotlib.pylab
@@ -34,24 +38,21 @@ import matplotlib.pylab
 #pyplot.savefig('./rho_dark_ortho_patt_x0_z0.png')
 #pyplot.close()
 
-#path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/translation_corr_det'
-path = '/das/work/p18/p18594/cecilia-offline/rho_translation_correction_paper/two_translations'
-label = 'swissfel_combined_dark_xsphere_precise_1ps-dark'
-outfolder = '%s/method_bf'%path
-#label = 'rho'
 
-#fractions = numpy.arange(0.18, 0.24, 0.01)
-colors = matplotlib.pylab.cm.viridis(numpy.linspace(0,1,7)) 
+path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_rho/LPSA/translation_correction_light'
+label = 'I_light_avg'
+outfolder = '%s/method_bf'%path
+
 
 pyplot.figure(figsize=(14, 14))
 pyplot.ylim([-20,+50])
 
-fn = '%s/%s_original_patt.ccp4'%(outfolder, label)
+fn = '%s/ccp4s/%s_original_patt.ccp4'%(outfolder, label)
 ccp4 = gemmi.read_ccp4_map(fn)
 ccp4.setup()
 arr = numpy.array(ccp4.grid, copy=False)
 y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
-pyplot.plot(y,arr[0,:,0],label='uncorrected',c=colors[0])
+pyplot.plot(y,arr[0,:,0],label='uncorrected')
 print(ccp4.grid.unit_cell.b)
 print(arr.shape[1])
 print(y[0], y[-1])
@@ -69,21 +70,8 @@ print(arr[0,idx_t1,0], arr[0, idx_t2, 0])
 t1_uncorrected = arr[0,idx_t1,0]
 t2_uncorrected = arr[0,idx_t2,0]
 
-# for idx, fraction in enumerate(fractions):
-#     print(fraction)
-#     fn = '%s/%s_corrected_frac_%.2f_patt.ccp4'%(outfolder, label, fraction)
-#     ccp4 = gemmi.read_ccp4_map(fn)
-#     ccp4.setup()
-#     arr = numpy.array(ccp4.grid, copy=False)
-#     y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
-#     pyplot.plot(y,arr[0,:,0],label=r'$\alpha=%.2f$'%fraction,c=colors[idx+1])
-# matplotlib.pyplot.gca().tick_params(axis='both', labelsize=28)    
-# matplotlib.pyplot.legend(frameon=False, fontsize=34) 
-# matplotlib.pyplot.xlabel(r'$y \;\; [\AA]$', fontsize=34),
-# matplotlib.pyplot.ylabel('Patterson map value', fontsize=34, rotation=90, labelpad=4)
-        
 pyplot.tight_layout()
-pyplot.savefig('%s/%s_patt_x0_z0.png'%(outfolder, label),dpi=96*2)
+pyplot.savefig('%s/%s_original_patt_x0_z0.png'%(outfolder, label),dpi=96*2)
 pyplot.close()
 
 
@@ -118,24 +106,25 @@ if flag == 1:
         fraction_gamma = fraction_set[2]
           
         print('\nTesting domain fractions: %.2f %.2f %.2f'%(fraction_alpha, fraction_beta, fraction_gamma))
-        fn = '%s/%s_corrected_frac_%.2f_%.2f_%.2f_patt.ccp4'%(outfolder, label, fraction_alpha, fraction_beta, fraction_gamma)
+        fn = '%s/ccp4s/%s_corrected_frac_%.2f_%.2f_%.2f_patt.ccp4'%(outfolder, label, fraction_alpha, fraction_beta, fraction_gamma)
         ccp4 = gemmi.read_ccp4_map(fn)
         ccp4.setup()
         arr = numpy.array(ccp4.grid, copy=False)
         print(arr[0,idx_t1,0], arr[0, idx_t2, 0])
         if (abs(arr[0,idx_t1,0]) < abs(t1_uncorrected)/4 and abs(arr[0,idx_t2,0]) < abs(t2_uncorrected)/2):
+        #if (abs(arr[0,idx_t1,0]) < abs(t1_uncorrected)/2 and abs(arr[0,idx_t2,0]) < abs(t2_uncorrected)):
         
             alpha_lst.append(fraction_alpha)
             beta_lst.append(fraction_beta)
             gamma_lst.append(fraction_gamma)
             patt_t1_lst.append(abs(arr[0,idx_t1,0]))
             patt_t2_lst.append(abs(arr[0,idx_t2,0]))
-        
-    # joblib.dump(alpha_lst,   '%s/lst_alpha.jbl'%outfolder)
-    # joblib.dump(beta_lst,    '%s/lst_beta.jbl'%outfolder)
-    # joblib.dump(gamma_lst,   '%s/lst_gamma.jbl'%outfolder)
-    # joblib.dump(patt_t1_lst, '%s/lst_patt_t1.jbl'%outfolder)
-    # joblib.dump(patt_t2_lst, '%s/lst_patt_t2.jbl'%outfolder)
+            
+    joblib.dump(alpha_lst,   '%s/lst_alpha.jbl'%outfolder)
+    joblib.dump(beta_lst,    '%s/lst_beta.jbl'%outfolder)
+    joblib.dump(gamma_lst,   '%s/lst_gamma.jbl'%outfolder)
+    joblib.dump(patt_t1_lst, '%s/lst_patt_t1.jbl'%outfolder)
+    joblib.dump(patt_t2_lst, '%s/lst_patt_t2.jbl'%outfolder)
     
     matplotlib.pyplot.scatter(alpha_lst, beta_lst, s=20, c=patt_t1_lst, alpha=0.6, cmap='cool', edgecolors=None)
     matplotlib.pyplot.colorbar()
@@ -149,38 +138,37 @@ if flag == 1:
     matplotlib.pyplot.savefig('%s/abs_patt_t2_selected.png'%outfolder, dpi=96*4)
     matplotlib.pyplot.close()
 
-# alpha_lst   = joblib.load('%s/lst_alpha.jbl'%outfolder)
-# beta_lst    = joblib.load('%s/lst_beta.jbl'%outfolder)
-# gamma_lst   = joblib.load('%s/lst_gamma.jbl'%outfolder)
-# patt_t1_lst = joblib.load('%s/lst_patt_t1.jbl'%outfolder)
-# patt_t2_lst = joblib.load('%s/lst_patt_t2.jbl'%outfolder)
-
-colors = matplotlib.pylab.cm.viridis(numpy.linspace(0.1,0.9,2)) 
-
-pyplot.figure(figsize=(14, 14))
-pyplot.ylim([-20,+50])
-
-fn = '%s/%s_original_patt.ccp4'%(outfolder, label)
-ccp4 = gemmi.read_ccp4_map(fn)
-ccp4.setup()
-arr = numpy.array(ccp4.grid, copy=False)
-y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
-pyplot.plot(y,arr[0,:,0],label='uncorrected',c='b')
-
-fn = '%s/%s_corrected_frac_0.01_0.19_0.80_patt.ccp4'%(outfolder, label)
-ccp4 = gemmi.read_ccp4_map(fn)
-ccp4.setup()
-arr = numpy.array(ccp4.grid, copy=False)
-y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
-pyplot.plot(y,arr[0,:,0],label='corrected',c='m')
-matplotlib.pyplot.gca().tick_params(axis='both', labelsize=28)    
-
-matplotlib.pyplot.axhline(y=0, c='k')
-matplotlib.pyplot.legend(frameon=False, fontsize=34) 
-matplotlib.pyplot.xlabel(r'$y \;\; [\AA]$', fontsize=34),
-matplotlib.pyplot.ylabel('Patterson map value', fontsize=34, rotation=90, labelpad=4)
-        
-pyplot.tight_layout()
-pyplot.savefig('%s/%s_corrected_patt_x0_z0.png'%(outfolder, label),dpi=96*2)
-pyplot.close()
-   
+flag = 1
+if flag == 1:
+    
+    pyplot.figure(figsize=(14, 14))
+    pyplot.ylim([-20,+50])
+    
+    fn = '%s/ccp4s/%s_original_patt.ccp4'%(outfolder, label)
+    ccp4 = gemmi.read_ccp4_map(fn)
+    ccp4.setup()
+    arr = numpy.array(ccp4.grid, copy=False)
+    y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
+    pyplot.plot(y,arr[0,:,0],label='uncorrected',c='b')
+    
+    # SWissfel
+    fn = '%s/ccp4s/%s_corrected_frac_0.00_0.14_0.86_patt.ccp4'%(outfolder, label)
+    # SACLA
+    #fn = '%s/ccp4s/%s_corrected_frac_0.00_0.15_0.85_patt.ccp4'%(outfolder, label)
+    
+    ccp4 = gemmi.read_ccp4_map(fn)
+    ccp4.setup()
+    arr = numpy.array(ccp4.grid, copy=False)
+    y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
+    pyplot.plot(y,arr[0,:,0],label='corrected',c='m')
+    matplotlib.pyplot.gca().tick_params(axis='both', labelsize=28)    
+    
+    matplotlib.pyplot.axhline(y=0, c='k')
+    matplotlib.pyplot.legend(frameon=False, fontsize=34) 
+    matplotlib.pyplot.xlabel(r'$y \;\; [\AA]$', fontsize=34),
+    matplotlib.pyplot.ylabel('Patterson map value', fontsize=34, rotation=90, labelpad=4)
+            
+    pyplot.tight_layout()
+    pyplot.savefig('%s/%s_corrected_frac_0.00_0.14_0.86_patt_x0_z0.png'%(outfolder, label),dpi=96*2)
+    pyplot.close()
+       

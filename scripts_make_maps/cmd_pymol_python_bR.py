@@ -1,6 +1,7 @@
 from pymol import cmd
 import sys
 import getopt
+import joblib
 
 
 def myfunc_bcolor():
@@ -44,7 +45,7 @@ def myfunc_bins():
         
         #cmd.load('./map_bins/modes_1_3_bin_%s_%s.ccp4'%(bin_left, bin_right), 'nlsa_map')
         
-    cmd.load('./1.8_I_late_avg_light--dark_I_dark_avg.ccp4', 'map')
+    cmd.load('./2.3_I_late_avg_light--dark_I_dark_avg.ccp4', 'map')
     cmd.zoom('sel')
     # cmd.set_view('\
     #                   0.306473434,    0.183651671,   -0.933994949,\
@@ -87,7 +88,7 @@ def myfunc_bins():
     cmd.show('mesh', 'map_m')
     cmd.ray(2048, 1024)
     #cmd.png('bin_%s_%s_nlsa_modes_1_3.png'%(bin_left, bin_right))
-    cmd.png('./1.8_I_late_avg_light--dark_I_dark_avg_4p0sig.png')
+    cmd.png('./2.3_I_late_avg_light--dark_I_dark_avg_4p0sig.png')
 
 
     cmd.delete('map_p')
@@ -121,7 +122,7 @@ def myfunc_bins():
 
 def myfunc_step(myArguments):  
     try:
-        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["inputMode="])
+        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["nmodes="])
     except getopt.GetoptError:
         print 'Usage: ...'
         sys.exit(2)   
@@ -129,10 +130,11 @@ def myfunc_step(myArguments):
         if option == '-h':
             print 'Usage: ...'
             sys.exit()
-        elif option == "--inputMode":
-            mode = int(value)
+        elif option == "--nmodes":
+            n_modes = int(value)
   
-    print 'MODE: ', mode
+    print 'N MODES: ', n_modes
+    t_r_p_0 = joblib.load('./t_r_p_0.jbl')
     cmd.load('./6g7h.pdb')
     cmd.color('blue', selection=' (name C*)')
     cmd.load('./6g7k.pdb')
@@ -145,8 +147,8 @@ def myfunc_step(myArguments):
     cmd.set('sphere_scale', 0.10, 'all')
     
     for time in range(0, 104600, 100):
-		        
-        cmd.load('./1.8_bR_light_p_0_%d_modes_timestep_%0.6d_light--dark_I_dark_avg.ccp4'%(mode, time), 'nlsa_map')
+        t = t_r_p_0[time]	        
+        cmd.load('./1.8_bR_light_p_0_%d_modes_timestep_%0.6d_light--dark_I_dark_avg.ccp4'%(n_modes, time), 'nlsa_map')
 		
         cmd.set_view ('\
 		               0.306473434,    0.183651671,   -0.933994949,\
@@ -155,16 +157,22 @@ def myfunc_step(myArguments):
 		               0.200000018,    2.000000000,  -43.038898468,\
 		              17.967073441,   40.217617035,   33.910476685,\
 		             -45.510078430,  131.587860107,  -20.000000000 ')        
-        cmd.isomesh('map_p', 'nlsa_map', 3.0, 'sel', carve=2.0)
+        cmd.isomesh('map_p', 'nlsa_map', 4.0, 'sel', carve=2.0)
         cmd.color('cyan', 'map_p')
-        cmd.isomesh('map_n', 'nlsa_map', -3.0, 'sel', carve=2.0)
+        cmd.isomesh('map_n', 'nlsa_map', -4.0, 'sel', carve=2.0)
         cmd.color('purple', 'map_n')
         cmd.set('mesh_width', 0.3)
         cmd.set('fog_start', 0.1)
         cmd.show('mesh', 'map_p')
         cmd.show('mesh', 'map_n')
+        
+        cmd.pseudoatom('foo')
+        cmd.set('label_size', -3)
+        cmd.label('foo',"%0.1f"%t)
+        cmd.set('label_position',(0,-12,0))
+        
         cmd.ray(2048, 1024)
-        cmd.png('./FRAMES_light_p_0_%d_modes_3sig/time_%0.6d_3sigma.png'%( mode, time))
+        cmd.png('./FRAMES_light_p_0_%d_modes_4p0sig_label/time_%0.6d_4p0sigma.png'%(n_modes, time))
 		
         cmd.delete('map_p')
         cmd.delete('map_n')
@@ -208,7 +216,8 @@ def myfunc_C20():
         cmd.delete('nlsa_map')
 
 def myfunc_penta():
-    mode = 5  
+    n_modes = 1
+    t_r_p_0 = joblib.load('./t_r_p_0.jbl')
     cmd.load('./6g7h.pdb')
     cmd.color('lime', selection=' (name C*)')
     cmd.show('sticks', 'all')
@@ -220,16 +229,18 @@ def myfunc_penta():
     
     cmd.set('sphere_scale', 0.10, 'all')
     
-    for time in range(100, 99200, 100):
-        cmd.load('./map_mode_0_%d_phase_6g7h/1.5_bR_light_mode_0_%d_timestep_%d_light--dark_bR_dark_mode_0_avg.ccp4'%(mode, mode, time), 'nlsa_map')
+    for time in range(0, 104600, 100):
+        t = t_r_p_0[time]		        
+        cmd.load('./1.8_bR_light_p_0_%d_modes_timestep_%0.6d_light--dark_I_dark_avg.ccp4'%(n_modes, time), 'nlsa_map')
+        print 'loaded', t
         cmd.zoom('sel')
         cmd.set_view('\
      			   0.894949734,   -0.088602446,    0.437280059,\
      			   0.444157988,    0.269824058,   -0.854351640,\
-    			       -0.042292103,    0.958824337,    0.280833066,\
+			      -0.042292103,    0.958824337,    0.280833066,\
      			   0.200000018,    2.000000000,  -43.038898468,\
-    			       17.967073441,   40.217617035,   33.910476685,\
-   			       -40.510078430,  126.587860107,  -20.000000000 ')
+			       17.967073441,   40.217617035,   33.910476685,\
+   			      -40.510078430,  126.587860107,  -20.000000000 ')
         
         cmd.isomesh('map_modes_0_x_p4', 'nlsa_map', 4.0, 'sel', carve=2.0)
         cmd.color('cyan', 'map_modes_0_x_p4')
@@ -241,8 +252,14 @@ def myfunc_penta():
         cmd.show('mesh', 'map_modes_0_x_m4')
         cmd.clip('slab', 20)
         cmd.clip('far', +6)
+        
+        cmd.pseudoatom('foo')
+        cmd.set('label_size', -2)
+        cmd.label('foo',"%0.1f"%t)
+        cmd.set('label_position',(+4,-15,+5))
+        
         cmd.ray(2048, 1024)
-        cmd.png('./FRAMES_mode_0_%d_phase_6g7h_4sig_penta/nlsa_modes_0_%d_time_%d.png'%(mode, mode, time))
+        cmd.png('./FRAMES_light_p_0_%d_modes_4p0sig_penta/time_%0.6d_4p0sigma.png'%(n_modes, time))
         
         cmd.delete('map_modes_0_x_p4')
         cmd.delete('map_modes_0_x_m4')
@@ -287,7 +304,8 @@ def myfunc_sphere():
 
 
 def myfunc_cartoon():
-    modes = [2]
+    n_modes = 1
+    t_r_p_0 = joblib.load('./t_r_p_0.jbl')
     #modes = [1, 2, 3, 4, 5]
     cmd.load('./6g7h.pdb')
     #cmd.color('blue', selection=' (name C*)')  
@@ -309,47 +327,33 @@ def myfunc_cartoon():
      0.000000000,    1.000000000,  -62.475360870,\
     17.146160126,   39.064826965,   35.888786316,\
     17.158218384,  107.792404175,  -20.000000000  ')
-    #cmd.set_view ('\
-    #              0.396753609,    0.062696703,   -0.915781319,\
-    #              -0.904319465,   -0.144434780,   -0.401676387,\
-    #              -0.157453746,    0.987527311,   -0.000608850,\
-    #              0.000000000,    0.000000000, -177.199661255,\
-    #              17.146160126,   39.064826965,   35.888786316,\
-    #              131.882507324,  222.516723633,  -20.000000000' )
     
     cmd.set('sphere_scale', 0.08, 'all')
     
-    for mode in modes:
-	    print mode
-	    for time in range(38200, 99200, 100):#(100, 99200, 100)
-		cmd.load('./map_mode_0_%d_phase_6g7h/1.5_bR_light_mode_0_%d_timestep_%d_light--dark_bR_dark_mode_0_avg.ccp4'%(mode, mode, time), 'nlsa_map')        	        
-		#cmd.load('./MAPS_dark_mode_0_2/1.5_bR_dark_mode_0_2_timestep_%d_light--dark_bR_dark_mode_0_avg.ccp4'%(time), 'nlsa_map')
-		#cmd.zoom('sel')
-		cmd.set_view('\
-	    0.711140990,    0.037647203,   -0.702040076,\
-	    -0.699935138,   -0.055949945,   -0.712014735,\
-	    -0.066083595,    0.997723699,   -0.013440915,\
-	     0.000000000,    1.000000000,  -62.475360870,\
-	    17.146160126,   39.064826965,   35.888786316,\
-	    17.158218384,  107.792404175,  -20.000000000  ')
+    for time in range(0, 104600, 100):
+        t = t_r_p_0[time]		        
+        cmd.load('./1.8_bR_light_p_0_%d_modes_timestep_%0.6d_light--dark_I_dark_avg.ccp4'%(n_modes, time), 'nlsa_map')
+        print 'loaded', t
+        cmd.zoom('sel')
+        cmd.isomesh('map_modes_0_x_p4', 'nlsa_map', 4.0, 'all', carve=5.0)
+        cmd.color('cyan', 'map_modes_0_x_p4')
+        cmd.isomesh('map_modes_0_x_m4', 'nlsa_map', -4.0, 'all', carve=5.0)
+        cmd.color('purple', 'map_modes_0_x_m4')
+        cmd.set('mesh_width', 0.3)
+        cmd.set('fog_start', 0.1)
+        cmd.show('mesh', 'map_modes_0_x_p4')
+        cmd.show('mesh', 'map_modes_0_x_m4')
+        cmd.pseudoatom('foo')
+        cmd.set('label_size', -5)
+        cmd.label('foo',"%0.1f"%t)
+        cmd.set('label_position',(0,-25,0))
+        
+        cmd.ray(2048, 1024)
+        cmd.png('./FRAMES_light_p_0_%d_modes_4p0sig_cartoon/time_%0.6d_4p0sigma.png'%(n_modes, time))
 		
-		cmd.isomesh('map_modes_0_x_p4', 'nlsa_map', 4.5, 'all', carve=5.0)
-		cmd.color('cyan', 'map_modes_0_x_p4')
-		cmd.isomesh('map_modes_0_x_m4', 'nlsa_map', -4.5, 'all', carve=5.0)
-		cmd.color('purple', 'map_modes_0_x_m4')
-		cmd.set('mesh_width', 0.3)
-		cmd.set('fog_start', 0.1)
-		cmd.show('mesh', 'map_modes_0_x_p4')
-		cmd.show('mesh', 'map_modes_0_x_m4')
-		#cmd.clip('slab', 20)
-		#cmd.clip('far', +6)
-		cmd.ray(2048, 1024)
-		#cmd.png('TEST.png')
-		cmd.png('./FRAMES_light_mode_0_%d_4p5sig/cartoon_nlsa_modes_0_%d_time_%d_4p5sigma.png'%(mode, mode, time))
-		
-		cmd.delete('map_modes_0_x_p4')
-		cmd.delete('map_modes_0_x_m4')
-		cmd.delete('nlsa_map')
+        cmd.delete('map_modes_0_x_p4')
+        cmd.delete('map_modes_0_x_m4')
+        cmd.delete('nlsa_map')
 	    
 
 cmd.extend('myfunc_bins',    myfunc_bins)
@@ -362,7 +366,7 @@ cmd.extend('myfunc_bcolor',  myfunc_bcolor)
 
 
 print "\n**** CALLING myfunc_step ****"
-myfunc_step(sys.argv[1:])  
-#myfunc_bins()  
-
+#myfunc_step(sys.argv[1:])  
+#myfunc_cartoon()  
+myfunc_penta()
 

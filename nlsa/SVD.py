@@ -84,3 +84,48 @@ def main(settings):
     VT_final = project_chronos(VH, Phi)    
     print 'VT_final: ', VT_final.shape
     joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
+    
+def get_chronos(settings):
+    f_max = settings.f_max
+    results_path = settings.results_path
+    
+    ATA = joblib.load('%s/ATA.jbl'%results_path)[0:2*f_max+1, 0:2*f_max+1]
+    print 'A.T A: ', ATA.shape
+    
+    print 'Eigendecompose'
+    evals_ATA, evecs_ATA = numpy.linalg.eigh(ATA)
+    print 'Done'
+    evals_ATA[numpy.argwhere(evals_ATA<0)]=0  
+    S = numpy.sqrt(evals_ATA)
+    
+    sort_idxs = numpy.argsort(S)[::-1]
+    S = S[sort_idxs]
+    V = evecs_ATA[:, sort_idxs]
+    
+    joblib.dump(S, '%s/S.jbl'%results_path)
+    joblib.dump(V, '%s/V.jbl'%results_path)
+    
+    print 'Ordered singular values:'
+    for i in S:
+        print i
+        
+    evecs = joblib.load('%s/F_on.jbl'%results_path)
+    Phi = evecs[:,0:2*f_max+1]
+    
+    VT_final = numpy.matmul(V.T, Phi.T)
+    print 'VT_final: ', VT_final.shape
+    joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
+
+def get_topos(settings):
+    f_max = settings.f_max
+    results_path = settings.results_path
+    
+    S = joblib.load('%s/S.jbl'%results_path)
+    V = joblib.load('%s/V.jbl'%results_path)
+    U_temp = numpy.matmul(V, numpy.diag(1.0/S))
+    
+    A = joblib.load('%s/A_parallel.jbl'%results_path)[:,0:2*f_max+1]
+    print 'A:', A.shape
+    U = numpy.matmul(A, U_temp)  
+    joblib.dump(U[:,0:20], '%s/U.jbl'%results_path)
+        

@@ -8,6 +8,7 @@ Created on Thu Sep  1 15:57:09 2022
 import numpy
 import scipy.linalg
 import matplotlib.pyplot
+import random
 
 
 def get_F_sv_t_range(ts):
@@ -51,8 +52,16 @@ funcs_on, r = on_qr(funcs)
 T = ts[-1]-ts[0]
 omega = 2*numpy.pi / T
    
-x = 3*(1-numpy.exp(-(ts-700)/200)) #+ 2*(numpy.exp(-ts/600))#
-#x = 2*numpy.sin(11*omega*ts) + 1*numpy.cos(56*omega*ts)
+#x = 3*(1-numpy.exp(-(ts-700)/200)) #+ 2*(numpy.exp(-ts/600))#
+x_dyn = 2*numpy.sin(11*omega*ts) + 1*numpy.cos(56*omega*ts)
+
+N_observed = 50
+N_unobserved = 1000-N_observed
+idxs = random.sample(range(0, 1000), N_unobserved)
+idxs = sorted(idxs)
+x_dyn[idxs]=0
+
+x = 3 + x_dyn
 #matplotlib.pyplot.plot(ts, x)
 res_lst = []
 for i in range(funcs_on.shape[1]):
@@ -61,6 +70,8 @@ for i in range(funcs_on.shape[1]):
     res_lst.append(res)
     
 matplotlib.pyplot.plot(range(funcs_on.shape[1]), res_lst)
+
+print res_lst[0], res_lst[22], res_lst[111]
 #res = numpy.inner(x, funcs_on)
 
 # res = a_3 * x_1

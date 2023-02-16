@@ -92,8 +92,7 @@ def make_x(settings):
     e2 = 1-e1
     
     for i in range(m):        
-              
-        
+                     
         A_i = numpy.cos(0.6*(2*numpy.pi/m)*i) 
         B_i = numpy.sin(3*(2*numpy.pi/m)*i+numpy.pi/5) 
         C_i = numpy.sin(0.8*(2*numpy.pi/m)*i+numpy.pi/7) 

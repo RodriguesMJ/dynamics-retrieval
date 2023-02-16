@@ -1,23 +1,11 @@
 # -*- coding: utf-8 -*-
 import numpy
 import matplotlib.pyplot
-import random
 import joblib
 import os
-import time 
+
 import settings_synthetic_data_spiral as settings
-
-
-def Correlate(x1, x2):
-    x1Avg = numpy.average(x1)
-    x2Avg = numpy.average(x2)
-    numTerm = numpy.multiply(x1-x1Avg, x2-x2Avg)
-    num = numTerm.sum()
-    resX1Sq = numpy.multiply(x1-x1Avg, x1-x1Avg)
-    resX2Sq = numpy.multiply(x2-x2Avg, x2-x2Avg)
-    den = numpy.sqrt(numpy.multiply(resX1Sq.sum(), resX2Sq.sum()))
-    CC = num/den
-    return CC
+results_path = settings.results_path
 
 ### Test spiral
 # Ideal data
@@ -33,9 +21,9 @@ if flag == 1:
     x[1,:] = t*numpy.sin(t)#+0.5*numpy.random.rand(S)
     
     matplotlib.pyplot.scatter(x[0,:], x[1,:], s=1, c=t)
-    matplotlib.pyplot.savefig('%s/underlying_data.png'%settings.results_path)
+    matplotlib.pyplot.savefig('%s/underlying_data.png'%results_path)
     matplotlib.pyplot.close()    
-    joblib.dump(x, '%s/underlying_data_%d.jbl'%(settings.results_path, S))
+    joblib.dump(x, '%s/underlying_data_%d.jbl'%(results_path, S))
 
 
     
@@ -63,7 +51,6 @@ if flag == 1:
     mask[0,:] = sparsities
     x[0,:] = x_0
         
-    
     x_1 = t*numpy.sin(t)#+0.5*numpy.random.rand(S)
     sparsities = numpy.random.rand(S)
     sparsities[sparsities<thr]  = 0
@@ -75,11 +62,11 @@ if flag == 1:
     x[1,:] = x_1
     
     matplotlib.pyplot.scatter(x[0,:], x[1,:], s=1, c=t)
-    matplotlib.pyplot.savefig('%s/input_data.png'%settings.results_path)
+    matplotlib.pyplot.savefig('%s/input_data.png'%results_path)
     matplotlib.pyplot.close()
     
-    joblib.dump(x, '%s/x.jbl'%settings.results_path)
-    joblib.dump(mask, '%s/mask.jbl'%settings.results_path)
+    joblib.dump(x, '%s/x.jbl'%results_path)
+    joblib.dump(mask, '%s/mask.jbl'%results_path)
     
 #############################    
 ###     Plain SVD of x    ###
@@ -89,7 +76,7 @@ flag = 0
 if flag == 1: 
     import nlsa.SVD
     
-    x = joblib.load('%s/x.jbl'%settings.results_path)
+    x = joblib.load('%s/x.jbl'%results_path)
     U, S, VH = nlsa.SVD.SVD_f(x)
     U, S, VH = nlsa.SVD.sorting(U, S, VH)
     
@@ -98,9 +85,9 @@ if flag == 1:
     print 'S: ', S.shape
     print 'VH: ', VH.shape
 
-    joblib.dump(U, '%s/U.jbl'%settings.results_path)
-    joblib.dump(S, '%s/S.jbl'%settings.results_path)
-    joblib.dump(VH, '%s/VT_final.jbl'%settings.results_path)
+    joblib.dump(U, '%s/U.jbl'%results_path)
+    joblib.dump(S, '%s/S.jbl'%results_path)
+    joblib.dump(VH, '%s/VT_final.jbl'%results_path)
     
 flag = 0
 if flag == 1:  
@@ -111,11 +98,12 @@ if flag == 1:
     
 flag = 0
 if flag == 1:
+    import nlsa.correlate
     # reconstruct
     modes = [0, 1]
-    U = joblib.load('%s/U.jbl'%settings.results_path)
-    S = joblib.load('%s/S.jbl'%settings.results_path)
-    VH = joblib.load('%s/VT_final.jbl'%settings.results_path)
+    U = joblib.load('%s/U.jbl'%results_path)
+    S = joblib.load('%s/S.jbl'%results_path)
+    VH = joblib.load('%s/VT_final.jbl'%results_path)
     print U.shape, S.shape, VH.shape
     x_r_tot = 0
     for mode in modes:
@@ -125,19 +113,26 @@ if flag == 1:
         print u.shape, sv.shape, vT.shape
         x_r = sv*numpy.outer(u, vT)
         print x_r.shape
-        matplotlib.pyplot.scatter(x_r[0,:], x_r[1,:], s=1, c=range(x_r.shape[1]))
-        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+        matplotlib.pyplot.scatter(x_r[0,:], 
+                                  x_r[1,:], 
+                                  s=1, 
+                                  c=range(x_r.shape[1]))
+        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'
+                                  %(results_path, mode), dpi=96*3)
         matplotlib.pyplot.close()  
         x_r_tot += x_r
-    matplotlib.pyplot.scatter(x_r_tot[0,:], x_r_tot[1,:], s=1, c=range(x_r.shape[1]))
-    matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
+    matplotlib.pyplot.scatter(x_r_tot[0,:], 
+                              x_r_tot[1,:], 
+                              s=1, 
+                              c=range(x_r.shape[1]))
+    matplotlib.pyplot.savefig('%s/x_r_tot.png'%(results_path), dpi=96*3)
     matplotlib.pyplot.close()  
     
     x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'%settings.S)
     x_r_tot = x_r_tot.flatten()
     x_underlying = x_underlying.flatten()
     
-    CC = Correlate(x_underlying, x_r_tot)
+    CC = nlsa.correlate.Correlate(x_underlying, x_r_tot)
     print(CC)
     
    
@@ -162,9 +157,7 @@ if flag == 1:
         nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     else:
         print 'Undefined distance mode.'
-    
-
-    
+       
 flag = 0
 if flag == 1:
     import nlsa.plot_distance_distributions
@@ -220,11 +213,10 @@ flag = 0
 if flag == 1:
     import nlsa.eigendecompose
     nlsa.eigendecompose.main(settings)
-    
- 
+     
 flag = 0
 if flag == 1:
-    evecs = joblib.load('%s/evecs_sorted.jbl'%settings.results_path)
+    evecs = joblib.load('%s/evecs_sorted.jbl'%results_path)
     test = numpy.matmul(evecs.T, evecs)
     diff = abs(test - numpy.eye(settings.l))
     print numpy.amax(diff)
@@ -271,24 +263,36 @@ if flag == 1:
         
 flag = 0
 if flag == 1:
+    import nlsa.correlate
+    
+    S = settings.S
+    q = settings.q
     x_r_tot = 0
     for mode in [0]:
-        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
         print x_r[0,:].shape
-        matplotlib.pyplot.scatter(x_r[0,:], x_r[1,:], s=1, c=numpy.asarray(range(settings.S))[settings.q:settings.S-settings.q+1])
-        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+        matplotlib.pyplot.scatter(x_r[0,:], 
+                                  x_r[1,:], 
+                                  s=1, 
+                                  c=numpy.asarray(range(S))[q:S-q+1])
+        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'
+                                  %(results_path, mode), dpi=96*3)
         matplotlib.pyplot.close()  
         x_r_tot += x_r
-    matplotlib.pyplot.scatter(x_r_tot[0,:], x_r_tot[1,:], s=1, c=numpy.asarray(range(settings.S))[settings.q:settings.S-settings.q+1])#, c=range(settings.S))
-    matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
+    matplotlib.pyplot.scatter(x_r_tot[0,:], 
+                              x_r_tot[1,:], 
+                              s=1, 
+                              c=numpy.asarray(range(S))[q:S-q+1])
+    matplotlib.pyplot.savefig('%s/x_r_tot.png'
+                              %(results_path), dpi=96*3)
     matplotlib.pyplot.close() 
     
-    
-    x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'%settings.S)[:,settings.q:settings.S-settings.q+1]
+    x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'
+                               %S)[:,q:S-q+1]
     x_r_tot = x_r_tot.flatten()
     x_underlying = x_underlying.flatten()
     
-    CC = Correlate(x_underlying, x_r_tot)
+    CC = nlsa.correlate.Correlate(x_underlying, x_r_tot)
     print(CC)
         
 #############################    
@@ -303,8 +307,9 @@ if flag == 1:
 flag = 0
 if flag == 1: 
     import nlsa.SVD
+    q = settings.q
     
-    x = joblib.load('%s/X_backward_q_%d.jbl'%(settings.results_path, settings.q))
+    x = joblib.load('%s/X_backward_q_%d.jbl'%(results_path, q))
     U, S, VH = nlsa.SVD.SVD_f(x)
     U, S, VH = nlsa.SVD.sorting(U, S, VH)
     
@@ -313,9 +318,9 @@ if flag == 1:
     print 'S: ', S.shape
     print 'VH: ', VH.shape
 
-    joblib.dump(U, '%s/U.jbl'%settings.results_path)
-    joblib.dump(S, '%s/S.jbl'%settings.results_path)
-    joblib.dump(VH, '%s/VT_final.jbl'%settings.results_path)
+    joblib.dump(U, '%s/U.jbl'%results_path)
+    joblib.dump(S, '%s/S.jbl'%results_path)
+    joblib.dump(VH, '%s/VT_final.jbl'%results_path)
     
 flag = 0
 if flag == 1:  
@@ -338,47 +343,32 @@ if flag == 1:
         
 flag = 0
 if flag == 1:
+    import nlsa.Correlate
+    S = settings.S
+    q = settings.q
+    
     x_r_tot = 0
-    for mode in [0]:#settings.modes_to_reconstruct:
-        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+    for mode in [0]:
+        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
         print x_r[0,:].shape
-        matplotlib.pyplot.scatter(x_r[0,:], x_r[1,:], s=1, c=numpy.asarray(range(settings.S))[settings.q-1:settings.S-settings.q+1])
-        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
+        matplotlib.pyplot.scatter(x_r[0,:], 
+                                  x_r[1,:], 
+                                  s=1, 
+                                  c=numpy.asarray(range(S))[q-1:S-q+1])
+        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(results_path, mode), dpi=96*3)
         matplotlib.pyplot.close()  
         x_r_tot += x_r
-    matplotlib.pyplot.scatter(x_r_tot[0,:], x_r_tot[1,:], s=1, c=numpy.asarray(range(settings.S))[settings.q-1:settings.S-settings.q+1])#, c=range(settings.S))
-    matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
+    matplotlib.pyplot.scatter(x_r_tot[0,:], 
+                              x_r_tot[1,:], 
+                              s=1, 
+                              c=numpy.asarray(range(S))[q-1:S-q+1])
+    matplotlib.pyplot.savefig('%s/x_r_tot.png'%(results_path), dpi=96*3)
     matplotlib.pyplot.close()  
     
-    x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'%settings.S)[:,settings.q-1:settings.S-settings.q+1]
+    x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'
+                               %S)[:,q-1:S-q+1]
     x_r_tot = x_r_tot.flatten()
     x_underlying = x_underlying.flatten()
     
-    CC = Correlate(x_underlying, x_r_tot)
+    CC = nlsa.correlate.Correlate(x_underlying, x_r_tot)
     print(CC)
-    
-    
-# Test optimised XTX calculation
-flag = 0
-if flag == 1:
-    x = joblib.load('%s/x.jbl'%settings.results_path)
-    print x.shape
-    xTx = numpy.matmul(x.T, x)
-    joblib.dump(xTx, '%s/xTx.jbl'%settings.results_path)
-    print xTx.shape
-    
-    s = settings.S - settings.q    
-    XTX = numpy.zeros((s, s))
-    xTx = joblib.load('%s/xTx.jbl'%settings.results_path)
-    print xTx.shape, XTX.shape
-    for i in range(1, settings.q+1):
-        print i
-        XTX += xTx[i:i+s, i:i+s]
-    joblib.dump(XTX, '%s/XTX.jbl'%settings.results_path)
-    
-    old_X = joblib.load('../../synthetic_data_spiral/test1/ssa/X_backward_q_%d.jbl'%settings.q)
-    old_XTX = numpy.matmul(old_X.T, old_X)
-    print XTX.shape
-    diff = XTX - old_XTX[1:,1:]
-    
-    print numpy.amax(abs(diff))

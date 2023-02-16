@@ -18,6 +18,39 @@ def get_meanden(mode, label):
     meanposden = mat['meanposden']
     return meannegden, meanposden
 
+def plot_site_density_simple():
+    
+    folder = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI'
+    
+    # Atom in 6g7h   
+    atom = 0 # RET - C20   
+    
+    filename = '%s/results_C20_6g7k/meannegden_sigcutoff_0.0.jbl'%(folder)
+    meannegden = joblib.load(filename)
+    filename = '%s/results_C20_6g7k/meanposden_sigcutoff_0.0.jbl'%(folder)
+    meanposden = joblib.load(filename)
+    print meannegden.shape, meanposden.shape
+    
+    times = joblib.load('%s/t_r_p_0.jbl'%folder)
+    print times.shape
+    idxs = range(0,  104600, 100)
+    times_to_plot = times[idxs]
+    print times_to_plot.shape
+    
+    matplotlib.pyplot.figure(figsize=(40,10))
+    matplotlib.pyplot.gca().tick_params(axis='x', labelsize=38) 
+    matplotlib.pyplot.gca().tick_params(axis='y', labelsize=0) 
+    #matplotlib.pyplot.scatter(range(100,  99200, 100), meannegden[:,atom], c='magenta')
+    #matplotlib.pyplot.scatter(range(0,  104600, 100), meanposden[atom,:], c='cyan')
+    matplotlib.pyplot.scatter(times_to_plot, meanposden[atom,:], c='b')
+    matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
+    #matplotlib.pyplot.xlim(100, 99100)
+    matplotlib.pyplot.xlabel('Time [fs]', fontsize=45)
+    matplotlib.pyplot.ylabel('Electron density [a.u.]', fontsize=45)
+    figname = '%s/results_C20_6g7k/RET_C20.png'%(folder)
+    matplotlib.pyplot.savefig(figname)
+    matplotlib.pyplot.close()
+
 
 
 def plot_site_density():
@@ -356,7 +389,7 @@ def correlate_density():
 
             
 if __name__ == '__main__':
-    plot_site_density()
+    plot_site_density_simple()
     #plot_movie_density()
     #correlate_density()
     #calc_helix_CC()

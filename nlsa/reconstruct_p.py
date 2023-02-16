@@ -13,23 +13,26 @@ def f(settings):
     datatype = settings.datatype
     
     U = joblib.load('%s/U.jbl'%results_path)
-    if U.shape[1] > 20:
-        U = U[:,0:20]
     print 'U:', U.shape
     S = joblib.load('%s/S.jbl'%results_path)
     print 'S: ', S.shape
     VT_final = joblib.load('%s/VT_final.jbl'%results_path)
     print 'VT_final: ', VT_final.shape
-        
+    
+    VT_final = VT_final[:,0:settings.S-settings.q+1]
+    print 'VT_final: ', VT_final.shape
+    print settings.modes_to_reconstruct
+    
+    s = VT_final.shape[1]
+    print 's: ', s
+    m = settings.m
+    print 'm: ', m
+    
     for k in settings.modes_to_reconstruct:
         print 'Mode: ', k    
         
-        s = VT_final.shape[1]
-        print 's: ', s
-        m = U.shape[0]/q
-        print 'm: ', m
-        
         u_k = U[:,k]
+        #u_k = joblib.load('%s/uj/u_%d.jbl'%(results_path, k))
         s_k = S[k]
         v_k = VT_final[k,:]
         print u_k.shape, v_k.shape
@@ -37,7 +40,7 @@ def f(settings):
         block_idx_center = (q-1)/2
         print 'block_idx_center:', block_idx_center
         block_idxs = range(int(block_idx_center)-p, int(block_idx_center)+p+1)
-        print block_idxs
+        print 'block idxs: ', block_idxs
         
         starttime = time.time()
         
@@ -58,10 +61,10 @@ def f(settings):
             
             x_r += term[:,i+p:i+p+(s-ncopies+1)]
         x_r = x_r/ncopies
-        joblib.dump(x_r, '%s/movie_p_%d_mode_%d.jbl'%(results_path, p, k))
         
         print 'Time: ', time.time() - starttime
-
+        joblib.dump(x_r, '%s/movie_p_%d_mode_%d.jbl'%(results_path, p, k))
+       
 def f_ts(settings):        
     S = settings.S
     q = settings.q  

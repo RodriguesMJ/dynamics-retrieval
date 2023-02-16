@@ -43,24 +43,11 @@ def main(settings):
     print 'T_sparse nonzero: ', T_sparse.count_nonzero()
     print 'T_sparse done'
     
-    # #T_avg = numpy.average(T_full, axis=1)
-    # #print 'T_avg: ', T_avg.shape, T_avg.dtype
-    # #joblib.dump(T_avg, '%s/T_avg_%s.jbl'%(folder, label))
-    # #T_avg = numpy.repeat(T_avg[:,numpy.newaxis], T_full.shape[1], axis=1)
-    # #print 'T_avg: ', T_avg.shape, T_avg.dtype
-    # #dT_full = T_full - T_avg
-    
     file_mat = '%s/M_%s_full.mat'%(folder, label)
     f = h5py.File(file_mat, 'r') 
     M_full = f['/M']
     M_full = numpy.asarray(M_full, dtype=numpy.uint8)
     print 'M_full: ', M_full.shape, M_full.dtype
-    
-    # #dT_full = dT_full * M_full
-    # #print 'dT_full: ', dT_full.shape, dT_full.dtype
-    # #dT_sparse = sparse.csr_matrix(dT_full)
-    # #print 'dT_sparse: ', dT_sparse.shape, dT_sparse.dtype
-    # #joblib.dump(dT_sparse, '%s/dT_sparse_%s.jbl'%(folder, label))
     
     print 'Make sparse' 
     M_sparse = sparse.csr_matrix(M_full)

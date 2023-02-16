@@ -31,22 +31,22 @@ radius = 1.7; % ??
 distance = 0.2; % ??, how dense grid within sphere
 %sigmacutoff = 4; % exclude data below this sigma level
 
-mode = 1;
 
 
-label = '_step_10_range_178000_195000';
+
+%label = '_step_10_range_178000_195000';
 % Files
-here = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis';
-pdbpath = [here '/bov_nlsa_refine_96_edited.pdb']; % resting state pdb
-indir  = [here '/output_m_0_' num2str(mode) label '/']; % where to find .h5 maps
-outdir = [here '/results_m_0_' num2str(mode) label '/'];
+here = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI';
+pdbpath = [here '/6g7k_C20.pdb']; % resting state pdb
+indir  = [here '/output/']; % where to find .h5 maps
+outdir = [here '/results/'];
 
-nrmaps = 1701;
+nrmaps = 1046;
 mapnames = cell(nrmaps, 1);
 for idx = 1:nrmaps
-    %i = 100*idx;
-    i = 178000+10*(idx-1);
-    nm = ['2.0_rho_light_mode_0_' num2str(mode) '_timestep_' num2str(i, '%0.6d') '_light--dark_rho_alldark_mode_0_avg'];
+    i = 100*(idx-1);
+    %i = 178000+10*(idx-1);
+    nm = ['1.8_bR_light_p_0_1_modes_timestep_' num2str(i, '%0.6d') '_light--dark_I_dark_avg'];
     mapnames(idx,1) = {nm};
 end
 

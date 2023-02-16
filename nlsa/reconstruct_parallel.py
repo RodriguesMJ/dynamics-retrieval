@@ -7,7 +7,7 @@ import joblib
  
 def f(loop_idx, settings):
     results_path = settings.results_path
-    q = settings.q
+    #q = settings.q
     ncopies = settings.ncopies
     step = settings.paral_step_reconstruction
     datatype = settings.datatype
@@ -19,11 +19,12 @@ def f(loop_idx, settings):
         
     s = VT_final.shape[1]
     VT_final = VT_final.T      
-    m = U.shape[0]/q
+    m = settings.m
         
     for k in modes:
         print 'Mode: ', k    
         print 'loop_idx: ', loop_idx
+        #u_k = joblib.load('%s/uj/u_%d.jbl'%(results_path, k))
         
         start_j = loop_idx*step
         end_j = (loop_idx+1)*step
@@ -41,6 +42,7 @@ def f(loop_idx, settings):
                 i1 = i*m
                 i2 = (i+1)*m
                 x_r[:,j] = x_r[:,j] + U[i1:i2,k] * S[k] * VT_final[j+i,k]
+                #x_r[:,j] = x_r[:,j] + u_k[i1:i2] * S[k] * VT_final[j+i,k]
             x_r[:,j] = x_r[:,j]/ncopies
         joblib.dump(x_r, '%s/movie_mode_%d_chunck_%d.jbl'%(results_path, k, loop_idx))
         print 'x_r:', x_r.shape

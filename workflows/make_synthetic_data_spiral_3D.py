@@ -2,25 +2,11 @@
 import numpy
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-import random
 import joblib
 import os
-import time 
+
 import settings_synthetic_data_spiral_3D as settings
-
-
-def Correlate(x1, x2):
-    x1Avg = numpy.average(x1)
-    x2Avg = numpy.average(x2)
-    numTerm = numpy.multiply(x1-x1Avg, x2-x2Avg)
-    num = numTerm.sum()
-    resX1Sq = numpy.multiply(x1-x1Avg, x1-x1Avg)
-    resX2Sq = numpy.multiply(x2-x2Avg, x2-x2Avg)
-    den = numpy.sqrt(numpy.multiply(resX1Sq.sum(), resX2Sq.sum()))
-    CC = num/den
-    return CC
+results_path = settings.results_path
 
 ### Test spiral
 # Ideal data
@@ -59,12 +45,9 @@ if flag == 1:
         line.set_visible(False)
     for line in ax.zaxis.get_ticklines():
         line.set_visible(False)
-    
-    
-    plt.savefig('%s/test_underlying_data.pdf'%settings.results_path, dpi=96*4)
-   
-    joblib.dump(x, '%s/underlying_data.jbl'%(settings.results_path))
-
+     
+    plt.savefig('%s/test_underlying_data.pdf'%results_path, dpi=96*4)   
+    joblib.dump(x, '%s/underlying_data.jbl'%results_path)
 
     
 # Input data
@@ -81,7 +64,6 @@ if flag == 1:
     
     thr = 0.8
     
-    
     x_0 = t*numpy.cos(t)#+0.5*numpy.random.rand(S)
     sparsities = numpy.random.rand(S)    
     sparsities[sparsities<thr]  = 0
@@ -91,8 +73,7 @@ if flag == 1:
     x_0 = x_0*sparsities
     mask[0,:] = sparsities
     x[0,:] = x_0
-        
-    
+         
     x_1 = t*numpy.sin(t)#+0.5*numpy.random.rand(S)
     sparsities = numpy.random.rand(S)
     sparsities[sparsities<thr]  = 0
@@ -112,8 +93,7 @@ if flag == 1:
     x_2 = x_2*sparsities
     mask[2,:] = sparsities
     x[2,:] = x_2
-    
-    
+       
     x = joblib.load('%s/x.jbl'%settings.results_path)
     fig = plt.figure()
     plt.rcParams['grid.color'] = "white"
@@ -152,7 +132,7 @@ flag = 0
 if flag == 1: 
     import nlsa.SVD
     
-    x = joblib.load('%s/x.jbl'%settings.results_path)
+    x = joblib.load('%s/x.jbl'%results_path)
     U, S, VH = nlsa.SVD.SVD_f(x)
     U, S, VH = nlsa.SVD.sorting(U, S, VH)
     
@@ -161,9 +141,9 @@ if flag == 1:
     print 'S: ', S.shape
     print 'VH: ', VH.shape
 
-    joblib.dump(U, '%s/U.jbl'%settings.results_path)
-    joblib.dump(S, '%s/S.jbl'%settings.results_path)
-    joblib.dump(VH, '%s/VT_final.jbl'%settings.results_path)
+    joblib.dump(U, '%s/U.jbl'%results_path)
+    joblib.dump(S, '%s/S.jbl'%results_path)
+    joblib.dump(VH, '%s/VT_final.jbl'%results_path)
     
 flag = 0
 if flag == 1:  
@@ -174,29 +154,30 @@ if flag == 1:
     
 flag = 0
 if flag == 1:
+    import nlsa.correlate
+    
     # reconstruct
     modes = [0, 1, 2]
-    U = joblib.load('%s/U.jbl'%settings.results_path)
-    S = joblib.load('%s/S.jbl'%settings.results_path)
-    VH = joblib.load('%s/VT_final.jbl'%settings.results_path)
+    U = joblib.load('%s/U.jbl'%results_path)
+    S = joblib.load('%s/S.jbl'%results_path)
+    VH = joblib.load('%s/VT_final.jbl'%results_path)
     print U.shape, S.shape, VH.shape
     x_r_tot = 0
     for mode in modes:
         u = U[:, mode]
         sv = S[mode]
         vT = VH[mode, :]
-        print u.shape, sv.shape, vT.shape
         x_r = sv*numpy.outer(u, vT)
-        print x_r.shape
-        # plt.scatter(x_r[0,:], x_r[1,:], s=1, c=range(x_r.shape[1]))
-        # plt.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
-        # plt.close()  
         
         fig = plt.figure()
         plt.rcParams['grid.color'] = "white"
         ax = fig.gca(projection='3d')
         
-        ax.scatter(x_r[0,:], x_r[1,:], x_r[2,:], c=numpy.linspace(0,8*numpy.pi/2,num=settings.S), edgecolors='none')
+        ax.scatter(x_r[0,:], 
+                   x_r[1,:], 
+                   x_r[2,:], 
+                   c=numpy.linspace(0,8*numpy.pi/2,num=settings.S), 
+                   edgecolors='none')
         
         ax.w_xaxis.line.set_color("b")
         ax.w_yaxis.line.set_color("b")
@@ -216,8 +197,7 @@ if flag == 1:
         for line in ax.zaxis.get_ticklines():
             line.set_visible(False)
     
-        
-        plt.savefig('%s/x_r_mode_%d.pdf'%(settings.results_path, mode), dpi=96*3)
+        plt.savefig('%s/x_r_mode_%d.pdf'%(results_path, mode), dpi=96*3)
         plt.close()  
         
         x_r_tot += x_r
@@ -226,7 +206,11 @@ if flag == 1:
         plt.rcParams['grid.color'] = "white"
         ax = fig.gca(projection='3d')
         
-        ax.scatter(x_r_tot[0,:], x_r_tot[1,:], x_r_tot[2,:], c=numpy.linspace(0,8*numpy.pi/2,num=settings.S), edgecolors='none')
+        ax.scatter(x_r_tot[0,:], 
+                   x_r_tot[1,:], 
+                   x_r_tot[2,:], 
+                   c=numpy.linspace(0,8*numpy.pi/2,num=settings.S), 
+                   edgecolors='none')
         
         ax.w_xaxis.line.set_color("b")
         ax.w_yaxis.line.set_color("b")
@@ -246,24 +230,22 @@ if flag == 1:
         for line in ax.zaxis.get_ticklines():
             line.set_visible(False)
         
-    
         x_underlying = joblib.load('../../synthetic_data_spiral_3D/test1/underlying_data.jbl')
         x_r_tot_flat = x_r_tot.flatten()
         x_underlying = x_underlying.flatten()
         
-        CC = Correlate(x_underlying, x_r_tot_flat)
+        CC = nlsa.correlate.Correlate(x_underlying, x_r_tot_flat)
         print(CC)
         
         plt.title('CC: %.4f'%CC)
         
-        plt.savefig('%s/x_r_%d_modes.pdf'%(settings.results_path, mode+1), dpi=96*3)
+        plt.savefig('%s/x_r_%d_modes.pdf'%(results_path, mode+1), dpi=96*3)
         plt.close()  
         
 
 #############################    
 ###         NLSA          ###
 #############################
-
 
 # NO LP FILTERING
 flag = 0
@@ -279,9 +261,7 @@ if flag == 1:
         nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     else:
         print 'Undefined distance mode.'
-    
-
-    
+        
 flag = 0
 if flag == 1:
     import nlsa.plot_distance_distributions
@@ -388,24 +368,27 @@ if flag == 1:
         
 flag = 0
 if flag == 1:
+    import nlsa.correlate
+    S = settings.S
+    q = settings.q
     x_r_tot = 0
     for mode in [0]:
         x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
         print x_r[0,:].shape
-        matplotlib.pyplot.scatter(x_r[0,:], x_r[1,:], s=1, c=numpy.asarray(range(settings.S))[settings.q:settings.S-settings.q+1])
-        matplotlib.pyplot.savefig('%s/x_r_mode_%d.png'%(settings.results_path, mode), dpi=96*3)
-        matplotlib.pyplot.close()  
+        plt.scatter(x_r[0,:], x_r[1,:], s=1, c=numpy.asarray(range(S))[q:S-q+1])
+        plt.savefig('%s/x_r_mode_%d.png'%(results_path, mode), dpi=96*3)
+        plt.close()  
         x_r_tot += x_r
-    matplotlib.pyplot.scatter(x_r_tot[0,:], x_r_tot[1,:], s=1, c=numpy.asarray(range(settings.S))[settings.q:settings.S-settings.q+1])#, c=range(settings.S))
-    matplotlib.pyplot.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
-    matplotlib.pyplot.close() 
+    plt.scatter(x_r_tot[0,:], x_r_tot[1,:], s=1, c=numpy.asarray(range(S))[q:S-q+1])
+    plt.savefig('%s/x_r_tot.png'%(settings.results_path), dpi=96*3)
+    plt.close() 
     
-    
-    x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'%settings.S)[:,settings.q:settings.S-settings.q+1]
+    x_underlying = joblib.load('../../synthetic_data_spiral/underlying_data_%d.jbl'
+                               %S)[:,q:S-q+1]
     x_r_tot = x_r_tot.flatten()
     x_underlying = x_underlying.flatten()
     
-    CC = Correlate(x_underlying, x_r_tot)
+    CC = nlsa.correlate.Correlate(x_underlying, x_r_tot)
     print(CC)
         
 #############################    
@@ -421,7 +404,7 @@ flag = 0
 if flag == 1: 
     import nlsa.SVD
     
-    x = joblib.load('%s/X_backward_q_%d.jbl'%(settings.results_path, settings.q))
+    x = joblib.load('%s/X_backward_q_%d.jbl'%(results_path, settings.q))
     U, S, VH = nlsa.SVD.SVD_f(x)
     U, S, VH = nlsa.SVD.sorting(U, S, VH)
     
@@ -430,9 +413,9 @@ if flag == 1:
     print 'S: ', S.shape
     print 'VH: ', VH.shape
 
-    joblib.dump(U, '%s/U.jbl'%settings.results_path)
-    joblib.dump(S, '%s/S.jbl'%settings.results_path)
-    joblib.dump(VH, '%s/VT_final.jbl'%settings.results_path)
+    joblib.dump(U, '%s/U.jbl'%results_path)
+    joblib.dump(S, '%s/S.jbl'%results_path)
+    joblib.dump(VH, '%s/VT_final.jbl'%results_path)
     
 flag = 0
 if flag == 1:  
@@ -455,14 +438,22 @@ if flag == 1:
         
 flag = 0
 if flag == 1:
+    import nlsa.correlate
+    
     x_r_tot = 0
+    S = settings.S
+    q = settings.q
     for mode in settings.modes_to_reconstruct:
-        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+        x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
         
         fig = plt.figure()
         plt.rcParams['grid.color'] = "white"
         ax = fig.gca(projection='3d')
-        ax.scatter(x_r[0,:], x_r[1,:], x_r[2,:], c=numpy.linspace(0,8*numpy.pi/2,num=settings.S)[settings.q-1:settings.S-settings.q+1], edgecolors='none')
+        ax.scatter(x_r[0,:], 
+                   x_r[1,:], 
+                   x_r[2,:], 
+                   c=numpy.linspace(0,8*numpy.pi/2,num=S)[q-1:S-q+1], 
+                   edgecolors='none')
         
         ax.w_xaxis.line.set_color("b")
         ax.w_yaxis.line.set_color("b")
@@ -482,7 +473,7 @@ if flag == 1:
         for line in ax.zaxis.get_ticklines():
             line.set_visible(False)
     
-        plt.savefig('%s/x_r_mode_%d.pdf'%(settings.results_path, mode), dpi=96*3)
+        plt.savefig('%s/x_r_mode_%d.pdf'%(results_path, mode), dpi=96*3)
         plt.close()  
         
         x_r_tot += x_r
@@ -490,7 +481,11 @@ if flag == 1:
         fig = plt.figure()
         plt.rcParams['grid.color'] = "white"
         ax = fig.gca(projection='3d')        
-        ax.scatter(x_r_tot[0,:], x_r_tot[1,:], x_r_tot[2,:], c=numpy.linspace(0,8*numpy.pi/2,num=settings.S)[settings.q-1:settings.S-settings.q+1], edgecolors='none')
+        ax.scatter(x_r_tot[0,:], 
+                   x_r_tot[1,:], 
+                   x_r_tot[2,:], 
+                   c=numpy.linspace(0,8*numpy.pi/2,num=S)[q-1:S-q+1], 
+                   edgecolors='none')
         
         ax.w_xaxis.line.set_color("b")
         ax.w_yaxis.line.set_color("b")
@@ -510,41 +505,16 @@ if flag == 1:
         for line in ax.zaxis.get_ticklines():
             line.set_visible(False)
     
-        x_underlying = joblib.load('../../synthetic_data_spiral_3D/test1/underlying_data.jbl')[:,settings.q-1:settings.S-settings.q+1]
+        x_underlying = joblib.load(
+            '../../synthetic_data_spiral_3D/test1/underlying_data.jbl'
+                                   )[:,q-1:S-q+1]
         x_r_tot_flat = x_r_tot.flatten()
         x_underlying = x_underlying.flatten()
         
-        CC = Correlate(x_underlying, x_r_tot_flat)
+        CC = nlsa.correlate.Correlate(x_underlying, x_r_tot_flat)
         print(CC)
         
         plt.title('CC: %.4f'%CC)
         
-        plt.savefig('%s/x_r_%d_modes.pdf'%(settings.results_path, mode+1), dpi=96*3)
+        plt.savefig('%s/x_r_%d_modes.pdf'%(results_path, mode+1), dpi=96*3)
         plt.close()  
-        
-    
-    
-# Test optimised XTX calculation
-flag = 0
-if flag == 1:
-    x = joblib.load('%s/x.jbl'%settings.results_path)
-    print x.shape
-    xTx = numpy.matmul(x.T, x)
-    joblib.dump(xTx, '%s/xTx.jbl'%settings.results_path)
-    print xTx.shape
-    
-    s = settings.S - settings.q    
-    XTX = numpy.zeros((s, s))
-    xTx = joblib.load('%s/xTx.jbl'%settings.results_path)
-    print xTx.shape, XTX.shape
-    for i in range(1, settings.q+1):
-        print i
-        XTX += xTx[i:i+s, i:i+s]
-    joblib.dump(XTX, '%s/XTX.jbl'%settings.results_path)
-    
-    old_X = joblib.load('../../synthetic_data_spiral/test1/ssa/X_backward_q_%d.jbl'%settings.q)
-    old_XTX = numpy.matmul(old_X.T, old_X)
-    print XTX.shape
-    diff = XTX - old_XTX[1:,1:]
-    
-    print numpy.amax(abs(diff))

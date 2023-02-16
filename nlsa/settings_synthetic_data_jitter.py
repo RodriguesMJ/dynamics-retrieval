@@ -2,16 +2,20 @@
 import numpy
 import math
 
-jitter_factor = 0.5
+jitter_factor = 0.0
+
+if jitter_factor == 0.0:
+    test_n = 18
+    
 if jitter_factor == 0.3:
-    test_n = 5   
+    test_n = 5
 if jitter_factor == 1.0:
     test_n = 6
 if jitter_factor == 0.1:
     test_n = 7
 if jitter_factor == 0.5:
     test_n = 8
-root_f = '../../synthetic_data_jitter/test%d'%test_n
+root_f = '../../synthetic_data_jitter/test%d/LPSA_dI_2'%test_n
 
 datatype = numpy.float64
 
@@ -21,13 +25,14 @@ S = 30000
 T_model = 26000 #S-q+1
 tc = float(S)/2
 
+#results_path = root_f
 #results_path = '%s/binning'%root_f
 ############
 ### LPSA ###
 ############
 
 #PARAS SCANS
-results_path = '%s/LPSA_para_search'%root_f
+results_path = '%s'%root_f
 f_max_q_scan = 100
 q_f_max_scan = 4001
 

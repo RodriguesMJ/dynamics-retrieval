@@ -4,6 +4,33 @@ import numpy
 import joblib
 import h5py
 
+def get_meanden_simple():
+    
+    sigmacutoffs = [0]
+    here = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI'
+    
+    fn = '%s/results/mapd0.mat'%(here)
+
+    print 'Loading'
+    
+    f = h5py.File(fn, 'r') 
+    mapd0 = numpy.asarray(f['/mapd0'], dtype=numpy.float32)
+    print 'mapd0 :', mapd0.shape, mapd0.dtype    
+    
+    for sigmacutoff in sigmacutoffs:
+        print 'Sigma cutoff: ', sigmacutoff
+        meanposden = numpy.mean(numpy.where(mapd0 <  sigmacutoff, 0, mapd0), axis=0)
+        meannegden = numpy.mean(numpy.where(mapd0 > -sigmacutoff, 0, mapd0), axis=0)
+        joblib.dump(meanposden, 
+                    '%s/results/meanposden_sigcutoff_%.1f.jbl'
+                    %(here,  sigmacutoff))
+        joblib.dump(meannegden, 
+                    '%s/results/meannegden_sigcutoff_%.1f.jbl'
+                    %(here,  sigmacutoff))
+        print 'meanposden: ', meanposden.shape, meanposden.dtype
+        print 'meannegden: ', meannegden.shape, meannegden.dtype
+
+
 def get_meanden(mode):
     
     radius = 1.7
@@ -85,4 +112,6 @@ if __name__ == "__main__":
     # for m in ms:
     #     get_meanden(m)
         
-    merge()
+    #merge()
+    
+    get_meanden_simple()
