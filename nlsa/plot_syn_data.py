@@ -23,6 +23,3 @@ def f(x, fn, title=''):
     matplotlib.pyplot.title(title)
     matplotlib.pyplot.savefig(fn, dpi=96*3)
     matplotlib.pyplot.close() 
-    
-    
-    

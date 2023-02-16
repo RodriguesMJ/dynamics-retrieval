@@ -10,19 +10,15 @@ import numpy
 import math
 import joblib
 import matplotlib.pyplot
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib import ticker
 
-import correlate
-import local_linearity
 
 def make_lp_filter_functions(settings):
-    import make_lp_filter
+    import nlsa.make_lp_filter
     
-    F = make_lp_filter.get_F(settings)
-    Q, R = make_lp_filter.on_qr(settings, F)
+    F = nlsa.make_lp_filter.get_F(settings)
+    Q, R = nlsa.make_lp_filter.on_qr(settings, F)
     
-    d = make_lp_filter.check_on(Q)
+    d = nlsa.make_lp_filter.check_on(Q)
     print numpy.amax(abs(d))
     
     joblib.dump(Q, '%s/F_on_qr.jbl'%settings.results_path)
@@ -82,13 +78,26 @@ if flag == 1:
         fopen.write('n_workers_reconstruction = %d\n'%n_workers_reconstruction)
         fopen.close()
 
+
+
+
+
+
+
+
+
+#### START
 flag = 0
 if flag == 1:    
     for q in qs:
         modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
         settings = __import__(modulename)
         
         print settings.q
+        print settings.f_max
         print settings.results_path
         
         make_lp_filter_functions(settings)
@@ -98,9 +107,15 @@ flag = 0
 if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
         settings = __import__(modulename)
         
         print settings.q
+        print settings.f_max
+        print settings.results_path
+        
         end_worker = settings.n_workers_A - 1
         os.system('sbatch -p day -t 1-00:00:00 --mem=350G --array=0-%d ../scripts_parallel_submission/run_parallel_A_fourier.sh %s'
                   %(end_worker, settings.__name__)) 
@@ -109,12 +124,17 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import nlsa.util_merge_A
-    for q in [5000]:
-        print q
+    for q in qs:
         modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
         settings = __import__(modulename)
         
         print settings.q
+        print settings.f_max
+        print settings.results_path
+        
         nlsa.util_merge_A.main(settings)
 
 flag = 0
@@ -122,12 +142,15 @@ if flag == 1:
     import nlsa.SVD
     print '\n****** RUNNING SVD ******'
     for q in qs:
-        
         modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
         settings = __import__(modulename)
         
-        print 'q: ', settings.q
-    
+        print settings.q
+        print settings.f_max
+        
         results_path = settings.results_path
         datatype = settings.datatype
     
@@ -158,21 +181,30 @@ if flag == 1:
     import nlsa.plot_chronos
     
     for q in qs:
-        
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
+        
         nlsa.plot_SVs.main(settings)       
-        #nlsa.plot_chronos.main(settings)
+        nlsa.plot_chronos.main(settings)
         
 
 flag = 0
 if flag == 1:
     for q in qs:
-        
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
         
         end_worker = settings.n_workers_reconstruction - 1
         os.system('sbatch -p day -t 1-00:00:00 --array=0-%d ../scripts_parallel_submission/run_parallel_reconstruction.sh %s'
@@ -185,23 +217,41 @@ if flag == 1:
     import nlsa.util_merge_x_r  
     for q in qs:
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
+        
         for mode in settings.modes_to_reconstruct:
             nlsa.util_merge_x_r.f(settings, mode) 
  
 
-flag = 1
+flag = 0
 if flag == 1:
-    for q in [4000]:
+    import nlsa.plot_syn_data
+    import nlsa.correlate
+    
+    for q in qs:
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
+        
+        rpath = settings.results_path
+        q = settings.q
+        S = settings.S
+        m = settings.m
+        ncopies = settings.ncopies
         
         benchmark = joblib.load('../../synthetic_data_5/test1/x.jbl')
-        print benchmark.shape
-        benchmark = benchmark[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)]
-        print benchmark.shape
+        benchmark = benchmark[:, q:q+(S-q-ncopies+1)]
         benchmark = benchmark.flatten()
     
         CCs = []
@@ -209,59 +259,43 @@ if flag == 1:
         x_r_tot = 0
         for mode in settings.modes_to_reconstruct:
             print mode
-            x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
+            x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(rpath, mode))
             
-            x_r_large = numpy.zeros((settings.m, settings.S))
+            x_r_large = numpy.zeros((m, S))
             x_r_large[:] = numpy.nan
-            x_r_large[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)] = x_r
-            cmap = matplotlib.cm.jet
-            cmap.set_bad('white')
-            im = matplotlib.pyplot.imshow(x_r_large, cmap=cmap)
-            ax = matplotlib.pyplot.gca()
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)   
-            cb = matplotlib.pyplot.colorbar(im, cax=cax)
-            tick_locator = ticker.MaxNLocator(nbins=3)
-            cb.locator = tick_locator
-            cb.update_ticks()                
-            matplotlib.pyplot.savefig('%s/x_r_mode_%d_jet_nan.png'%(settings.results_path, mode), dpi=96*3)
-            matplotlib.pyplot.close() 
+            x_r_large[:, q:q+(S-q-ncopies+1)] = x_r
+            
+            nlsa.plot_syn_data.f(x_r_large, 
+                                 '%s/x_r_mode_%d.png'%(rpath, mode))
             
             x_r_tot += x_r
-            print x_r_tot.shape
-                   
             x_r_tot_flat = x_r_tot.flatten()           
-            CC = correlate.Correlate(benchmark, x_r_tot_flat)
-            print CC
-                       
-            x_r_large = numpy.zeros((settings.m, settings.S))
-            x_r_large[:] = numpy.nan
-            x_r_large[:, settings.q:settings.q+(settings.S-settings.q-settings.ncopies+1)] = x_r_tot
-            cmap = matplotlib.cm.jet
-            cmap.set_bad('white')
-            im = matplotlib.pyplot.imshow(x_r_large, cmap=cmap)
-            matplotlib.pyplot.title('%.4f'%CC)
-            ax = matplotlib.pyplot.gca()
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)   
-            cb = matplotlib.pyplot.colorbar(im, cax=cax)
-            tick_locator = ticker.MaxNLocator(nbins=3)
-            cb.locator = tick_locator
-            cb.update_ticks()
-                
-            matplotlib.pyplot.savefig('%s/x_r_tot_%d_modes_jet_nan.png'%(settings.results_path, mode+1), dpi=96*3)
-            matplotlib.pyplot.close() 
-            
+            CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
             CCs.append(CC)
-        #joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
+            
+            x_r_large = numpy.zeros((m, S))
+            x_r_large[:] = numpy.nan
+            x_r_large[:, q:q+(S-q-ncopies+1)] = x_r_tot
+            
+            nlsa.plot_syn_data.f(x_r_large, 
+                                 '%s/x_r_tot_%d_modes.png'%(rpath, mode+1),
+                                 title='%.4f'%CC)
+                   
+        joblib.dump(CCs, '%s/reconstruction_CC_vs_nmodes.jbl'%rpath)
 
 
 flag = 0
 if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
+        
         CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
         print len(CCs)
         matplotlib.pyplot.scatter(range(1, len(CCs)+1), CCs, c='b')
@@ -271,31 +305,26 @@ if flag == 1:
         
 flag = 0
 if flag == 1:
+    import nlsa.local_linearity
+    
     for q in qs:
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
         
         local_linearity_lst = []
-        
         x_r_tot = 0
         for mode in settings.modes_to_reconstruct:
             print 'mode: ', mode
             x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(settings.results_path, mode))
             x_r_tot += x_r  
-            L = local_linearity.local_linearity_measure(x_r_tot)
-            #print 'x_r_tot:', x_r_tot.shape
-           
-            # approx_l = x_r_tot[:, 0:-3] - \
-            #            (   x_r_tot[:, 1:-2] - 1*(x_r_tot[:,2:-1]-x_r_tot[:,1:-2])  )
-            # #print 'approx_l:', approx_l.shape
-            # approx_r = x_r_tot[:, 3:]   - \
-            #            (   x_r_tot[:, 1:-2] + 2*(x_r_tot[:,2:-1]-x_r_tot[:,1:-2])  )
-            # #print 'approx_r:', approx_r.shape
-            # L = 0.5*(abs(approx_l) + abs(approx_r))
-            # #print L.shape
-            # L = numpy.average(L)
-            # print L
+            L = nlsa.local_linearity.local_linearity_measure(x_r_tot)
+            
             local_linearity_lst.append(L)
         joblib.dump(local_linearity_lst, '%s/local_linearity_vs_nmodes.jbl'%settings.results_path)        
  
@@ -303,8 +332,14 @@ flag = 0
 if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
-        settings = __import__(modulename)        
-        print 'q: ', settings.q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+        
+        settings = __import__(modulename)
+        
+        print settings.q
+        print settings.f_max
+        
         lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%settings.results_path)
         matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log(lls), c='b')
         matplotlib.pyplot.xticks(range(1,len(lls)+1,2))
