@@ -4,7 +4,8 @@ import random
 import numpy
 
 label = 'light'
-root_folder = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2'
+folder = '/das/work/p17/p17491/Cecilia_Casadei/NLSA'
+root_folder = '%s/data_bR_2'%folder
 results_path = '%s/results_LPSA/bR_%s_dI'%(root_folder, label)
 S = 119507
 m = 22727
@@ -23,4 +24,4 @@ print max(thrs)
 print numpy.average(sparsity_array)
 print numpy.average(sparsity_array_sampled)
 
-joblib.dump(thrs, '/das/work/p17/p17491/Cecilia_Casadei/NLSA/synthetic_data_jitter/test12/sparsity_thrs.jbl')
+joblib.dump(thrs, '%s/synthetic_data_jitter/test12/sparsity_thrs.jbl'%folder)
