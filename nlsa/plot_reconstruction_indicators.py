@@ -75,7 +75,6 @@ if flag == 1:
         
         Nmodes = len(CCs_enlsa)+1
         matplotlib.pyplot.figure(figsize=(8,15))
-        #matplotlib.pyplot.title('q = %d, b = %d, l = 50, log10eps = %s'%(q, b, log10eps), fontsize=20)
         matplotlib.pyplot.ylim(bottom=0.65, top=1.02)
         matplotlib.pyplot.xlim(left=0, right=Nmodes)
         matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
@@ -91,41 +90,6 @@ if flag == 1:
         matplotlib.pyplot.close()
 
 
-# flag = 0
-# if flag == 1:
-#     test_n = 6
-#     results_path = '%s/test%d'%(root_f, test_n)
-#     label = makelabel(test_n)
-    
-#     q=4000    
-#     log10eps = '1p0'
-    
-#     CCs_enlsa_b_3000 = joblib.load('%s/nlsa/q_%d/distance_calculation_onlymeasured_normalised/b_3000_eu_nns/log10eps_%s/reconstruction_CC_vs_nmodes.jbl'%(results_path, q, log10eps))
-#     CCs_tnlsa_b_3000 = joblib.load('%s/nlsa/q_%d/distance_calculation_onlymeasured_normalised/b_3000_time_nns/log10eps_%s/reconstruction_CC_vs_nmodes.jbl'%(results_path, q, log10eps))
-#     CCs_enlsa_b_1500 = joblib.load('%s/nlsa/q_%d/distance_calculation_onlymeasured_normalised/b_1500_eu_nns/log10eps_%s/reconstruction_CC_vs_nmodes.jbl'%(results_path, q, log10eps))
-#     CCs_tnlsa_b_1500 = joblib.load('%s/nlsa/q_%d/distance_calculation_onlymeasured_normalised/b_1500_time_nns/log10eps_%s/reconstruction_CC_vs_nmodes.jbl'%(results_path, q, log10eps))
-    
-#     Nmodes = len(CCs_enlsa_b_3000)+1
-#     #matplotlib.pyplot.figure(figsize=(15,10))
-#     matplotlib.pyplot.title('q = %d, l = 50, log10eps = %s'%(q, log10eps))
-#     matplotlib.pyplot.ylim(bottom=0.92, top=1.01)
-#     matplotlib.pyplot.xlim(left=0, right=Nmodes)
-#     matplotlib.pyplot.axhline(y=1, xmin=0, xmax=1, c='k', linewidth=1)
-#     matplotlib.pyplot.plot(range(1,Nmodes), CCs_enlsa_b_3000, '-', c='c', markersize=8, markeredgewidth=0.0, label='E-NLSA, b=3000')
-#     matplotlib.pyplot.plot(range(1,Nmodes), CCs_tnlsa_b_3000, '-', c='m', markersize=4, markeredgewidth=0.0, label='T-NLSA, b=3000')
-#     matplotlib.pyplot.plot(range(1,Nmodes), CCs_enlsa_b_1500, '-', c='b', markersize=8, markeredgewidth=0.0, label='E-NLSA, b=1500')
-#     matplotlib.pyplot.plot(range(1,Nmodes), CCs_tnlsa_b_1500, '-', c='k', markersize=4, markeredgewidth=0.0, label='T-NLSA, b=1500')
-    
-#     matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=18)
-#     matplotlib.pyplot.xlabel('n. modes', fontsize=14)
-#     matplotlib.pyplot.ylabel('CC', fontsize=14)
-#     matplotlib.pyplot.gca().tick_params(axis='both', labelsize=12)
-#     matplotlib.pyplot.xticks(range(1,Nmodes,2))
-#     matplotlib.pyplot.savefig('%s/reconstruction_ENLSA_TNLSA_%s_CC_vs_nmodes_b.png'%(results_path, label), dpi=96*3)
-#     matplotlib.pyplot.close()
-
-
-
 ##############
 #### LPSA ####
 ##############
@@ -135,14 +99,13 @@ if flag == 1:
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:#[5, 6]:
+    for test_n in [6]:
         
         label = makelabel(test_n)
         test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
         
         n_m = 20
         f_max = 100
-        #qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
         qs = [1, 100, 1000, 3000, 4000, 5000]
         n_curves = len(qs)
         
@@ -177,7 +140,6 @@ if flag == 1:
         
         n_m = 20
         q = 4000
-        #f_max_s = [1, 5, 10, 50, 100, 150, 300]
         f_max_s = [1, 5, 10, 50, 100, 300]
         n_curves = len(f_max_s)
         
@@ -212,7 +174,6 @@ if flag == 1:
         
         n_m = 20
         f_max = 100
-        #qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
         qs = [1, 100, 1000, 3000, 4000, 5000]
         n_curves = len(qs)
         
@@ -238,14 +199,13 @@ if flag == 1:
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:#[5,6]:
+    for test_n in [6]:
         
         label = makelabel(test_n)
         test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
         
         n_m = 20
         q = 4000
-        #f_max_s = [1, 5, 10, 50, 100, 150, 300]
         f_max_s = [1, 5, 10, 50, 100, 300]
         n_curves = len(f_max_s)
         
@@ -279,7 +239,6 @@ if flag == 1:
         
         n_m = 20
         f_max = 100
-        #qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
         qs = [1, 100, 1000, 3000, 4000, 5000]
         n_curves = len(qs)
         
@@ -306,14 +265,13 @@ if flag == 1:
 flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [6]:#[5,6]:
+    for test_n in [6]:
         
         label = makelabel(test_n)
         test_f = '%s/test%d/fourier_para_search'%(root_f, test_n)
         
         n_m = 20
         q = 4000
-        #f_max_s = [1, 5, 10, 50, 100, 150, 300]
         f_max_s = [1, 5, 10, 50, 100, 300]
         n_curves = len(f_max_s)
         
@@ -364,7 +322,6 @@ if flag == 1:
         n_m = 20
         f_max = 100
         p = 0
-        #qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001, 6001]
         qs = [1, 101, 1001, 3001, 4001, 5001]
         n_curves = len(qs)
         
@@ -405,7 +362,6 @@ if flag == 1:
             
         n_m = 20
         f_max = 100
-        #qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001, 6001]
         qs = [1, 101, 1001, 3001, 4001, 5001]
         n_curves = len(qs)
         

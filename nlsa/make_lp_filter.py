@@ -6,92 +6,58 @@ import scipy.linalg
 import joblib
 numpy.set_printoptions(precision=2)
 
-
-
-def plot(settings, M, label):
+def plot_f(settings, M, label, ts):
+        
     if M.shape[1] >= 11:
         fig = matplotlib.pyplot.figure(figsize=(35,40))
         ax = fig.add_subplot(6, 1, 1)
-        ax.plot(range(M.shape[0]), M[:,0], color='m')    
-        for j in range(1, 6):
-            ax = fig.add_subplot(6, 1, j+1)
-            ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
-            ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
-            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5.png'%(settings.results_path, label))
-        matplotlib.pyplot.close()  
-    
-    if M.shape[1] >= 201:
-        fig = matplotlib.pyplot.figure(figsize=(35,40))
-        ax = fig.add_subplot(11, 1, 1)
-        ax.plot(range(M.shape[0]), M[:,0], color='m')    
-        for j in range(10, 101, 10):
-            ax = fig.add_subplot(11, 1, j/10+1)
-            ax.plot(range(M.shape[0]), M[:,2*j-1], color='m')
-            ax.plot(range(M.shape[0]), M[:,2*j],   color='b')
-            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=26, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100.png'%(settings.results_path, label))
-        matplotlib.pyplot.close()  
-    
-   
-def plot_t_sv_range(settings, M, label):
-    ts_svs = joblib.load('%s/ts_svs.jbl'%settings.results_path) 
-    if M.shape[1] >= 11:
-        fig = matplotlib.pyplot.figure(figsize=(35,40))
-        ax = fig.add_subplot(6, 1, 1)
-        ax.plot(ts_svs, M[:,0], color='m')    
+        ax.plot(ts, M[:,0], color='m')    
         ax.tick_params(axis='both', labelsize=26)
         for j in range(1, 6):
             ax = fig.add_subplot(6, 1, j+1)
-            ax.plot(ts_svs, M[:,2*j-1], color='m')
-            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.plot(ts, M[:,2*j-1], color='m')
+            ax.plot(ts, M[:,2*j],   color='b')
             ax.tick_params(axis='both', labelsize=34)
             ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5.png'%(settings.results_path, label))
         matplotlib.pyplot.close()  
-    
+        
     if M.shape[1] >= 41:
         fig = matplotlib.pyplot.figure(figsize=(35,40))
         ax = fig.add_subplot(5, 1, 1)
-        ax.plot(ts_svs, M[:,0], color='m')  
+        ax.plot(ts, M[:,0], color='m')  
         ax.tick_params(axis='both', labelsize=26)
         for j in range(5, 21, 5):
             ax = fig.add_subplot(5, 1, j/5+1)
-            ax.plot(ts_svs, M[:,2*j-1], color='m')
-            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.plot(ts, M[:,2*j-1], color='m')
+            ax.plot(ts, M[:,2*j],   color='b')
             ax.tick_params(axis='both', labelsize=34)
             ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to20_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to20.png'%(settings.results_path, label))
         matplotlib.pyplot.close()  
     
     if M.shape[1] >= 101:
         fig = matplotlib.pyplot.figure(figsize=(35,40))
         ax = fig.add_subplot(6, 1, 1)
-        ax.plot(ts_svs, M[:,0], color='m')  
+        ax.plot(ts, M[:,0], color='m')  
         ax.tick_params(axis='both', labelsize=26)
         for j in range(10, 51, 10):
             ax = fig.add_subplot(6, 1, j/10+1)
-            ax.plot(ts_svs, M[:,2*j-1], color='m')
-            ax.plot(ts_svs, M[:,2*j],   color='b')
+            ax.plot(ts, M[:,2*j-1], color='m')
+            ax.plot(ts, M[:,2*j],   color='b')
             ax.tick_params(axis='both', labelsize=34)
             ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to50_ts_svs.png'%(settings.results_path, label))
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to50.png'%(settings.results_path, label))
         matplotlib.pyplot.close()  
+          
+def plot(settings, M, label):
+    ts = range(M.shape[0])
+    plot_f(settings, M, label, ts)   
         
-    if M.shape[1] >= 201:
-        fig = matplotlib.pyplot.figure(figsize=(35,40))
-        ax = fig.add_subplot(11, 1, 1)
-        ax.plot(ts_svs, M[:,0], color='m')  
-        ax.tick_params(axis='both', labelsize=26)
-        for j in range(10, 101, 10):
-            ax = fig.add_subplot(11, 1, j/10+1)
-            ax.plot(ts_svs, M[:,2*j-1], color='m')
-            ax.plot(ts_svs, M[:,2*j],   color='b')
-            ax.tick_params(axis='both', labelsize=34)
-            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to100_ts_svs.png'%(settings.results_path, label))
-        matplotlib.pyplot.close()  
-    
+def plot_t_sv_range(settings, M, label):
+    ts = joblib.load('%s/ts_svs.jbl'%settings.results_path) 
+    plot_f(settings, M, label, ts)
+               
 def get_F(settings):
     S = settings.S
     q = settings.q  
@@ -116,7 +82,6 @@ def get_F(settings):
             F[:,2*i]   = lp_filter_sin_i   
     plot(settings, F, '')       
     return F   
-
 
 def get_F_sv_t_range(settings):
     
@@ -161,7 +126,6 @@ def get_F_sv_t_range(settings):
             F[:,2*i]   = lp_filter_sin_i   
     plot_t_sv_range(settings, F, '')       
     return F   
-
 
 def normalise(v):
     mod_sq = numpy.inner(v,v)
