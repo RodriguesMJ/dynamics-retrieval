@@ -120,8 +120,9 @@ def get_F(settings):
 
 def get_F_sv_t_range(settings):
     
-    ts_meas = joblib.load('%s/ts_sel_light_mirrored.jbl'%settings.results_path)
-    #ts_meas = joblib.load('%s/ts_meas.jbl'%settings.results_path)
+    fn = '%s/ts_sel_light_mirrored.jbl'%settings.results_path #ts_meas,.jbl
+    ts_meas = joblib.load(fn)
+    
     S = ts_meas.shape[0]
     q = settings.q  
     s = S-q+1
@@ -134,9 +135,12 @@ def get_F_sv_t_range(settings):
     ts_svs = numpy.asarray(ts_svs)
     joblib.dump(ts_svs, '%s/ts_svs.jbl'%settings.results_path)
     
-    #t = numpy.asarray(range(s))
-    print 'ts_meas:', ts_meas.shape, ts_meas[0:5], '...', ts_meas[-3:]
-    print 'ts_svs:',  ts_svs.shape,  ts_svs[0:5],  '...', ts_svs[-3:]
+    print 'ts_meas:', ts_meas.shape
+    print 'start: ',  ts_meas[0]
+    print 'end: ',    ts_meas[-1]
+    print 'ts_svs:',  ts_svs.shape
+    print 'start: ',  ts_svs[0]
+    print 'end: ',    ts_svs[-1]
     
     T = ts_svs[-1]-ts_svs[0]
     omega = 2*numpy.pi / T
@@ -173,10 +177,7 @@ def on(settings, Z):
         for j in range(0, i):
             Z[:,i] = Z[:,i] - numpy.inner(Z[:,i], Z[:,j])*Z[:,j]
         Z[:,i] = normalise(Z[:,i])
-        #print 'Normalisation: %0.2f'%numpy.inner(Z[:,i], Z[:,i])
-        # for j in range(0, i):            
-        #     print 'Orthogonality: %0.2f'%numpy.inner(Z[:,i], Z[:,j])
-            
+        
     plot_t_sv_range(settings, Z, '_o_n')
     return Z
 
@@ -211,11 +212,6 @@ def main(settings):
     results_path = settings.results_path
     
     F = get_F(settings)
-    
-    d = check_on(F)
-    print numpy.amax(abs(d))
-    
-    #F_on = on(settings, F)
     Q, R = on_qr(settings, F)
     
     d = check_on(Q)

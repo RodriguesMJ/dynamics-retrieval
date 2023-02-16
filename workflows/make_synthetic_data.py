@@ -70,17 +70,6 @@ def make_x(settings):
     joblib.dump(x, '%s/x.jbl'%results_path)  
     joblib.dump(mask, '%s/mask.jbl'%results_path)
 
-def make_lp_filter_functions(settings):
-    import make_lp_filter
-    
-    results_path = settings.results_path
-    F = make_lp_filter.get_F(settings)
-    Q, R = make_lp_filter.on_qr(settings, F)
-    
-    d = make_lp_filter.check_on(Q)
-    print numpy.amax(abs(d))
-    
-    joblib.dump(Q, '%s/F_on_qr.jbl'%results_path)
 
 ########################
 ##### Make dataset #####
@@ -333,7 +322,8 @@ if flag == 1:
 
 flag = 0
 if flag == 1:
-    make_lp_filter_functions(settings)
+    import nlsa.make_lp_filter
+    nlsa.make_lp_filter.main(settings)
     
 flag = 0
 if flag == 1:
@@ -545,8 +535,8 @@ if flag == 1:
                       %settings.results_path)
     matplotlib.pyplot.scatter(range(1, len(CCs)+1), CCs, c='b')
     matplotlib.pyplot.xticks(range(1,len(CCs)+1,2))
-    matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_%d.png'
-                              %(settings.results_path, settings.q))
+    matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes.png'
+                              %(settings.results_path))
     matplotlib.pyplot.close()
   
 flag = 0
@@ -572,8 +562,8 @@ if flag == 1:
                       %settings.results_path)
     matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log(lls), c='b')
     matplotlib.pyplot.xticks(range(1,len(lls)+1,2))
-    matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes_q_%d.png'
-                              %(settings.results_path, settings.q))
+    matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes.png'
+                              %(settings.results_path))
     matplotlib.pyplot.close()   
 
     

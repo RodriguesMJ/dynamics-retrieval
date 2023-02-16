@@ -11,84 +11,83 @@ import math
 import joblib
 import matplotlib.pyplot
 
+def make_setts(fn, S, m, q, f_max, path):
+    paral_step_A = 400
+    n_workers_A = int(math.ceil(float(q)/paral_step_A))
+    ncopies = q
+    paral_step_reconstruction = 2000
+    n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
+    data_file = '%s/x.jbl'%path
+    
+    fopen = open(fn, 'w')
+    fopen.write('# -*- coding: utf-8 -*-\n')
+    fopen.write('import numpy\n')
+    fopen.write('S = %d\n'%S)
+    fopen.write('m = %d\n'%m)
+    fopen.write('q = %d\n'%q)    
+    fopen.write('f_max = %d\n'%f_max)
+    fopen.write('f_max_considered = f_max\n')
+    fopen.write('results_path = "%s"\n'%path)
+    fopen.write('paral_step_A = %d\n'%paral_step_A)
+    fopen.write('datatype = numpy.float64\n')
+    fopen.write('data_file = "%s"\n'%data_file)
+    fopen.write('n_workers_A = %d\n'%n_workers_A)
+    fopen.write('ncopies = %d\n'%ncopies)
+    fopen.write('modes_to_reconstruct = range(20)\n')
+    fopen.write('paral_step_reconstruction = %d\n'%paral_step_reconstruction)
+    fopen.write('n_workers_reconstruction = %d\n'%n_workers_reconstruction)
+    fopen.close()
 
-def make_lp_filter_functions(settings):
-    import nlsa.make_lp_filter
-    
-    F = nlsa.make_lp_filter.get_F(settings)
-    Q, R = nlsa.make_lp_filter.on_qr(settings, F)
-    
-    d = nlsa.make_lp_filter.check_on(Q)
-    print numpy.amax(abs(d))
-    
-    joblib.dump(Q, '%s/F_on_qr.jbl'%settings.results_path)
 
 
 root_path = '../../synthetic_data_5/test3/fourier_para_search' 
 m = 7000
 S = 30000
-paral_step_A = 400
-paral_step_reconstruction = 2000
-f_max = 100
-f_max_considered = f_max
 
-
-# Fourier filtering para search
-
-x = joblib.load('%s/x.jbl'%root_path)
-print x.shape
-
+#################################
+### LPSA PARA SEARCH : q-scan ###
+#################################
 qs = [1, 50, 100, 500, 1000, 2000, 3000, 4000, 5000]
-
-
+f_max = 100
 flag = 0
 if flag == 1:
     for q in qs:
+        
+        # MAKE OUTPUT FOLDER
         q_path = '%s/f_max_%d_q_%d'%(root_path, f_max, q)
         if not os.path.exists(q_path):
             os.mkdir(q_path)
+            
+        # MAKE SETTINGS FILE
+        fn = '/das/work/units/LBR-Xray/p17491/Cecilia_Casadei/NLSA/code/workflows/settings_q_%d.py'%q
+        make_setts(fn, S, m, q, f_max, q_path)
         
+
+####################################
+### LPSA PARA SEARCH : jmax-scan ###
+####################################
+q = 1
+f_max_s = [1, 5, 10, 50, 100, 150, 300]
+
 flag = 0
 if flag == 1:
-    for q in qs:
-        q_path = '%s/f_max_%d_q_%d'%(root_path, f_max, q)
-        fopen = open('/das/work/units/LBR-Xray/p17491/Cecilia_Casadei/NLSA/code/nlsa/settings_q_%d.py'%q, 'w')
-        fopen.write('# -*- coding: utf-8 -*-\n')
-        fopen.write('import numpy\n')
-        fopen.write('S = %d\n'%S)
-        fopen.write('m = %d\n'%m)
-        fopen.write('q = %d\n'%q)    
-        fopen.write('f_max = %d\n'%f_max)
-        fopen.write('f_max_considered = f_max\n')
-        fopen.write('results_path = "%s"\n'%q_path)
-        fopen.write('paral_step_A = %d\n'%paral_step_A)
-        fopen.write('datatype = numpy.float64\n')
-        data_file = '%s/x.jbl'%q_path
-        fopen.write('data_file = "%s"\n'%data_file)
-
-        n_workers_A = int(math.ceil(float(q)/paral_step_A))
-        fopen.write('n_workers_A = %d\n'%n_workers_A)
-        ncopies = q
-        fopen.write('ncopies = %d\n'%ncopies)
-        fopen.write('modes_to_reconstruct = range(20)\n')
-        fopen.write('paral_step_reconstruction = %d\n'%paral_step_reconstruction)
-
-
-        n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))
-        fopen.write('n_workers_reconstruction = %d\n'%n_workers_reconstruction)
-        fopen.close()
-
-
-
-
-
-
+    for f_max in f_max_s:
+        
+        # MAKE OUTPUT FOLDER
+        f_max_path = '%s/f_max_%d_q_%d'%(root_path, f_max, q)
+        if not os.path.exists(f_max_path):
+            os.mkdir(f_max_path)
+            
+        # MAKE SETTINGS FILE
+        fn = '/das/work/units/LBR-Xray/p17491/Cecilia_Casadei/NLSA/code/workflows/settings_f_max_%d.py'%f_max
+        make_setts(fn, S, m, q, f_max, f_max_path)
 
 
 
 #### START
 flag = 0
-if flag == 1:    
+if flag == 1:
+    import nlsa.make_lp_filter    
     for q in qs:
         modulename = 'settings_q_%d'%q
     # for f_max in f_max_s:
@@ -100,7 +99,7 @@ if flag == 1:
         print settings.f_max
         print settings.results_path
         
-        make_lp_filter_functions(settings)
+        nlsa.make_lp_filter.main(settings)
        
     
 flag = 0
@@ -297,10 +296,9 @@ if flag == 1:
         print settings.f_max
         
         CCs = joblib.load('%s/reconstruction_CC_vs_nmodes.jbl'%settings.results_path)
-        print len(CCs)
         matplotlib.pyplot.scatter(range(1, len(CCs)+1), CCs, c='b')
         matplotlib.pyplot.xticks(range(1,len(CCs)+1,2))
-        matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes_q_%d.png'%(settings.results_path, q))
+        matplotlib.pyplot.savefig('%s/reconstruction_CC_vs_nmodes.png'%(settings.results_path))
         matplotlib.pyplot.close()
         
 flag = 0
@@ -343,6 +341,5 @@ if flag == 1:
         lls = joblib.load('%s/local_linearity_vs_nmodes.jbl'%settings.results_path)
         matplotlib.pyplot.scatter(range(1, len(lls)+1), numpy.log(lls), c='b')
         matplotlib.pyplot.xticks(range(1,len(lls)+1,2))
-        matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes_q_%d.png'%(settings.results_path, q))
+        matplotlib.pyplot.savefig('%s/local_linearity_vs_nmodes.png'%(settings.results_path))
         matplotlib.pyplot.close()   
- 
