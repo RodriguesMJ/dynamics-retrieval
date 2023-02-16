@@ -4,6 +4,14 @@ import matplotlib.pyplot
 import os
 import numpy
 
+def f(xs, ys, xticks, fn):
+    matplotlib.pyplot.figure()
+    matplotlib.pyplot.xticks(xticks)   
+    matplotlib.pyplot.scatter(xs, ys, s=5, c='b')
+    matplotlib.pyplot.savefig(fn, dpi=96*2)
+    matplotlib.pyplot.close()
+    
+
 def main(settings):
 
     results_path = settings.results_path
@@ -22,31 +30,12 @@ def main(settings):
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
     
-    matplotlib.pyplot.figure()
-    matplotlib.pyplot.xticks(range(1,nmodes+1,2))   
-    matplotlib.pyplot.scatter(range(1,nmodes+1), S[0:nmodes], s=5, c='b')
-    matplotlib.pyplot.savefig('%s/SVs.png'%out_folder, dpi=96*2)
-    matplotlib.pyplot.close()
-    
     s0 = S[0]
     S_norm = S/s0
     
-    matplotlib.pyplot.figure()
-    matplotlib.pyplot.xticks(range(1,nmodes+1,2))   
-    matplotlib.pyplot.scatter(range(1,nmodes+1), numpy.log10(S_norm[0:nmodes]), s=5, c='b')
-    matplotlib.pyplot.savefig('%s/SVs_norm_log.png'%out_folder, dpi=96*2)
-    matplotlib.pyplot.close()
+    my_xs = range(1,nmodes+1)
+    my_xticks = range(1,nmodes+1,2)
     
-    matplotlib.pyplot.figure()
-    matplotlib.pyplot.xticks(range(1,nmodes+1,2))   
-    matplotlib.pyplot.scatter(range(1,nmodes+1), S_norm[0:nmodes], s=5, c='b')
-    matplotlib.pyplot.ylim([0, 1])
-    matplotlib.pyplot.savefig('%s/SVs_norm.png'%out_folder, dpi=96*2)
-    matplotlib.pyplot.close()
-    
-    matplotlib.pyplot.figure()
-    #matplotlib.pyplot.xticks(range(1,nmodes+1,2))   
-    matplotlib.pyplot.scatter(range(1,S.shape[0]+1), S_norm[0:S.shape[0]], s=5, c='b')
-    matplotlib.pyplot.ylim([0, 1])
-    matplotlib.pyplot.savefig('%s/SVs_norm_ext.png'%out_folder, dpi=96*2)
-    matplotlib.pyplot.close()
+    f(my_xs, S[0:nmodes], my_xticks, '%s/SVs.png'%out_folder)
+    f(my_xs, S_norm[0:nmodes], my_xticks, '%s/SVs_norm.png'%out_folder)
+    f(my_xs, numpy.log10(S_norm[0:nmodes]), my_xticks, '%s/SVs_norm_log.png'%out_folder)
