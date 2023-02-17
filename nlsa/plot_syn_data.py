@@ -21,5 +21,8 @@ def f(x, fn, title=''):
     cb.locator = tick_locator
     cb.update_ticks()
     matplotlib.pyplot.title(title)
+    if 'nolabels' in fn:
+        ax.axes.get_xaxis().set_ticks([])
     matplotlib.pyplot.savefig(fn, dpi=96*3)
     matplotlib.pyplot.close() 
+    

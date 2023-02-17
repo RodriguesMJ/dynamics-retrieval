@@ -18,8 +18,14 @@ def plot_f(settings, M, label, ts):
             ax.plot(ts, M[:,2*j-1], color='m')
             ax.plot(ts, M[:,2*j],   color='b')
             ax.tick_params(axis='both', labelsize=34)
-            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5.png'%(settings.results_path, label))
+            ax.text(0.01, 0.1, 
+                    'j=%d'%j, 
+                    fontsize=32, 
+                    horizontalalignment='left', 
+                    verticalalignment='center', 
+                    transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to5.png'
+                                  %(settings.results_path, label))
         matplotlib.pyplot.close()  
         
     if M.shape[1] >= 41:
@@ -32,8 +38,14 @@ def plot_f(settings, M, label, ts):
             ax.plot(ts, M[:,2*j-1], color='m')
             ax.plot(ts, M[:,2*j],   color='b')
             ax.tick_params(axis='both', labelsize=34)
-            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to20.png'%(settings.results_path, label))
+            ax.text(0.01, 0.1, 
+                    'j=%d'%j, 
+                    fontsize=32, 
+                    horizontalalignment='left', 
+                    verticalalignment='center', 
+                    transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to20.png'
+                                  %(settings.results_path, label))
         matplotlib.pyplot.close()  
     
     if M.shape[1] >= 101:
@@ -46,8 +58,14 @@ def plot_f(settings, M, label, ts):
             ax.plot(ts, M[:,2*j-1], color='m')
             ax.plot(ts, M[:,2*j],   color='b')
             ax.tick_params(axis='both', labelsize=34)
-            ax.text(0.01, 0.1, 'j=%d'%j, fontsize=32, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
-        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to50.png'%(settings.results_path, label))
+            ax.text(0.01, 0.1, 
+                    'j=%d'%j, 
+                    fontsize=32, 
+                    horizontalalignment='left', 
+                    verticalalignment='center', 
+                    transform=ax.transAxes)
+        matplotlib.pyplot.savefig('%s/lp_filter_functions%s_0to50.png'
+                                  %(settings.results_path, label))
         matplotlib.pyplot.close()  
           
 def plot(settings, M, label):

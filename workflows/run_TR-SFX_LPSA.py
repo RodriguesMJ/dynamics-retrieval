@@ -368,8 +368,7 @@ if flag == 1:
 # with progressively larger fmax.   
  
 flag = 0
-if flag == 1:
-    
+if flag == 1:    
     import nlsa.get_successive_CCs
     import settings_bR_light as settings 
     f_max_s = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30]
@@ -377,8 +376,7 @@ if flag == 1:
     nlsa.get_successive_CCs.get_CCs_jmax_scan(settings, f_max_s, nmodes)
         
 flag = 0
-if flag == 1:
-    
+if flag == 1:    
     import nlsa.get_successive_CCs
     import settings_bR_light as settings 
     f_max_s = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30]
