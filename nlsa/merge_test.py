@@ -23,7 +23,7 @@ def f(T_matrix, M_matrix):
 def main():
     
     #data_path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA'
-    data_path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_rho/LPSA'
+    data_path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_rho/LPSA/scan_19'
     
     fpath = '%s/binning_LTD'%(data_path)
     if not os.path.exists(fpath):
@@ -48,7 +48,7 @@ def main():
     print 'M: ', M.shape,
     print 'ts: ', ts.shape
     
-    N = 30000
+    N = 20000
     
     T_early = T[:,0:N]
     M_early = M[:,0:N]
@@ -77,7 +77,7 @@ def main():
     
     f_out = '%s/I_late_avg.txt'%(fpath)              
     numpy.savetxt(f_out, out, fmt='%6d%6d%6d%17.2f%17.2f')
-    
+    """
     # DARK    
     miller_h = joblib.load('%s/converted_data_alldark/miller_h_alldark.jbl'%(data_path))
     miller_k = joblib.load('%s/converted_data_alldark/miller_k_alldark.jbl'%(data_path))
@@ -101,7 +101,7 @@ def main():
     
     f_out = '%s/I_dark_avg.txt'%(fpath)              
     numpy.savetxt(f_out, out, fmt='%6d%6d%6d%17.2f%17.2f')
-    
+    """
 def merge_all():
     
     #data_path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA'

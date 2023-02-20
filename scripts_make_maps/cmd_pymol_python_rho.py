@@ -149,7 +149,7 @@ def myfunc_bin(myArguments):
     out_folder = '.'
     time_bin_labels = ['early', 'late']
     for time_bin_label in time_bin_labels:    
-        cmd.load('%s/2.0_I_%s_avg_light--dark_I_dark_avg.ccp4'%(map_folder, 
+        cmd.load('%s/1.8_I_%s_avg_light--dark_I_dark_avg.ccp4'%(map_folder, 
                                                                 time_bin_label), 'mymap')
         cmd.zoom('sel')
         
@@ -186,7 +186,7 @@ def myfunc_bin(myArguments):
         cmd.show('mesh', 'map_minus')
         cmd.ray(2048, 1024)
         
-        cmd.png('%s/2.0_I_%s_avg_light--dark_I_dark_avg_chain%s_%.2fsig.png'%(out_folder, 
+        cmd.png('%s/1.8_I_%s_avg_light--dark_I_dark_avg_chain%s_%.2fsig.png'%(out_folder, 
                                                                               time_bin_label, 
                                                                               chainID,
                                                                               sig))

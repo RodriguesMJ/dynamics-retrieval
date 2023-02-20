@@ -26,7 +26,7 @@ def main(settings):
     if 'light' in label:
         file_mat = '%s/t_uniform_light.mat'%folder
         dictionary = scipy.io.loadmat(file_mat)
-        ts = dictionary['t_uniform']
+        ts = dictionary['timestamps_selected']
         print 'ts', ts.shape
         joblib.dump(ts, '%s/t_light.jbl'%folder)
     

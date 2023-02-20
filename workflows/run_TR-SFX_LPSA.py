@@ -12,18 +12,18 @@ import matplotlib.pylab
 
 flag = 0
 if flag == 1:
-    import settings_rho_dark_LPSA as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.convert
     nlsa.convert.main(settings)
     
 flag = 0 # Rho data
 if flag == 1:
-    import settings_rho_dark_LPSA as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.t_disorder_correct
     nlsa.t_disorder_correct.main(settings)
     
 ##### MERGE TEST #######
-flag = 0
+flag = 1
 if flag == 1:
     import nlsa.merge_test
     nlsa.merge_test.main()
