@@ -16,9 +16,24 @@ def f(loop_idx, settings):
     for i in range(loop_idx, loop_idx+1):#(n_vectors):
         print i
         ai = joblib.load('%s/aj/a_%d.jbl'%(results_path,i))  
+        
+        if(numpy.isnan(ai).any()):
+            print("ai contain NaN values")
+            N = numpy.count_nonzero(numpy.isnan(ai))
+            print 'N nans: ', N, 'out of ', ai.shape
+        else:
+            print("ai does not contain NaN values")
+            
         for j in range(i, n_vectors):            
-            aj = joblib.load('%s/aj/a_%d.jbl'%(results_path,j))       
+            aj = joblib.load('%s/aj/a_%d.jbl'%(results_path,j))   
+            
+            if(numpy.isnan(aj).any()):
+                print("aj contain NaN values")
+            else:
+                print("aj does not contain NaN values")
+                
             ATA_ij = numpy.inner(ai, aj)
+            print ATA_ij
             ATA[i,j] = ATA_ij
             ATA[j,i] = ATA_ij
     print 'Time:', time.time() - start

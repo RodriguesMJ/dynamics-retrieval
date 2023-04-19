@@ -23,11 +23,17 @@ if flag == 1:
     nlsa.t_disorder_correct.main(settings)
     
 ##### MERGE TEST #######
-flag = 1
+flag = 0
 if flag == 1:
     import nlsa.merge_test
     nlsa.merge_test.main()
-########################    
+########################  
+
+flag = 0
+if flag == 1:
+    import settings_rho_light_LPSA as settings
+    import nlsa.get_t_distribution
+    nlsa.get_t_distribution.main(settings)  
 
 flag = 0 # bR data
 if flag == 1:
@@ -38,23 +44,52 @@ if flag == 1:
 # Calculate intensity deviations from the mean
 flag = 0
 if flag == 1:
-    import settings_bR_light as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.calculate_dI
     nlsa.calculate_dI.main(settings)
     
 flag = 0
 if flag == 1:
-    import settings_bR_light as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.boost
     nlsa.boost.main(settings)
     
 flag = 0
 if flag == 1:
-    import settings_bR_light as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.mirror_dataset
     nlsa.mirror_dataset.main(settings)
     nlsa.mirror_dataset.make_virtual_ts(settings)
+
+flag = 0
+if flag == 1:    
+    import settings_rho_light_LPSA as settings
+    from scipy import sparse
+
+    
+    x_sp = joblib.load('%s/dT_bst_sparse_LTD_light_mirrored.jbl'%settings.results_path)
+    print x_sp[1000,:]
+    x = x_sp[:,:].todense()
+    if(numpy.isnan(x).any()):
+        print("x contain NaN values")
+        N = numpy.count_nonzero(numpy.isnan(x))
+        print 'N nans: ', N, 'out of ', x.shape
+        x[numpy.isnan(x)] = 0
+    else:
+        print("x does not contain NaN values")
         
+    M = joblib.load('%s/M_sparse_light.jbl'%(settings.results_path))
+    M = M[:,:].todense()    
+    mysum = M.sum(axis=1)
+    print 'M sum: ', mysum.shape
+    idxs = numpy.argwhere(mysum==0)
+    print 'N. zeros: ', idxs.shape[0]
+    
+    x_sparse = sparse.csr_matrix(x)
+    joblib.dump(x_sparse, '%s/dT_bst_sparse_LTD_light_mirrored_nonans.jbl'%settings.results_path)
+
+        
+    
 #################################
 ### LPSA PARA SEARCH : q-scan ###
 #################################
@@ -63,7 +98,7 @@ qs = [12501, 17501]
 
 flag = 0
 if flag == 1:
-    import settings_bR_light as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.make_settings
     for q in qs:
         
@@ -73,7 +108,7 @@ if flag == 1:
             os.mkdir(q_path)
         
         # MAKE SETTINGS FILE
-        data_file = '%s/dT_bst_sparse_%s_mirrored.jbl'%(q_path, settings.label)
+        data_file = '%s/dT_bst_sparse_LTD_%s_mirrored_nonans.jbl'%(q_path, settings.label)
         fn = '/das/work/units/LBR-Xray/p17491/Cecilia_Casadei/NLSA/code/workflows/settings_q_%d.py'%q
         nlsa.make_settings.main(settings, fn, q, settings.f_max_q_scan, q_path, data_file, min(20,2*settings.f_max_q_scan+1))
 
@@ -81,11 +116,11 @@ if flag == 1:
 ### LPSA PARA SEARCH : jmax-scan ###
 ####################################
 
-f_max_s = [20]
+f_max_s = [10, 15]
     
 flag = 0
 if flag == 1:
-    import settings_bR_light as settings
+    import settings_rho_light_LPSA as settings
     import nlsa.make_settings
     for f_max in f_max_s:
            
@@ -95,7 +130,7 @@ if flag == 1:
             os.mkdir(f_max_path)
             
         # MAKE SETTINGS FILE
-        data_file = '%s/dT_bst_sparse_%s_mirrored.jbl'%(f_max_path, settings.label)
+        data_file = '%s/dT_bst_sparse_LTD_%s_mirrored_nonans.jbl'%(f_max_path, settings.label)
         fn = '/das/work/units/LBR-Xray/p17491/Cecilia_Casadei/NLSA/code/workflows/settings_f_max_%d.py'%f_max
         nlsa.make_settings.main(settings, fn, settings.q_f_max_scan, f_max, f_max_path, data_file, min(20, 2*f_max+1))
         
@@ -130,13 +165,27 @@ if flag == 1:
         os.system('sbatch -p day -t 1-00:00:00 --mem=100G --array=0-%d ../scripts_parallel_submission/run_parallel_aj.sh %s'
                   %(end_worker, settings.__name__)) 
         
+# q = 10001
+# modulename = 'settings_q_%d'%q
+# settings = __import__(modulename)
+# for i in range(40):
+#     aj = joblib.load('%s/aj/a_%d.jbl'%(settings.results_path, i))
+#     print aj.shape           
+#     print aj[40:50,]
+#     if(numpy.isnan(aj).any()):
+#         print("aj contain NaN values")
+#         N = numpy.count_nonzero(numpy.isnan(aj))
+#         print 'N nans: ', N, 'out of ', aj.shape
+#     else:
+#         print("aj does not contain NaN values")
+                
 flag = 0
 if flag == 1:
     import nlsa.merge_aj
-    # for f_max in f_max_s:
-    #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
-        modulename = 'settings_q_%d'%q
+    for f_max in [30]:#f_max_s:
+        modulename = 'settings_f_max_%d'%f_max
+    # for q in qs:
+    #     modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
@@ -144,24 +193,24 @@ if flag == 1:
                      
 flag = 0
 if flag == 1: 
-    # for f_max in f_max_s:
+    # for f_max in [30]:#f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
         
         end_worker = (2*settings.f_max + 1) - 1
-        os.system('sbatch -p day --mem=150G --array=0-%d ../scripts_parallel_submission/run_parallel_ATA.sh %s'
+        os.system('sbatch -p hour --mem=40G --array=0-%d ../scripts_parallel_submission/run_parallel_ATA.sh %s'
                   %(end_worker, settings.__name__)) 
         
 flag = 0
 if flag == 1:  
     import nlsa.calculate_ATA_merge
-    # for f_max in f_max_s:
+    # for f_max in [30]:#f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
@@ -171,9 +220,9 @@ if flag == 1:
 flag = 0
 if flag == 1: 
     import nlsa.SVD       
-    # for f_max in f_max_s:
+    # for f_max in [25]:#f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
@@ -184,9 +233,9 @@ flag = 0
 if flag == 1:  
     import nlsa.plot_SVs
     import nlsa.plot_chronos    
-    # for f_max in f_max_s:
+    # for f_max in [25]:#f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
@@ -194,13 +243,14 @@ if flag == 1:
         nlsa.plot_SVs.main(settings)       
         nlsa.plot_chronos.main(settings)
 
+        
 flag = 0
 if flag == 1:
     import nlsa.SVD             
-    for f_max in f_max_s:
-        modulename = 'settings_f_max_%d'%f_max
-    # for q in [20001]:
-    #     modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+    for q in qs:
+        modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
@@ -208,14 +258,14 @@ if flag == 1:
 
 ######################
 # IF DATA ARE TOO BIG:        
-n_chuncks = 2
+n_chuncks = 4
 
 flag = 0 # Make Ai's from aj's
 if flag == 1:
     import nlsa.make_Ai
-    # for f_max in f_max_s:
+    # for f_max in [30]:#f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
@@ -239,7 +289,7 @@ if flag == 1:
     import nlsa.make_Ui          
     # for f_max in f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
@@ -251,14 +301,14 @@ if flag == 1:
     import nlsa.make_Ui    
     # for f_max in f_max_s:
     #     modulename = 'settings_f_max_%d'%f_max
-    for q in qs:
+    for q in [17501]:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
         nlsa.make_Ui.make_uj(settings, n_chuncks)       
         
-flag = 0 # Make U from Ui's
+flag = 0#TO DO # Make U from Ui's
 if flag == 1:
     import nlsa.make_Ui    
     # for f_max in f_max_s:
@@ -277,10 +327,10 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import nlsa.reconstruct_p
-    for f_max in f_max_s:
-        modulename = 'settings_f_max_%d'%f_max
-    # for q in qs:
-    #     modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+    for q in [17501]:
+        modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
@@ -292,10 +342,10 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import nlsa.local_linearity
-    for f_max in f_max_s:
-        modulename = 'settings_f_max_%d'%f_max
-    # for q in qs:
-    #     modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+    for q in qs:
+        modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max  
@@ -314,13 +364,13 @@ if flag == 1:
         nmodes = 1
         nlsa.add_modes.f(settings, nmodes)
         
-flag = 0
+flag = 1
 if flag == 1:
     import nlsa.add_modes
-    for f_max in f_max_s:
-        modulename = 'settings_f_max_%d'%f_max
-    # for q in qs:
-    #     modulename = 'settings_q_%d'%q
+    # for f_max in f_max_s:
+    #     modulename = 'settings_f_max_%d'%f_max
+    for q in [17501]:
+        modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max  

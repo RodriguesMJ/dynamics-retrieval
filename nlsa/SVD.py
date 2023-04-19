@@ -122,7 +122,7 @@ def get_topos(settings):
     
     S = joblib.load('%s/S.jbl'%results_path)
     V = joblib.load('%s/V.jbl'%results_path)
-    U_temp = numpy.matmul(V, numpy.diag(1.0/S))
+    U_temp = numpy.matmul(V, numpy.diag(1.0/S))[:,0:20]
     
     A = joblib.load('%s/A_parallel.jbl'%results_path)[:,0:2*f_max+1]
     print 'A:', A.shape

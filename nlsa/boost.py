@@ -9,8 +9,8 @@ def main(settings):
     
     # LIGHT
     #T = joblib.load( '%s/T_sel_sparse_%s.jbl'%(folder, label))
-    T = joblib.load( '%s/dT_sparse_%s.jbl'%(folder, label))
-    M = joblib.load( '%s/M_sel_sparse_%s.jbl'%(folder, label))
+    T = joblib.load( '%s/dT_sparse_LTD_%s.jbl'%(folder, label))
+    M = joblib.load( '%s/M_sparse_%s.jbl'%(folder, label))
     
     # Syn data
     #T = joblib.load( '%s/x.jbl'%(folder))
@@ -41,6 +41,6 @@ def main(settings):
     print T_bst[10, 0:100]
     
     T_bst_sparse = sparse.csr_matrix(T_bst)
-    joblib.dump(T_bst_sparse, '%s/dT_bst_sparse_%s.jbl'%(folder, label))
+    joblib.dump(T_bst_sparse, '%s/dT_bst_sparse_LTD_%s.jbl'%(folder, label))
       
     print 'dT_bst_sparse: is sparse: ',sparse.issparse(T_bst_sparse), T_bst_sparse.dtype, T_bst_sparse.shape

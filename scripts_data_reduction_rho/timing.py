@@ -61,7 +61,7 @@ def get_ts_distribution():
     FEL_Is_light = []
     
     n_discarded_runs = 0
-    n_selected_runs  = 0
+    n_selected_runs  = 0a
 
     for scan_n in range(1, 24):
         run_start, run_end = run_ns.run_ns(scan_n)

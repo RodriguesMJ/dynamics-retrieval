@@ -22,7 +22,7 @@ def extract(settings, x_r, nm):
     if not os.path.exists(fpath):
         os.mkdir(fpath)
         
-    for i in range(0, x_r[1], 100):   
+    for i in range(0, x_r.shape[1], 100):   
         print i
         f_out = '%s/extracted_Is_p_%d_%d_modes_timestep_%0.6d.txt'%(fpath, 
                                                                     p, 
@@ -63,7 +63,9 @@ def f_static_plus_dynamics(settings, nmodes):
     q = settings.q
     S = settings.S
     
-    T = joblib.load('%s/T_sparse_%s.jbl'%(results_path, label))
+    ncopies = 2*p+1
+    
+    T = joblib.load('%s/T_sparse_LTD_%s.jbl'%(results_path, label))
     M = joblib.load('%s/M_sparse_%s.jbl'%(results_path, label))
     print 'T: is sparse: ', sparse.issparse(T), T.shape, T.dtype
     print 'M: is sparse: ', sparse.issparse(M), M.shape, M.dtype
@@ -73,7 +75,7 @@ def f_static_plus_dynamics(settings, nmodes):
     print 'avgs: ', avgs.shape
     print avgs[100,0]
     
-    avgs_matrix = numpy.tile(avgs, (1, S-q+1))
+    avgs_matrix = numpy.tile(avgs, (1, S-q+1-ncopies+1))
     print 'avgs_matrix: ', avgs_matrix.shape
     print avgs_matrix[100,0:5]
     

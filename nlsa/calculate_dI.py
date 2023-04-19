@@ -10,9 +10,9 @@ import joblib
 import numpy
 
 def main(settings):
-    T_fn  = '%s/T_sel_sparse_%s.jbl'%(settings.results_path, settings.label) # TO LOAD
-    M_fn  = '%s/M_sel_sparse_%s.jbl'%(settings.results_path, settings.label) # TO LOAD
-    dT_fn = '%s/dT_sparse_%s.jbl'%(settings.results_path, settings.label)    # TO SAVE
+    T_fn  = '%s/T_sparse_LTD_%s.jbl'%(settings.results_path, settings.label) # TO LOAD
+    M_fn  = '%s/M_sparse_%s.jbl'%(settings.results_path, settings.label) # TO LOAD
+    dT_fn = '%s/dT_sparse_LTD_%s.jbl'%(settings.results_path, settings.label)    # TO SAVE
     
     T = joblib.load(T_fn)
     M = joblib.load(M_fn)

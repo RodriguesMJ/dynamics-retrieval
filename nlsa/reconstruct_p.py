@@ -12,8 +12,8 @@ def f(settings):
     
     datatype = settings.datatype
     
-    U = joblib.load('%s/U.jbl'%results_path)
-    print 'U:', U.shape
+    #U = joblib.load('%s/U.jbl'%results_path)
+    #print 'U:', U.shape
     S = joblib.load('%s/S.jbl'%results_path)
     print 'S: ', S.shape
     VT_final = joblib.load('%s/VT_final.jbl'%results_path)
@@ -31,8 +31,8 @@ def f(settings):
     for k in settings.modes_to_reconstruct:
         print 'Mode: ', k    
         
-        u_k = U[:,k]
-        #u_k = joblib.load('%s/uj/u_%d.jbl'%(results_path, k))
+        #u_k = U[:,k]
+        u_k = joblib.load('%s/uj/u_%d.jbl'%(results_path, k))
         s_k = S[k]
         v_k = VT_final[k,:]
         print u_k.shape, v_k.shape

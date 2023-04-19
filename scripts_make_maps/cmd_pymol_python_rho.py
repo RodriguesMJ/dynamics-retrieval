@@ -3,6 +3,7 @@ import sys
 import getopt
 import os
 from pymol.cgo import *
+import joblib
 
 def myfunc_sphere():
     
@@ -41,7 +42,7 @@ def myfunc_sphere():
       
 def myfunc_step(myArguments):  
     try:
-        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["inputMode=", "chainID=", "sig="])
+        optionPairs, leftOver = getopt.getopt(myArguments, "h", ["nModes=", "chainID=", "sig="])
     except getopt.GetoptError:
         print 'Usage: ...'
         sys.exit(2)   
@@ -49,34 +50,39 @@ def myfunc_step(myArguments):
         if option == '-h':
             print 'Usage: ...'
             sys.exit()
-        elif option == "--inputMode":
-            mode = int(value)
+        elif option == "--nModes":
+            nmodes = int(value)
         elif option == "--chainID":
             chainID = str(value)
         elif option == "--sig":
             sig = float(value)
-            
     
-    cmd.load('./bov_nlsa_refine_96_chain%s.pdb'%chainID)
+    t_r_p_0 = joblib.load('./t_r_p_0.jbl')
+    
+    #cmd.load('./bov_nlsa_refine_96_chain%s.pdb'%chainID)
+    cmd.load('./swissfel_combined_dark_frac_0.01_0.19_ref_chain%s.pdb'%chainID)
     cmd.color('blue', selection=' (name C*)')
     cmd.color('lightblue', selection=' (name N*)')
     cmd.show('sticks', 'all')
     cmd.bg_color('white')
     cmd.hide('all')
     #cmd.select('sel', '((chain A and (resi 212 or resi 216 or resn RET) and not h.) or (chain A and (resi 407 or resi 411 or resi 415)))')
-    cmd.select('sel', 'resn RET or resi 296')
+    #cmd.select('sel', 'resn RET or resi 113 or resi 268 or resi 191 or resi 118 or resi 265')
+    cmd.select('sel', 'resn RET')
     cmd.show('lines', 'sel')    
     cmd.show('spheres', 'sel')    
     cmd.set('sphere_scale', 0.10, 'all')
     
-    map_folder = '../maps_alldark_m_0_%d_minus_alldark_avg_m_0'%mode
-    out_folder = './FRAMES_alldark_mode_0_%d_minus_alldark_avg_mode_0_%sp%ssig_RET%s'%(mode, str(sig)[0], str(sig)[2], chainID)
+    #map_folder = '../maps_alldark_m_0_%d_minus_alldark_avg_m_0'%mode
+    map_folder = '.'
+    out_folder = './FRAMES_%d_modes_%sp%ssig_RET%s'%(nmodes, str(sig)[0], str(sig)[2], chainID)
     
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
         
-    for time in range(0, 49400, 100):
-        cmd.load('%s/2.0_rho_alldark_mode_0_%d_timestep_%0.6d_light--dark_rho_alldark_mode_0_avg.ccp4'%(map_folder, mode, time), 'nlsa_map')
+    for time in range(0, 43100, 100):
+        t = t_r_p_0[time]	
+        cmd.load('%s/1.8_extracted_Is_p_0_%d_modes_timestep_%0.6d_light--dark_swissfel_combined_dark_frac_0.01_0.19_0.80.ccp4'%(map_folder, nmodes, time), 'nlsa_map')
         cmd.zoom('sel')
         
         # RET A
@@ -110,8 +116,14 @@ def myfunc_step(myArguments):
         #cmd.set('fog_start', 0.1)
         cmd.show('mesh', 'map_modes_0_x_p')
         cmd.show('mesh', 'map_modes_0_x_m')
+        
+        cmd.pseudoatom('foo')
+        cmd.set('label_size', -3)
+        cmd.label('foo',"%0.1f"%t)
+        cmd.set('label_position',(0,-12,0))
+        
         cmd.ray(2048, 1024)
-        cmd.png('%s/nlsa_modes_0_%d_time_%d.png'%(out_folder, mode, time))
+        cmd.png('%s/%d_modes_time_%0.6d_t.png'%(out_folder, nmodes, time))
         
         cmd.delete('map_modes_0_x_p')
         cmd.delete('map_modes_0_x_m')
@@ -133,7 +145,8 @@ def myfunc_bin(myArguments):
             sig = float(value)
             
     
-    cmd.load('./bov_nlsa_refine_96_chain%s.pdb'%chainID)
+    #cmd.load('./bov_nlsa_refine_96_chain%s.pdb'%chainID)\
+    cmd.load('./swissfel_combined_dark_frac_0.01_0.19_ref_chain%s.pdb'%chainID)
     cmd.color('blue', selection=' (name C*)')
     cmd.color('lightblue', selection=' (name N*)')
     cmd.show('sticks', 'all')
@@ -149,7 +162,9 @@ def myfunc_bin(myArguments):
     out_folder = '.'
     time_bin_labels = ['early', 'late']
     for time_bin_label in time_bin_labels:    
-        cmd.load('%s/1.8_I_%s_avg_light--dark_I_dark_avg.ccp4'%(map_folder, 
+        #cmd.load('%s/1.8_I_%s_avg_light--dark_I_dark_avg.ccp4'%(map_folder, 
+        #                                                        time_bin_label), 'mymap')
+        cmd.load('%s/1.8_I_%s_avg_light--dark_swissfel_combined_dark_frac_0.01_0.19_0.80.ccp4'%(map_folder, 
                                                                 time_bin_label), 'mymap')
         cmd.zoom('sel')
         
@@ -248,8 +263,8 @@ cmd.extend('myfunc_bin',    myfunc_bin)
 cmd.extend('myfunc_sphere', myfunc_sphere)
 
 #print "\n**** CALLING myfunc_step ****"
-#myfunc_step(sys.argv[1:]) 
+myfunc_step(sys.argv[1:]) 
 #print "\n**** CALLING myfunc_sphere ****"
 #myfunc_sphere() 
-print "\n**** CALLING myfunc_bin ****"
-myfunc_bin(sys.argv[1:])  
+#print "\n**** CALLING myfunc_bin ****"
+#myfunc_bin(sys.argv[1:])  

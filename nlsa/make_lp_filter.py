@@ -103,7 +103,7 @@ def get_F(settings):
 
 def get_F_sv_t_range(settings):
     
-    fn = '%s/ts_sel_light_mirrored.jbl'%settings.results_path #ts_meas,.jbl
+    fn = '%s/ts_light_mirrored.jbl'%settings.results_path #ts_meas,.jbl
     ts_meas = joblib.load(fn)
     
     S = ts_meas.shape[0]

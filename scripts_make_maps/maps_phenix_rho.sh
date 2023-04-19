@@ -1,5 +1,5 @@
 #!/bin/sh
-PHASE_model=../bov_nlsa_refine_96.pdb
+PHASE_model=../swissfel_combined_dark_frac_0.01_0.19_ref.pdb
 
 LIGHTMTZ=$1
 DARKMTZ=$2

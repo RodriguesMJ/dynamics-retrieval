@@ -15,15 +15,15 @@ def make_Ui_subf(settings, i, U_temp):
     A_i = joblib.load('%s/A_%d.jbl'%(results_path,i))[:, 0:2*f_max+1] 
     print 'A_i:', A_i.shape
     U_i = numpy.matmul(A_i, U_temp)  
-    joblib.dump(U_i[:,0:20], '%s/U_%d.jbl'%(results_path, i))            
-    # for j in range(0, 2*f_max+1):
-    #     joblib.dump(U_i[:,j], '%s/u_%d_chunck_%d.jbl'%(results_path, j, i))       
+    #joblib.dump(U_i[:,0:20], '%s/U_%d.jbl'%(results_path, i))            
+    for j in range(0, 1):#2*f_max+1):
+        joblib.dump(U_i[:,j], '%s/u_%d_chunck_%d.jbl'%(results_path, j, i))       
             
 def make_Ui_f(settings, n_chuncks):
     results_path = settings.results_path
     S = joblib.load('%s/S.jbl'%results_path)
     V = joblib.load('%s/V.jbl'%results_path)
-    U_temp = numpy.matmul(V, numpy.diag(1.0/S))
+    U_temp = numpy.matmul(V, numpy.diag(1.0/S))[:,0:20]
     
     for i in range(0, n_chuncks): 
         make_Ui_subf(settings, i, U_temp)

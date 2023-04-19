@@ -160,9 +160,9 @@ def plot(I_avg, fign, xlabel):
 
 if __name__ == '__main__':  
     
-    path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_rho/LPSA/translation_correction_light'
+    path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_rho/LPSA/translation_correction_dark_from_scan'
     #label = 'sacla18_combined_dark_100ps_std_xsphere-combi_dark'
-    label = 'I_light_avg'
+    label = 'rho_dark_from_scans'
     #label = 'swissfel_combined_dark_xsphere_precise_1ps-1ps_light_good'
     
     # Get average I vs k
@@ -175,7 +175,7 @@ if __name__ == '__main__':
     
     # Rewrite original in different format
     fo_w_fn_original = '%s/%s_original.txt'%(path, label)
-    #rewrite(fo_w_fn_original, filename)
+    rewrite(fo_w_fn_original, filename)
     
     # Get average I vs h
     filename = '%s/%s.txt'%(path, label)
@@ -219,7 +219,7 @@ if __name__ == '__main__':
         tp_unique = set(tp_lst)
         print len(tp_unique)
         
-        for fraction_set in tp_unique:
+        for fraction_set in [[0.01, 0.17, 0.82]]:#tp_unique:
             fraction_alpha = fraction_set[0]
             fraction_beta  = fraction_set[1]
             fraction_gamma = fraction_set[2]

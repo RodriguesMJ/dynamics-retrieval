@@ -13,8 +13,8 @@ import matplotlib.pyplot
 
 def main(settings):
     print settings.results_path
-    T = joblib.load( '%s/dT_bst_sparse_%s.jbl'%(settings.results_path, 
-                                                settings.label))
+    T = joblib.load( '%s/dT_bst_sparse_LTD_%s.jbl'%(settings.results_path, 
+                                                    settings.label))
     
     x = T[:,:].todense()
     print 'x (sparse -> dense): ', x.shape, x.dtype
@@ -34,12 +34,12 @@ def main(settings):
     print 'T_mirrored, is sparse? ', sparse.issparse(T_mirrored_sparse)
     
     joblib.dump(T_mirrored_sparse, 
-                '%s/dT_bst_sparse_%s_mirrored.jbl'%(settings.results_path, 
-                                                    settings.label))
+                '%s/dT_bst_sparse_LTD_%s_mirrored.jbl'%(settings.results_path, 
+                                                        settings.label))
     
 def make_virtual_ts(settings):    
-    ts = joblib.load( '%s/ts_sel_%s.jbl'%(settings.results_path, 
-                                          settings.label))
+    ts = joblib.load( '%s/t_%s.jbl'%(settings.results_path, 
+                                     settings.label))
     print ts.shape
     ts_mirrored = numpy.zeros(shape=(2*settings.S, 1))
     ts_mirrored[0:settings.S,0] = ts[:,0]
@@ -55,5 +55,5 @@ def make_virtual_ts(settings):
     matplotlib.pyplot.scatter(range(2*settings.S), ts_mirrored)
     
     joblib.dump(ts_mirrored, 
-                '%s/ts_sel_%s_mirrored.jbl'%(settings.results_path, 
-                                             settings.label))
+                '%s/ts_%s_mirrored.jbl'%(settings.results_path, 
+                                         settings.label))
