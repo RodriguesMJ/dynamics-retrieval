@@ -197,7 +197,7 @@ def calculate_d_sq_sparse(settings):
         
 def calculate_D_sq(settings):  
     
-    import util_calculate_D_sq
+    import util_calculate_D_sq2
     
     results_path = settings.results_path
     q = settings.q
@@ -205,7 +205,7 @@ def calculate_D_sq(settings):
     d_sq = joblib.load('%s/d_sq.jbl'%results_path)    
     print 'd_sq: ', d_sq.shape
     
-    D_sq = util_calculate_D_sq.f(d_sq, q, datatype)
+    D_sq = util_calculate_D_sq2.f(d_sq, q, datatype)
     print 'D_sq: ', D_sq.shape, D_sq.dtype
     
     print 'Saving D_sq'    
