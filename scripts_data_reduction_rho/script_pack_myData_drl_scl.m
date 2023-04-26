@@ -29,19 +29,16 @@ c = 150.82;
 load(fileData,'T','M','miller_h','miller_k','miller_l'); 
 load(scalePara_file, ['scales']);
 
-%scales = scales_light_sort;
-
-OSF = scales(:,1);
+OSF  = scales(:,1);
 relB = scales(:,2);
 
 %_________________________________________________________________________________________
 % Scaling with OSF and relB parameters:
 
-% P6_3
-%qvec = [miller_h./a, miller_h./(sqrt(3)*a) + 2*miller_k./(sqrt(3)*b), miller_l./c];
 % P222
 qvec = [miller_h./a, miller_k./b, miller_l./c];
 q2 = qvec(:,1).^2 + qvec(:,2).^2 + qvec(:,3).^2; 
+
 %notice: sinTheta_lambda2 = q2/4 = 1/(4*d2) 
 
 T_scl = sparse(size(T, 1), size(T, 2));
@@ -64,6 +61,4 @@ end
 
 M_scl = M;
 
-% save scaled data
 save(fileData_SCL,'T_scl','M_scl','miller_h','miller_k','miller_l','-v7.3');  
-%EOF

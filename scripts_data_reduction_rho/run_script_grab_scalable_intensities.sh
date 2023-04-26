@@ -19,5 +19,3 @@ WORKER_ID=$SLURM_ARRAY_TASK_ID      # From 0 to 5
 module load matlab/2015b
 
 matlab -nodisplay -nosplash -nodesktop -r "script_grab_scalable_intensities('alldark', $WORKER_ID)"
-
-

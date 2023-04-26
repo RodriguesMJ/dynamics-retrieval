@@ -1,4 +1,4 @@
-ll% script_packing
+% script_packing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script reads light/dark data information 
 % and the redundancy file for the data as well. 
@@ -8,8 +8,7 @@ ll% script_packing
 % Ahmad H., Dec-07-17, updated on May-24-18 for femtosecond data
 % Cecilia C., March-12-19, modified
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clc
-clear
+clear all
 dataForm = 'int';
 
 tic 
@@ -74,7 +73,7 @@ end
 active_reflection = find(redundancy(:)>0);         
 num_unique_reflection = numel(active_reflection);  
 % i.e., active lattice vertices (Millers) that have
-% Brag spots for at least one snapshot
+% Bragg spots for at least one snapshot
 % (notice, each snapshot contains a subset of active spots)
 
 % follow the Glownia convention

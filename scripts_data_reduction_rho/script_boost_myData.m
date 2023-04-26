@@ -32,7 +32,7 @@ M_bst = M;
 %_________________________________________________________________________________________
 % Boosting:
 for k=1:nBrg
-    co(k) = sum(M(:,k));                                               %#ok<SAGROW>
+    co(k) = sum(M(:,k));                                                       %#ok<SAGROW>
     if co(k)
         T_bst(:,k) = T(:,k)./co(k);
     end

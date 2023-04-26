@@ -8,8 +8,8 @@
 clear;
 
 % SIGMA VALUE FOR TIMESTAMP GAUSSIAN MODELING
-sigma = 5.0                                                                %#ok<NOPTS>   
-FWHM = 2.355 * sigma                                                       %#ok<NOPTS>
+sigma = 5.0;                                                                
+FWHM = 2.355 * sigma;                                                       
 
 % LOAD DATA
 path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/data_extraction/';
@@ -61,8 +61,6 @@ hold;
 % close(gcf);
 
 % % SELECT ONLY TIMESTAMPS IN RANGE:
-% idx_ts_range = find(timestamps_light < 465 & ...
-%                     timestamps_light > -335);
 idx_ts_range = find(timestamps_light < 385 & ...
                     timestamps_light > -335);
                 
@@ -92,23 +90,23 @@ end
 % saveas(gcf, 'sum_gaussians_all.jpg')
 % close(gcf);
 
-% FIND SUM MINIMUM VALUE IN [0, 410] fs
+% FIND SUM MINIMUM VALUE IN RANGE
 % t1 = 0.0;
 % t2 = 3900.0;
 % [Min1, I_t1] = min(abs(t-t1));
 % [Min2, I_t2] = min(abs(t-t2));
-% % v = min(S(I_t1:I_t2));
+% v = min(S(I_t1:I_t2));
 v = 290; 
 % SHUFFLE THE TIMESTAMPS
 s = RandStream('mlfg6331_64'); 
 order = randperm(s, N_ts);
 
-thr_factors = 10; %[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20];
+thr_factors = [10];
 for j=1:length(thr_factors)
     j
     % ADD THE TIMESTAMP-CENTRED GAUSSIANS ONE AFTER THE OTHER 
     % GENERATING A FLAT DISTRIBUTION
-    thr_factor = thr_factors(j)                                            %#ok<NOPTS>
+    thr_factor = thr_factors(j)                                                %#ok<NOPTS>
     thr = N/thr_factor;
     
     S_uniform   = zeros(1, length(t));
@@ -130,16 +128,14 @@ for j=1:length(thr_factors)
              n_discarded = n_discarded + 1;
          else
              % keep
-             idx_uniform = [idx_uniform; idx];                             %#ok<AGROW>
-             t_uniform   = [t_uniform; t0];                                %#ok<AGROW>
+             idx_uniform = [idx_uniform; idx];                                 %#ok<AGROW>
+             t_uniform   = [t_uniform; t0];                                    %#ok<AGROW>
              n_uniform   = n_uniform + 1;
          end
          top = v + max(S_uniform - v);
     end
     
     % PLOT
-%     plot(t, S_uniform+S_discarded);
-%     hold;
     plot(t, S_discarded);
     plot(t, S_uniform);
     fn = sprintf('Sum_gaussians_sigma_%d_fs_n_in_%d_thr_factor_%d.jpg', ...

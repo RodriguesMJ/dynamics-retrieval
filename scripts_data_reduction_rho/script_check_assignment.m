@@ -19,19 +19,19 @@ img_filename_pos = [path, folder, fn, label, '.txt'];
 fn = 'Event_position_scans_';
 event_pos = [path, folder, fn, label, '.txt'];
 
-str_img_fn_pos = fileread(img_filename_pos);                               %read file into one string
+str_img_fn_pos = fileread(img_filename_pos);                                   %read file into one string
 str_ev_pos = fileread(event_pos);
 
-parts_img_fn_pos = strtrim(regexp( str_img_fn_pos, '(\r|\n)+', 'split'));  %split by each line
+parts_img_fn_pos = strtrim(regexp( str_img_fn_pos, '(\r|\n)+', 'split'));      %split by each line
 parts_ev_pos = strtrim(regexp( str_ev_pos, '(\r|\n)+', 'split')); 
 
-nrows = length(parts_img_fn_pos) - 1;                                      %number of rows 
+nrows = length(parts_img_fn_pos) - 1;                                          %number of rows 
                                          
 % EXTRACT UNIQUE_ID FOR ALL HITS                                                               
 uniqueID_hits = cell(nrows, 1);
 
 for k=1:nrows
-     data_img_fn_pos = strtrim(regexp(parts_img_fn_pos{k}, ':', 'split')); %split by spaces
+     data_img_fn_pos = strtrim(regexp(parts_img_fn_pos{k}, ':', 'split'));     %split by spaces
      data_ev_pos = strtrim(regexp(parts_ev_pos{k}, ':', 'split'));
      f_n = data_img_fn_pos{3};
      event = data_ev_pos{3}(3:end);
