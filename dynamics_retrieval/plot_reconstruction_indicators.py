@@ -442,10 +442,10 @@ if flag == 1:
         
         
 #### LPSA jmax-scan, SVD of A ####    
-flag = 0
+flag = 1
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
-    for test_n in [9, 10]:
+    for test_n in [10]:
         root_f = '../../synthetic_data_jitter'
         test_f = '%s/test%d'%(root_f, test_n)
         
@@ -485,7 +485,7 @@ if flag == 1:
         matplotlib.pyplot.xticks(range(1,n_m+1,2))   
         matplotlib.pyplot.xlim(left=0, right=n_m+1)
         matplotlib.pyplot.xlabel('mode', fontsize=36)
-        matplotlib.pyplot.ylabel('$\sigma/\sigma_1$', fontsize=36)
+        matplotlib.pyplot.ylabel('$\log_{10}(\sigma_i/\sigma_1)$', fontsize=36)
         
         for i, f_max in enumerate(f_max_s):
             folder = '%s/f_max_%d_q_%d'%(test_f, f_max, q)
@@ -495,12 +495,13 @@ if flag == 1:
             else:
                 n_m = 20
             print f_max, n_m
-            matplotlib.pyplot.plot(range(1, n_m+1), (S/S[0])[0:n_m], '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
+            matplotlib.pyplot.plot(range(1, n_m+1), numpy.log10(S/S[0])[0:n_m], '-o', c=colors[i], label='$j_{\mathrm{max}}=$%d'%f_max)  
         
-        matplotlib.pyplot.ylim(0.0, top=1.02)
-        matplotlib.pyplot.legend(frameon=False, loc='upper right', fontsize=28)
+        #matplotlib.pyplot.ylim(0.0, top=1.02)
+        matplotlib.pyplot.ylim(-1.2, top=0)
+        matplotlib.pyplot.legend(frameon=False, loc='lower right', fontsize=28)
         matplotlib.pyplot.gca().tick_params(axis='both', labelsize=26)
-        matplotlib.pyplot.savefig('%s/LPSA_A_SVs_vs_modes_%s_fmax_scan_q_%d_linear.png'%(test_f, label, q), bbox_inches='tight', dpi=96*4)
+        matplotlib.pyplot.savefig('%s/LPSA_A_SVs_vs_modes_%s_fmax_scan_q_%d_new.png'%(test_f, label, q), bbox_inches='tight', dpi=96*4)
         matplotlib.pyplot.close()
 
 flag = 0
@@ -983,7 +984,7 @@ if flag == 1:
 ################################################
 
 #### LPSA q-scan, L of central block ####    
-flag = 1
+flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
     
@@ -1014,7 +1015,7 @@ if flag == 1:
     matplotlib.pyplot.close()
     
 #### LPSA q-scan, SVD of A ####    
-flag = 1
+flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
     
@@ -1043,7 +1044,7 @@ if flag == 1:
     matplotlib.pyplot.close()   
     
 #### LPSA jmax-scan, L of central block ####    
-flag = 1
+flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
     
@@ -1074,7 +1075,7 @@ if flag == 1:
     matplotlib.pyplot.close()
     
 #### LPSA jmax-scan, SVD of A ####    
-flag = 1
+flag = 0
 if flag == 1:
     matplotlib.pyplot.style.use('classic') 
     

@@ -46,7 +46,7 @@ def get_Is(settings, mode):
     if x_r.shape[0] != miller_h.shape[0]:
         print 'Problem'
         
-    for i in range(186400, x_r.shape[1], output_step):   
+    for i in range(0, x_r.shape[1], output_step):   
         
         f_out = '%s/rho_%s_mode_%d_%d_timestep_%0.6d.txt'%(fpath, 
                                                            label, 

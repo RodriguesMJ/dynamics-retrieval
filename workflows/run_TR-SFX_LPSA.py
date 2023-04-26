@@ -165,20 +165,6 @@ if flag == 1:
         os.system('sbatch -p day -t 1-00:00:00 --mem=100G --array=0-%d ../scripts_parallel_submission/run_parallel_aj.sh %s'
                   %(end_worker, settings.__name__))
 
-# q = 10001
-# modulename = 'settings_q_%d'%q
-# settings = __import__(modulename)
-# for i in range(40):
-#     aj = joblib.load('%s/aj/a_%d.jbl'%(settings.results_path, i))
-#     print aj.shape
-#     print aj[40:50,]
-#     if(numpy.isnan(aj).any()):
-#         print("aj contain NaN values")
-#         N = numpy.count_nonzero(numpy.isnan(aj))
-#         print 'N nans: ', N, 'out of ', aj.shape
-#     else:
-#         print("aj does not contain NaN values")
-
 flag = 0
 if flag == 1:
     import dynamics_retrieval.merge_aj
