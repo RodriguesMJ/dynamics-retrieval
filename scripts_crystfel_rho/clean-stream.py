@@ -24,15 +24,15 @@
 
 
 from __future__ import division
-from itertools import islice
-import sys
+
 import re
+import sys
+from itertools import islice
 
-
-infile_1 = open (sys.argv[1],'r')
-infile_2 = open (sys.argv[1],'r')
-outfile = open (sys.argv[2],'w')
-Nfile = open ('N.dat','w')
+infile_1 = open(sys.argv[1], "r")
+infile_2 = open(sys.argv[1], "r")
+outfile = open(sys.argv[2], "w")
+Nfile = open("N.dat", "w")
 
 suited = False
 counter1 = -1
@@ -45,43 +45,46 @@ num_suited = 0
 
 line = infile_1.readline()
 
-reg0 = re.compile('----- Begin chunk')
-reg1 = re.compile('----- End chunk')
-reg6 = re.compile('^indexed_by')
-reg7 = re.compile('none')
+reg0 = re.compile("----- Begin chunk")
+reg1 = re.compile("----- End chunk")
+reg6 = re.compile("^indexed_by")
+reg7 = re.compile("none")
 
-while  (line != ''):
+while line != "":
 
-	counter1 += 1
+    counter1 += 1
 
-	if (reg6.match(line)):
-	        if reg7.search(line) :
-	          indexed = False
-	        else:
-	          indexed = True
+    if reg6.match(line):
+        if reg7.search(line):
+            indexed = False
+        else:
+            indexed = True
 
-	if (reg0.match(line)):
-		if (start_index == 0) :
-			while (counter2 < counter1) :
-				outline = infile_2.readline()
-				outfile.write(outline)
-				counter2 += 1
-		start_index = counter1
+    if reg0.match(line):
+        if start_index == 0:
+            while counter2 < counter1:
+                outline = infile_2.readline()
+                outfile.write(outline)
+                counter2 += 1
+        start_index = counter1
 
-	if (reg1.match(line)):
-		n_patt += 1
-		if indexed :
-			suited = True
-		if suited :
-			num_suited += 1
-		while (counter2 <= counter1) :
-			outline = infile_2.readline()
-			if suited :
-				outfile.write(outline)
-			counter2 += 1
-		suited = False
+    if reg1.match(line):
+        n_patt += 1
+        if indexed:
+            suited = True
+        if suited:
+            num_suited += 1
+        while counter2 <= counter1:
+            outline = infile_2.readline()
+            if suited:
+                outfile.write(outline)
+            counter2 += 1
+        suited = False
 
-	line = infile_1.readline()
+    line = infile_1.readline()
 
-print('%d suited of %d patterns have been extracted and saved as %s' % (num_suited, n_patt, sys.argv[2]))
-Nfile.write('%d' % num_suited)
+print(
+    "%d suited of %d patterns have been extracted and saved as %s"
+    % (num_suited, n_patt, sys.argv[2])
+)
+Nfile.write("%d" % num_suited)
