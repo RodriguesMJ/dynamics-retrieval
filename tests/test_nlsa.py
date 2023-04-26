@@ -6,8 +6,8 @@ import pytest
 
 from click.testing import CliRunner
 
-from nlsa import nlsa
-from nlsa import cli
+from dynamics_retrieval import dynamics_retrieval
+from dynamics_retrieval import cli
 
 
 @pytest.fixture

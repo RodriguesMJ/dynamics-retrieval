@@ -4,4 +4,4 @@ Usage
 
 To use nlsa in a project::
 
-    import nlsa
+    import dynamics_retrieval
