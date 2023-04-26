@@ -39,18 +39,17 @@ def on_qr(Z):
     #plot_t_sv_range(settings, q_ortho, '_qr')
     return q_ortho, r
 
-# T = 1000
-# omega = 2*numpy.pi/T
 
 ts = numpy.asarray(range(0, 1000), dtype=numpy.float64)
 funcs = get_F_sv_t_range(ts)
 funcs_on, r = on_qr(funcs)
-# a_1 = numpy.sin(100*omega*ts)
-# a_2 = numpy.sin(150*omega*ts)
-# a_3 = numpy.sin(70*omega*ts)
 
 T = ts[-1]-ts[0]
 omega = 2*numpy.pi / T
+
+# a_1 = numpy.sin(100*omega*ts)
+# a_2 = numpy.sin(150*omega*ts)
+# a_3 = numpy.sin(70*omega*ts)
    
 #x = 3*(1-numpy.exp(-(ts-700)/200)) #+ 2*(numpy.exp(-ts/600))#
 x_dyn = 2*numpy.sin(11*omega*ts) + 1*numpy.cos(56*omega*ts)
