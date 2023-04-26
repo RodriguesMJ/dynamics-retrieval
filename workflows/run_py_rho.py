@@ -16,23 +16,23 @@ import settings_rho_light as settings
 flag = 0
 if flag == 1:
     import dynamics_retrieval.convert
-    nlsa.convert.main(settings)
+    dynamics_retrieval.convert.main(settings)
 
 # Apply translational disorder correction
 flag = 0
 if flag == 1:
     import dynamics_retrieval.t_disorder_correct
-    nlsa.t_disorder_correct.main(settings)
+    dynamics_retrieval.t_disorder_correct.main(settings)
 
 # CALCULATE d_sq
 flag = 0
 if flag == 1:
     import dynamics_retrieval.calculate_distances_utilities
-    nlsa.calculate_distances_utilities.calculate_d_sq_SFX_steps(settings)
+    dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_SFX_steps(settings)
 
     # Only for small datasets eg dark
-    #nlsa.calculate_distances_utilities.calculate_d_sq_SFX(settings)
-    #nlsa.calculate_distances_utilities.compare(settings)
+    #dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_SFX(settings)
+    #dynamics_retrieval.calculate_distances_utilities.compare(settings)
 
 # CALCULATE D_sq
 flag = 0
@@ -44,42 +44,42 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.calculate_distances_utilities
-    nlsa.calculate_distances_utilities.merge_D_sq(settings)
+    dynamics_retrieval.calculate_distances_utilities.merge_D_sq(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.calculate_distances_utilities
-    nlsa.calculate_distances_utilities.sort_D_sq(settings)
+    dynamics_retrieval.calculate_distances_utilities.sort_D_sq(settings)
 
 flag = 0
 if flag ==1:
     import dynamics_retrieval.get_epsilon
-    nlsa.get_epsilon.main(settings)
+    dynamics_retrieval.get_epsilon.main(settings)
 
 flag = 0
 if flag ==1:
     import dynamics_retrieval.transition_matrix
-    nlsa.transition_matrix.main(settings)
+    dynamics_retrieval.transition_matrix.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.probability_matrix
-    nlsa.probability_matrix.main(settings)
+    dynamics_retrieval.probability_matrix.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.eigendecompose
-    nlsa.eigendecompose.main(settings)
+    dynamics_retrieval.eigendecompose.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.evecs_normalisation
-    nlsa.evecs_normalisation.main(settings)
+    dynamics_retrieval.evecs_normalisation.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_P_evecs
-    nlsa.plot_P_evecs.main(settings)
+    dynamics_retrieval.plot_P_evecs.main(settings)
 
 flag = 0
 if flag == 1:
@@ -92,19 +92,19 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_A
-    nlsa.util_merge_A.main(settings)
+    dynamics_retrieval.util_merge_A.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.SVD
-    nlsa.SVD.main(settings)
+    dynamics_retrieval.SVD.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_SVs.main(settings)
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -118,26 +118,26 @@ flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_x_r
     for mode in range(0, settings.nmodes):
-        nlsa.util_merge_x_r.f(settings, mode)
+        dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.reconstruction
-    nlsa.reconstruction.reconstruct_unwrap_loop_chunck_bwd(settings)
+    dynamics_retrieval.reconstruction.reconstruct_unwrap_loop_chunck_bwd(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_append_bwd_reconstruction
     for mode in range(0, settings.nmodes):
-        nlsa.util_append_bwd_reconstruction.f(settings, mode)
+        dynamics_retrieval.util_append_bwd_reconstruction.f(settings, mode)
 
 flag = 1
 if flag == 1:
     import dynamics_retrieval.export_Is
     for mode in [1]:#range(1, settings.nmodes):
-        nlsa.export_Is.get_Is(settings, mode)
+        dynamics_retrieval.export_Is.get_Is(settings, mode)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.export_Is
-    nlsa.export_Is.export_merged_data_light(settings)
+    dynamics_retrieval.export_Is.export_merged_data_light(settings)

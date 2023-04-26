@@ -133,8 +133,8 @@ if flag == 1:
     import dynamics_retrieval.SVD
 
     x = joblib.load('%s/x.jbl'%results_path)
-    U, S, VH = nlsa.SVD.SVD_f(x)
-    U, S, VH = nlsa.SVD.sorting(U, S, VH)
+    U, S, VH = dynamics_retrieval.SVD.SVD_f(x)
+    U, S, VH = dynamics_retrieval.SVD.sorting(U, S, VH)
 
     print 'Done'
     print 'U: ', U.shape
@@ -148,9 +148,9 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -234,7 +234,7 @@ if flag == 1:
         x_r_tot_flat = x_r_tot.flatten()
         x_underlying = x_underlying.flatten()
 
-        CC = nlsa.correlate.Correlate(x_underlying, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(x_underlying, x_r_tot_flat)
         print(CC)
 
         plt.title('CC: %.4f'%CC)
@@ -253,19 +253,19 @@ if flag == 1:
     import dynamics_retrieval.calculate_distances_utilities
     distance_mode = 'onlymeasured_normalised'
     if distance_mode == 'allterms':
-        nlsa.calculate_distances_utilities.calculate_d_sq_dense(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_dense(settings)
     elif distance_mode == 'onlymeasured':
-        nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     elif distance_mode == 'onlymeasured_normalised':
-        nlsa.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
-        nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     else:
         print 'Undefined distance mode.'
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_distance_distributions
-    nlsa.plot_distance_distributions.plot_d_0j(settings)
+    dynamics_retrieval.plot_distance_distributions.plot_d_0j(settings)
 
 flag = 0
 if flag == 1:
@@ -278,45 +278,45 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_D_sq
-    nlsa.util_merge_D_sq.f(settings)
-    nlsa.util_merge_D_sq.f_N_D_sq_elements(settings)
+    dynamics_retrieval.util_merge_D_sq.f(settings)
+    dynamics_retrieval.util_merge_D_sq.f_N_D_sq_elements(settings)
     import dynamics_retrieval.calculate_distances_utilities
-    nlsa.calculate_distances_utilities.normalise(settings)
+    dynamics_retrieval.calculate_distances_utilities.normalise(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_distance_distributions
-    nlsa.plot_distance_distributions.plot_D_0j(settings)
+    dynamics_retrieval.plot_distance_distributions.plot_D_0j(settings)
 
 # Select b euclidean nns or b time nns.
 flag = 0
 if flag == 1:
     #import dynamics_retrieval.calculate_distances_utilities
-    #nlsa.calculate_distances_utilities.sort_D_sq(settings)
+    #dynamics_retrieval.calculate_distances_utilities.sort_D_sq(settings)
     import dynamics_retrieval.get_D_N
-    nlsa.get_D_N.main_euclidean_nn(settings)
-    #nlsa.get_D_N.main_time_nn_1(settings)
-    #nlsa.get_D_N.main_time_nn_2(settings)
+    dynamics_retrieval.get_D_N.main_euclidean_nn(settings)
+    #dynamics_retrieval.get_D_N.main_time_nn_1(settings)
+    #dynamics_retrieval.get_D_N.main_time_nn_2(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.get_epsilon
-    nlsa.get_epsilon.main(settings)
+    dynamics_retrieval.get_epsilon.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.transition_matrix
-    nlsa.transition_matrix.main(settings)
+    dynamics_retrieval.transition_matrix.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.probability_matrix
-    nlsa.probability_matrix.main(settings)
+    dynamics_retrieval.probability_matrix.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.eigendecompose
-    nlsa.eigendecompose.main(settings)
+    dynamics_retrieval.eigendecompose.main(settings)
 
 
 flag = 0
@@ -329,7 +329,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_P_evecs
-    nlsa.plot_P_evecs.main(settings)
+    dynamics_retrieval.plot_P_evecs.main(settings)
 
 flag = 0
 if flag == 1:
@@ -340,19 +340,19 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_A
-    nlsa.util_merge_A.main(settings)
+    dynamics_retrieval.util_merge_A.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.SVD
-    nlsa.SVD.main(settings)
+    dynamics_retrieval.SVD.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -364,7 +364,7 @@ flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_x_r
     for mode in settings.modes_to_reconstruct:
-        nlsa.util_merge_x_r.f(settings, mode)
+        dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 flag = 0
 if flag == 1:
@@ -388,7 +388,7 @@ if flag == 1:
     x_r_tot = x_r_tot.flatten()
     x_underlying = x_underlying.flatten()
 
-    CC = nlsa.correlate.Correlate(x_underlying, x_r_tot)
+    CC = dynamics_retrieval.correlate.Correlate(x_underlying, x_r_tot)
     print(CC)
 
 #############################
@@ -398,15 +398,15 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.calculate_distances_utilities
-    nlsa.calculate_distances_utilities.concatenate_backward(settings)
+    dynamics_retrieval.calculate_distances_utilities.concatenate_backward(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.SVD
 
     x = joblib.load('%s/X_backward_q_%d.jbl'%(results_path, settings.q))
-    U, S, VH = nlsa.SVD.SVD_f(x)
-    U, S, VH = nlsa.SVD.sorting(U, S, VH)
+    U, S, VH = dynamics_retrieval.SVD.SVD_f(x)
+    U, S, VH = dynamics_retrieval.SVD.sorting(U, S, VH)
 
     print 'Done'
     print 'U: ', U.shape
@@ -420,9 +420,9 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -434,7 +434,7 @@ flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_x_r
     for mode in settings.modes_to_reconstruct:
-        nlsa.util_merge_x_r.f(settings, mode)
+        dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 flag = 0
 if flag == 1:
@@ -511,7 +511,7 @@ if flag == 1:
         x_r_tot_flat = x_r_tot.flatten()
         x_underlying = x_underlying.flatten()
 
-        CC = nlsa.correlate.Correlate(x_underlying, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(x_underlying, x_r_tot_flat)
         print(CC)
 
         plt.title('CC: %.4f'%CC)

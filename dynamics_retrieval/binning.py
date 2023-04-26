@@ -27,7 +27,7 @@ def binning_f(settings):
 
     bin_size = 1
     bin_sizes.append(bin_size)
-    CC = nlsa.correlate.Correlate(benchmark.flatten(), x.flatten())
+    CC = dynamics_retrieval.correlate.Correlate(benchmark.flatten(), x.flatten())
     CCs.append(CC)
     print CC
 
@@ -40,7 +40,7 @@ def binning_f(settings):
             x_avg = numpy.average(x[:,i:i+bin_size], axis=1)
             x_binned[:,i] = x_avg
 
-        CC = nlsa.correlate.Correlate(benchmark[:, n:-n].flatten(), x_binned.flatten())
+        CC = dynamics_retrieval.correlate.Correlate(benchmark[:, n:-n].flatten(), x_binned.flatten())
         CCs.append(CC)
         print 'Bin size: ', bin_size,  'CC: ', CC
 
@@ -48,7 +48,7 @@ def binning_f(settings):
         x_large[:] = numpy.nan
         x_large[:, n:-n] = x_binned
 
-        nlsa.plot_syn_data.f(x_large,
+        dynamics_retrieval.plot_syn_data.f(x_large,
                              '%s/x_r_binsize_%d.png'%(results_path, bin_size),
                              'Bin size: %d CC: %.4f'%(bin_size, CC))
 

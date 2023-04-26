@@ -1,1 +1,1 @@
-"""Unit test package for nlsa."""
+"""Unit test package for dynamics_retrieval"""

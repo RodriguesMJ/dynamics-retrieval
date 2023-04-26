@@ -85,7 +85,7 @@ if flag == 1:
 
     x = joblib.load('%s/x.jbl'%settings.results_path)
     fn = '%s/x.png'%(settings.results_path)
-    nlsa.plot_syn_data.f(x, fn)
+    dynamics_retrieval.plot_syn_data.f(x, fn)
 
 ################
 ###   NLSA   ###
@@ -96,12 +96,12 @@ if flag == 1:
     import dynamics_retrieval.calculate_distances_utilities
     distance_mode = 'onlymeasured_normalised'
     if distance_mode == 'allterms':
-        nlsa.calculate_distances_utilities.calculate_d_sq_dense(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_dense(settings)
     elif distance_mode == 'onlymeasured':
-        nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     elif distance_mode == 'onlymeasured_normalised':
-        nlsa.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
-        nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     else:
         print 'Undefined distance mode.'
 
@@ -114,7 +114,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_distance_distributions
-    nlsa.plot_distance_distributions.plot_d_0j(settings)
+    dynamics_retrieval.plot_distance_distributions.plot_d_0j(settings)
 
 flag = 0
 if flag == 1:
@@ -127,45 +127,45 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_D_sq
-    nlsa.util_merge_D_sq.f(settings)
-    nlsa.util_merge_D_sq.f_N_D_sq_elements(settings)
+    dynamics_retrieval.util_merge_D_sq.f(settings)
+    dynamics_retrieval.util_merge_D_sq.f_N_D_sq_elements(settings)
     import dynamics_retrieval.calculate_distances_utilities
-    nlsa.calculate_distances_utilities.normalise(settings)
+    dynamics_retrieval.calculate_distances_utilities.normalise(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_distance_distributions
-    nlsa.plot_distance_distributions.plot_D_0j(settings)
+    dynamics_retrieval.plot_distance_distributions.plot_D_0j(settings)
 
 # Select b euclidean nns or b time nns.
 flag = 0
 if flag == 1:
     #import dynamics_retrieval.calculate_distances_utilities
-    #nlsa.calculate_distances_utilities.sort_D_sq(settings)
+    #dynamics_retrieval.calculate_distances_utilities.sort_D_sq(settings)
     import dynamics_retrieval.get_D_N
-    nlsa.get_D_N.main_euclidean_nn(settings)
-    #nlsa.get_D_N.main_time_nn_1(settings)
-    #nlsa.get_D_N.main_time_nn_2(settings)
+    dynamics_retrieval.get_D_N.main_euclidean_nn(settings)
+    #dynamics_retrieval.get_D_N.main_time_nn_1(settings)
+    #dynamics_retrieval.get_D_N.main_time_nn_2(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.get_epsilon
-    nlsa.get_epsilon.main(settings)
+    dynamics_retrieval.get_epsilon.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.transition_matrix
-    nlsa.transition_matrix.main(settings)
+    dynamics_retrieval.transition_matrix.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.probability_matrix
-    nlsa.probability_matrix.main(settings)
+    dynamics_retrieval.probability_matrix.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.eigendecompose
-    nlsa.eigendecompose.main(settings)
+    dynamics_retrieval.eigendecompose.main(settings)
 
 flag = 0
 if flag == 1:
@@ -177,7 +177,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_P_evecs
-    nlsa.plot_P_evecs.main(settings)
+    dynamics_retrieval.plot_P_evecs.main(settings)
 
 flag = 0
 if flag == 1:
@@ -188,19 +188,19 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_A
-    nlsa.util_merge_A.main(settings)
+    dynamics_retrieval.util_merge_A.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.SVD
-    nlsa.SVD.main(settings)
+    dynamics_retrieval.SVD.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -214,7 +214,7 @@ flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_x_r
     for mode in settings.modes_to_reconstruct:
-        nlsa.util_merge_x_r.f(settings, mode)
+        dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 flag = 0
 if flag == 1:
@@ -236,14 +236,14 @@ if flag == 1:
         print mode
 
         x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
-        nlsa.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
+        dynamics_retrieval.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
 
         x_r_tot += x_r
         x_r_tot_flat = x_r_tot.flatten()
-        CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(benchmark, x_r_tot_flat)
         CCs.append(CC)
 
-        nlsa.plot_syn_data.f(x_r_tot,
+        dynamics_retrieval.plot_syn_data.f(x_r_tot,
                              '%s/x_r_tot_%d_modes.png'%(results_path, mode+1),
                              title='%.4f'%CC)
 
@@ -261,8 +261,8 @@ if flag == 1:
     import dynamics_retrieval.SVD
 
     x = joblib.load('%s/x.jbl'%settings.results_path)
-    U, S, VH = nlsa.SVD.SVD_f(x)
-    U, S, VH = nlsa.SVD.sorting(U, S, VH)
+    U, S, VH = dynamics_retrieval.SVD.SVD_f(x)
+    U, S, VH = dynamics_retrieval.SVD.sorting(U, S, VH)
 
     print 'Done'
     print 'U: ', U.shape
@@ -276,9 +276,9 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -303,14 +303,14 @@ if flag == 1:
         vT = VH[mode, :]
 
         x_r = sv*numpy.outer(u, vT)
-        nlsa.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
+        dynamics_retrieval.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
 
         x_r_tot += x_r
         x_r_tot_flat = x_r_tot.flatten()
-        CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(benchmark, x_r_tot_flat)
         CCs.append(CC)
 
-        nlsa.plot_syn_data.f(x_r_tot,
+        dynamics_retrieval.plot_syn_data.f(x_r_tot,
                              '%s/x_r_tot_%d_modes.png'%(results_path, mode+1),
                              title='%.4f'%CC)
 
@@ -323,7 +323,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.make_lp_filter
-    nlsa.make_lp_filter.main(settings)
+    dynamics_retrieval.make_lp_filter.main(settings)
 
 flag = 0
 if flag == 1:
@@ -334,7 +334,7 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_A
-    nlsa.util_merge_A.main(settings)
+    dynamics_retrieval.util_merge_A.main(settings)
 
 flag = 0
 if flag == 1:
@@ -346,8 +346,8 @@ if flag == 1:
 
     A = joblib.load('%s/A_parallel.jbl'%results_path)
     print 'Loaded'
-    U, S, VH = nlsa.SVD.SVD_f_manual(A)
-    U, S, VH = nlsa.SVD.sorting(U, S, VH)
+    U, S, VH = dynamics_retrieval.SVD.SVD_f_manual(A)
+    U, S, VH = dynamics_retrieval.SVD.sorting(U, S, VH)
 
     print 'Done'
     print 'U: ', U.shape
@@ -361,16 +361,16 @@ if flag == 1:
     evecs = joblib.load('%s/F_on_qr.jbl'%(results_path))
     Phi = evecs[:,0:2*settings.f_max_considered+1]
 
-    VT_final = nlsa.SVD.project_chronos(VH, Phi)
+    VT_final = dynamics_retrieval.SVD.project_chronos(VH, Phi)
     print 'VT_final: ', VT_final.shape
     joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -382,7 +382,7 @@ flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_x_r
     for mode in settings.modes_to_reconstruct:
-        nlsa.util_merge_x_r.f(settings, mode)
+        dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 flag = 0
 if flag == 1:
@@ -403,13 +403,13 @@ if flag == 1:
     for mode in settings.modes_to_reconstruct:
 
         x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
-        nlsa.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
+        dynamics_retrieval.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
 
         x_r_tot += x_r
         x_r_tot_flat = x_r_tot.flatten()
-        CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(benchmark, x_r_tot_flat)
         CCs.append(CC)
-        nlsa.plot_syn_data.f(x_r_tot,
+        dynamics_retrieval.plot_syn_data.f(x_r_tot,
                              '%s/x_r_tot_%d_modes.png'%(results_path, mode+1),
                              title='%.4f'%CC)
 
@@ -481,9 +481,9 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.plot(settings)
+    dynamics_retrieval.plot_chronos.plot(settings)
 
 flag = 0
 if flag == 1:
@@ -495,7 +495,7 @@ flag = 0
 if flag == 1:
     import dynamics_retrieval.util_merge_x_r
     for mode in range(20):
-        nlsa.util_merge_x_r.f(settings, mode)
+        dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 flag = 0
 if flag == 1:
@@ -517,13 +517,13 @@ if flag == 1:
     for mode in settings.modes_to_reconstruct:
         print 'Mode:', mode
         x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'%(results_path, mode))
-        nlsa.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
+        dynamics_retrieval.plot_syn_data.f(x_r, '%s/x_r_mode_%d.png'%(results_path, mode))
 
         x_r_tot += x_r
         x_r_tot_flat = x_r_tot.flatten()
-        CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(benchmark, x_r_tot_flat)
         CCs.append(CC)
-        nlsa.plot_syn_data.f(x_r_tot,
+        dynamics_retrieval.plot_syn_data.f(x_r_tot,
                              '%s/x_r_tot_%d_modes.png'%(results_path, mode+1),
                              title='%.4f'%CC)
 
@@ -549,7 +549,7 @@ if flag == 1:
         x_r = joblib.load('%s/movie_mode_%d_parallel.jbl'
                           %(settings.results_path, mode))
         x_r_tot += x_r
-        L = nlsa.local_linearity.local_linearity_measure(x_r_tot)
+        L = dynamics_retrieval.local_linearity.local_linearity_measure(x_r_tot)
 
         local_linearity_lst.append(L)
     joblib.dump(local_linearity_lst,
@@ -571,5 +571,5 @@ if flag == 1:
 flag = 0
 if flag == 1:
     import dynamics_retrieval.binning
-    nlsa.binning.binning_f(settings)
-    nlsa.binning.plot(settings)
+    dynamics_retrieval.binning.binning_f(settings)
+    dynamics_retrieval.binning.plot(settings)

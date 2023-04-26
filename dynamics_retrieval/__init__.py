@@ -1,4 +1,4 @@
-"""Top-level package for nlsa."""
+"""Top-level package for dynamics-retrieval."""
 
 __author__ = """Cecilia Casadei"""
 __email__ = 'ceciliamariacasadei@gmail.com'

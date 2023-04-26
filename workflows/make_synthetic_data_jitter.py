@@ -120,9 +120,9 @@ def make_x(settings):
         x[i,:] = x_i
 
     fn = '%s/x_jitter_factor_%0.2f.png'%(results_path, jitter_factor)
-    nlsa.plot_syn_data.f(x, fn)
+    dynamics_retrieval.plot_syn_data.f(x, fn)
     fn = '%s/x_underlying_ts_meas.png'%(results_path)
-    nlsa.plot_syn_data.f(eval_model(settings, ts_meas), fn)
+    dynamics_retrieval.plot_syn_data.f(eval_model(settings, ts_meas), fn)
 
     joblib.dump(x, '%s/x.jbl'%results_path)
     joblib.dump(mask, '%s/mask.jbl'%results_path)
@@ -146,19 +146,19 @@ flag = 0
 if flag == 1:
     import settings_synthetic_data_jitter as settings
     import dynamics_retrieval.boost
-    nlsa.boost.main_syn_data(settings)
+    dynamics_retrieval.boost.main_syn_data(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.calculate_dI
     import settings_synthetic_data_jitter as settings
-    nlsa.calculate_dI.main(settings)
+    dynamics_retrieval.calculate_dI.main(settings)
 
 flag = 0
 if flag == 1:
     import dynamics_retrieval.boost
     import settings_synthetic_data_jitter as settings
-    nlsa.boost.main(settings)
+    dynamics_retrieval.boost.main(settings)
 
 #################################
 ### LPSA PARA SEARCH : q-scan ###
@@ -212,9 +212,9 @@ if flag == 1:
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
 
-        F = nlsa.make_lp_filter.get_F_sv_t_range(settings)
-        Q, R = nlsa.make_lp_filter.on_qr(settings, F)
-        d = nlsa.make_lp_filter.check_on(Q)
+        F = dynamics_retrieval.make_lp_filter.get_F_sv_t_range(settings)
+        Q, R = dynamics_retrieval.make_lp_filter.on_qr(settings, F)
+        d = dynamics_retrieval.make_lp_filter.check_on(Q)
         print 'Normalisation: ', numpy.amax(abs(d))
         joblib.dump(Q, '%s/F_on.jbl'%settings.results_path)
 
@@ -243,7 +243,7 @@ if flag == 1:
         print 'q: ', settings.q
         print 'jmax: ', settings.f_max
 
-        nlsa.util_merge_A.main(settings)
+        dynamics_retrieval.util_merge_A.main(settings)
 
 flag = 0
 if flag == 1:
@@ -261,8 +261,8 @@ if flag == 1:
 
         A = joblib.load('%s/A_parallel.jbl'%results_path)[:,0:2*settings.f_max+1]
         print 'Loaded'
-        U, S, VH = nlsa.SVD.SVD_f_manual(A)
-        U, S, VH = nlsa.SVD.sorting(U, S, VH)
+        U, S, VH = dynamics_retrieval.SVD.SVD_f_manual(A)
+        U, S, VH = dynamics_retrieval.SVD.sorting(U, S, VH)
 
         print 'Done'
         print 'U: ', U.shape
@@ -276,7 +276,7 @@ if flag == 1:
         evecs = joblib.load('%s/F_on_qr.jbl'%(results_path))
         Phi = evecs[:,0:2*settings.f_max_considered+1]
 
-        VT_final = nlsa.SVD.project_chronos(VH, Phi)
+        VT_final = dynamics_retrieval.SVD.project_chronos(VH, Phi)
         print 'VT_final: ', VT_final.shape
         joblib.dump(VT_final, '%s/VT_final.jbl'%results_path)
 
@@ -292,8 +292,8 @@ if flag == 1:
         print 'jmax: ', settings.f_max
         print 'q: ', settings.q
 
-        nlsa.plot_SVs.main(settings)
-        nlsa.plot_chronos.main(settings)
+        dynamics_retrieval.plot_SVs.main(settings)
+        dynamics_retrieval.plot_chronos.main(settings)
 
 # p=0 reconstruction
 flag = 0
@@ -307,8 +307,8 @@ if flag == 1:
         print 'jmax: ', settings.f_max
         print 'q: ', settings.q
 
-        nlsa.reconstruct_p.f(settings)
-        nlsa.reconstruct_p.f_ts(settings)
+        dynamics_retrieval.reconstruct_p.f(settings)
+        dynamics_retrieval.reconstruct_p.f_ts(settings)
 
 # Calculate L of p=0 reconstructed signal (ie L of central block of reconstreucted supervectors)
 flag = 0
@@ -322,7 +322,7 @@ if flag == 1:
         print 'jmax: ', settings.f_max
         print 'q: ', settings.q
 
-        nlsa.local_linearity.get_L(settings)
+        dynamics_retrieval.local_linearity.get_L(settings)
 
 flag = 0
 if flag == 1:
@@ -353,7 +353,7 @@ if flag == 1:
         bm_large[:, start_idx:end_idx] = benchmark
 
         fn = '%s/benchmark.png'%results_path
-        nlsa.plot_syn_data.f(bm_large, fn)
+        dynamics_retrieval.plot_syn_data.f(bm_large, fn)
 
         benchmark_flat = benchmark.flatten()
 
@@ -367,14 +367,14 @@ if flag == 1:
             x_r_tot += x_r
 
             x_r_tot_flat = x_r_tot.flatten()
-            CC = nlsa.correlate.Correlate(benchmark_flat, x_r_tot_flat)
+            CC = dynamics_retrieval.correlate.Correlate(benchmark_flat, x_r_tot_flat)
             CCs.append(CC)
 
             x_r_large = numpy.zeros((m, S))
             x_r_large[:] = numpy.nan
             x_r_large[:, start_idx:end_idx] = x_r_tot
 
-            nlsa.plot_syn_data.f(x_r_large,
+            dynamics_retrieval.plot_syn_data.f(x_r_large,
                                  '%s/x_r_tot_%d_modes.png'%(results_path,
                                                             mode+1),
                                  title='%.4f'%(CC))
@@ -449,7 +449,7 @@ if flag == 1:
         bm_large[:, start_idx:end_idx] = benchmark
 
         fn = '%s/benchmark.png'%results_path
-        nlsa.plot_syn_data.f(bm_large, fn)
+        dynamics_retrieval.plot_syn_data.f(bm_large, fn)
 
         benchmark_flat = benchmark.flatten()
 
@@ -467,14 +467,14 @@ if flag == 1:
             x_r_tot += x_r
 
             x_r_tot_flat = x_r_tot.flatten()
-            CC = nlsa.correlate.Correlate(benchmark_flat, x_r_tot_flat)
+            CC = dynamics_retrieval.correlate.Correlate(benchmark_flat, x_r_tot_flat)
             CCs.append(CC)
 
             x_r_large = numpy.zeros((m, S))
             x_r_large[:] = numpy.nan
             x_r_large[:, start_idx:end_idx] = x_r_tot
 
-            nlsa.plot_syn_data.f(x_r_large,
+            dynamics_retrieval.plot_syn_data.f(x_r_large,
                                  '%s/x_r_tot_%d_modes.png'%(results_path,
                                                             mode+1),
                                  title='%.4f'%(CC))
@@ -497,7 +497,7 @@ if flag == 1:
     import settings_synthetic_data_jitter as settings
     qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001]
     nmodes = 10
-    nlsa.get_successive_CCs.get_CCs_q_scan(settings, qs, nmodes)
+    dynamics_retrieval.get_successive_CCs.get_CCs_q_scan(settings, qs, nmodes)
 
 flag = 0
 if flag == 1:
@@ -505,7 +505,7 @@ if flag == 1:
     import settings_synthetic_data_jitter as settings
     qs = [1, 51, 101, 501, 1001, 2001, 3001, 4001, 5001]
     nmodes = 10
-    nlsa.get_successive_CCs.plot_CCs_q_scan(settings, qs, nmodes)
+    dynamics_retrieval.get_successive_CCs.plot_CCs_q_scan(settings, qs, nmodes)
 
 
 # Calculate step-wise CC
@@ -517,7 +517,7 @@ if flag == 1:
     import settings_synthetic_data_jitter as settings
     f_max_s = [5, 8, 15, 30, 50, 100, 200]
     nmodes = 10
-    nlsa.get_successive_CCs.get_CCs_jmax_scan(settings, f_max_s, nmodes)
+    dynamics_retrieval.get_successive_CCs.get_CCs_jmax_scan(settings, f_max_s, nmodes)
 
 flag = 0
 if flag == 1:
@@ -525,7 +525,7 @@ if flag == 1:
     import settings_synthetic_data_jitter as settings
     f_max_s = [5, 8, 15, 30, 50, 100, 200]
     nmodes = 10
-    nlsa.get_successive_CCs.plot_CCs_jmax_scan(settings, f_max_s, nmodes)
+    dynamics_retrieval.get_successive_CCs.plot_CCs_jmax_scan(settings, f_max_s, nmodes)
 
 ###############################
 ### Standard reconstruction ###
@@ -546,7 +546,7 @@ flag = 0
 if flag == 1:
     import settings_synthetic_data_jitter as settings
     import dynamics_retrieval.reconstruct_p
-    nlsa.reconstruct_p.f_ts(settings)
+    dynamics_retrieval.reconstruct_p.f_ts(settings)
 
 flag = 0
 if flag == 1:
@@ -558,7 +558,7 @@ if flag == 1:
         print 'jmax: ', settings.f_max
         print 'q: ', settings.q
         for mode in settings.modes_to_reconstruct:
-            nlsa.util_merge_x_r.f(settings, mode)
+            dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 
 #######################################################
@@ -569,8 +569,8 @@ flag = 0
 if flag == 1:
     import settings_synthetic_data_jitter as settings
     import dynamics_retrieval.reconstruct_p
-    nlsa.reconstruct_p.f(settings)
-    nlsa.reconstruct_p.f_ts(settings)
+    dynamics_retrieval.reconstruct_p.f(settings)
+    dynamics_retrieval.reconstruct_p.f_ts(settings)
 
 # SVD of result in data space
 flag = 0
@@ -590,9 +590,9 @@ if flag == 1:
     import dynamics_retrieval.SVD
     n_modes_to_use = 4
     x = joblib.load('%s/x_r_tot_p_%d_%d_modes.jbl'%(settings.results_path, settings.p, n_modes_to_use))
-    U, S, VH = nlsa.SVD.SVD_f(x)
+    U, S, VH = dynamics_retrieval.SVD.SVD_f(x)
     print 'Sorting'
-    U, S, VH = nlsa.SVD.sorting(U, S, VH)
+    U, S, VH = dynamics_retrieval.SVD.sorting(U, S, VH)
 
     print 'Done'
     print 'U: ', U.shape
@@ -607,9 +607,9 @@ flag = 0
 if flag == 1:
     import settings_synthetic_data_jitter as settings
     import dynamics_retrieval.plot_SVs
-    nlsa.plot_SVs.main(settings)
+    dynamics_retrieval.plot_SVs.main(settings)
     import dynamics_retrieval.plot_chronos
-    nlsa.plot_chronos.main(settings)
+    dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -624,7 +624,7 @@ if flag == 1:
     end_idx = start_idx + t_r.shape[0]
 
     benchmark = eval_model(settings, t_r)
-    nlsa.plot_syn_data.f(benchmark, '%s/benchmark_at_t_r.png'%(rpath))
+    dynamics_retrieval.plot_syn_data.f(benchmark, '%s/benchmark_at_t_r.png'%(rpath))
     benchmark = benchmark.flatten()
 
     U = joblib.load('%s/U.jbl'%rpath)
@@ -644,13 +644,13 @@ if flag == 1:
         x_r_tot += x_r
         x_r_tot_flat = x_r_tot.flatten()
 
-        CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
+        CC = dynamics_retrieval.correlate.Correlate(benchmark, x_r_tot_flat)
         CCs.append(CC)
 
         x_r_large = numpy.zeros((settings.m, settings.S))
         x_r_large[:] = numpy.nan
         x_r_large[:, start_idx:end_idx] = x_r_tot
-        nlsa.plot_syn_data.f(x_r_large,
+        dynamics_retrieval.plot_syn_data.f(x_r_large,
                              '%s/x_r_tot_%d_modes_jet_nan.png'%(rpath, mode+1),
                              title='%0.4f'%CC)
 
@@ -682,7 +682,7 @@ if flag == 1:
         vT = VH[mode, :]
         x_r = sv*numpy.outer(u, vT)
         x_r_tot += x_r
-        L = nlsa.local_linearity.local_linearity_measure_jitter(x_r_tot, t_r)
+        L = dynamics_retrieval.local_linearity.local_linearity_measure_jitter(x_r_tot, t_r)
 
         Ls.append(L)
     joblib.dump(Ls, '%s/local_linearity_vs_nmodes.jbl'%rpath)
@@ -716,7 +716,7 @@ if flag == 1:
 
     bin_size = 1
     bin_sizes.append(bin_size)
-    CC = nlsa.correlate.Correlate(eval_model(settings, ts_meas).flatten(),
+    CC = dynamics_retrieval.correlate.Correlate(eval_model(settings, ts_meas).flatten(),
                                   x.flatten())
     CCs.append(CC)
     print 'Starting CC: ', CC
@@ -736,7 +736,7 @@ if flag == 1:
 
         ts_binned = numpy.asarray(ts_binned)
 
-        CC = nlsa.correlate.Correlate(eval_model(settings, ts_binned).flatten(),
+        CC = dynamics_retrieval.correlate.Correlate(eval_model(settings, ts_binned).flatten(),
                                       x_binned.flatten())
         CCs.append(CC)
         print 'Bin size: ', bin_size, 'CC: ', CC
@@ -744,7 +744,7 @@ if flag == 1:
         x_binned_large = numpy.zeros((settings.m, settings.S))
         x_binned_large[:] = numpy.nan
         x_binned_large[:, n:n+x_binned.shape[1]] = x_binned
-        nlsa.plot_syn_data.f(x_binned_large,
+        dynamics_retrieval.plot_syn_data.f(x_binned_large,
                              '%s/x_r_binsize_%d_jet_nan_noticks.png'%(rpath, bin_size),
                              title='CC=%0.4f'%CC)
 
@@ -799,12 +799,12 @@ if flag == 1:
     import settings_synthetic_data_jitter as settings
     distance_mode = 'onlymeasured_normalised'
     if distance_mode == 'allterms':
-        nlsa.calculate_distances_utilities.calculate_d_sq_dense(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_dense(settings)
     elif distance_mode == 'onlymeasured':
-        nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     elif distance_mode == 'onlymeasured_normalised':
-        nlsa.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
-        nlsa.calculate_distances_utilities.calculate_d_sq_sparse(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_SFX_element_n(settings)
+        dynamics_retrieval.calculate_distances_utilities.calculate_d_sq_sparse(settings)
     else:
         print 'Undefined distance mode.'
 
@@ -857,9 +857,9 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.util_merge_D_sq.f(settings)
-        nlsa.util_merge_D_sq.f_N_D_sq_elements(settings)
-        nlsa.calculate_distances_utilities.normalise(settings)
+        dynamics_retrieval.util_merge_D_sq.f(settings)
+        dynamics_retrieval.util_merge_D_sq.f_N_D_sq_elements(settings)
+        dynamics_retrieval.calculate_distances_utilities.normalise(settings)
 
 flag = 0
 if flag == 1:
@@ -869,7 +869,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.plot_distance_distributions.plot_D_0j(settings)
+        dynamics_retrieval.plot_distance_distributions.plot_D_0j(settings)
 
 flag = 0
 if flag == 1:
@@ -903,9 +903,9 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.get_D_N.main_euclidean_nn(settings)
-        #nlsa.get_D_N.main_time_nn_1(settings)
-        #nlsa.get_D_N.main_time_nn_2(settings)
+        dynamics_retrieval.get_D_N.main_euclidean_nn(settings)
+        #dynamics_retrieval.get_D_N.main_time_nn_1(settings)
+        #dynamics_retrieval.get_D_N.main_time_nn_2(settings)
 
 flag = 0
 if flag == 1:
@@ -918,7 +918,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.get_epsilon.main(settings)
+        dynamics_retrieval.get_epsilon.main(settings)
 
 
 flag = 0
@@ -955,7 +955,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.transition_matrix.main(settings)
+        dynamics_retrieval.transition_matrix.main(settings)
 
 flag = 0
 if flag == 1:
@@ -970,7 +970,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.probability_matrix.main(settings)
+        dynamics_retrieval.probability_matrix.main(settings)
 
 flag = 0
 if flag == 1:
@@ -1004,7 +1004,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.eigendecompose.main(settings)
+        dynamics_retrieval.eigendecompose.main(settings)
 
 flag = 0
 if flag == 1:
@@ -1028,7 +1028,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.plot_P_evecs.main(settings)
+        dynamics_retrieval.plot_P_evecs.main(settings)
 
 flag = 0
 if flag == 1:
@@ -1060,7 +1060,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.util_merge_A.main(settings)
+        dynamics_retrieval.util_merge_A.main(settings)
 
 flag = 0
 if flag == 1:
@@ -1074,7 +1074,7 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.SVD.main(settings)
+        dynamics_retrieval.SVD.main(settings)
 
 flag = 0
 if flag == 1:
@@ -1090,8 +1090,8 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.plot_SVs.main(settings)
-        nlsa.plot_chronos.main(settings)
+        dynamics_retrieval.plot_SVs.main(settings)
+        dynamics_retrieval.plot_chronos.main(settings)
 
 flag = 0
 if flag == 1:
@@ -1131,8 +1131,8 @@ if flag == 1:
     for q in qs:
         modulename = 'settings_q_%d'%q
         settings = __import__(modulename)
-        nlsa.reconstruct_p.f(settings)
-        nlsa.reconstruct_p.f_ts(settings)
+        dynamics_retrieval.reconstruct_p.f(settings)
+        dynamics_retrieval.reconstruct_p.f_ts(settings)
 
 
 # STANDARD RECONSTRUCTION
@@ -1168,7 +1168,7 @@ if flag == 1:
     # modulenames = ['settings_log10eps_m2p0', 'settings_log10eps_m1p0', 'settings_log10eps_0p0', 'settings_log10eps_3p0', 'settings_log10eps_8p0']
     # for modulename in modulenames:
     #     settings = __import__(modulename)
-        nlsa.reconstruct_p.f_ts(settings)
+        dynamics_retrieval.reconstruct_p.f_ts(settings)
 
 flag = 0
 if flag == 1:
@@ -1182,7 +1182,7 @@ if flag == 1:
         settings = __import__(modulename)
 
         for mode in settings.modes_to_reconstruct:
-            nlsa.util_merge_x_r.f(settings, mode)
+            dynamics_retrieval.util_merge_x_r.f(settings, mode)
 
 # CC TO BENCHMARK
 flag = 0
@@ -1204,7 +1204,7 @@ if flag == 1:
 
         benchmark = eval_model(settings, t_r)
         print 'Benchmark: ', benchmark.shape
-        nlsa.plot_syn_data.f(benchmark, '%s/benchmark_at_t_r.png'%results_path)
+        dynamics_retrieval.plot_syn_data.f(benchmark, '%s/benchmark_at_t_r.png'%results_path)
         benchmark = benchmark.flatten()
 
         x_r_tot = 0
@@ -1218,11 +1218,11 @@ if flag == 1:
             x_r_tot += x_r
             x_r_tot_flat = x_r_tot.flatten()
 
-            CC = nlsa.correlate.Correlate(benchmark, x_r_tot_flat)
+            CC = dynamics_retrieval.correlate.Correlate(benchmark, x_r_tot_flat)
             print 'CC: ', CC
             CCs.append(CC)
 
-            nlsa.plot_syn_data.f(x_r_tot,
+            dynamics_retrieval.plot_syn_data.f(x_r_tot,
                                  '%s/x_r_tot_%d_modes.png'%(results_path, mode+1),
                                  title='%.4f'%CC)
 
@@ -1232,7 +1232,7 @@ if flag == 1:
             x_r_large[:] = numpy.nan
             x_r_large[:, start:end] = x_r_tot
 
-            nlsa.plot_syn_data.f(x_r_large,
+            dynamics_retrieval.plot_syn_data.f(x_r_large,
                                  '%s/x_r_tot_%d_modes.png'%(results_path, mode+1),
                                  title='%.4f'%CC)
 

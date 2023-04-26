@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = nlsa
+SPHINXPROJ    = dynamics-retrieval
 SOURCEDIR     = .
 BUILDDIR      = _build
 
