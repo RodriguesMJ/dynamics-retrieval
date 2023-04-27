@@ -29,7 +29,7 @@ test_requirements = ["tox", "flake8", "coverage", "pytest>=3", "pytest-runner>=5
 
 doc_requirements = ["Sphinx>1.8"]
 
-dev_requirements = ["bump2version", "twine"]
+dev_requirements = ["bump2version", "twine", "black", "isort"]
 
 setup(
     author="Cecilia Casadei",
