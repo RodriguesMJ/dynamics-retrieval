@@ -50,7 +50,7 @@ setup(
     },
     long_description=readme + "\n\n" + history,
     include_package_data=True,
-    keywords="science,serial-crystallography,dynamics,nlsa,structural-biology",
+    keywords="science,serial-crystallography,dynamics,lpsa,nlsa,structural-biology",
     name="dynamics-retrieval",
     packages=find_packages(include=["dynamics_retrieval", "dynamics_retrieval.*"]),
     setup_requires=setup_requirements,
