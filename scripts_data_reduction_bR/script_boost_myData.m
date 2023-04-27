@@ -21,8 +21,6 @@ fileData = [path, fn];
 fn = 'data_bR_dark_selected_int_SCL_rescut_BST_nS259423_nBrg39172.mat'; 
 fileData_BST = [path, fn];
 
-generate_hkl_avg = false; % whether to save the averaged data or not
-
 load(fileData);
 
 %%%%%%%%%%%% TO RM
@@ -61,20 +59,3 @@ save(fileData_BST,'T_bst', ...
 
 avg_before = sum(T, 'all')/sum(M, 'all')
 avg_after = sum(T_bst, 'all')/sum(M_bst, 'all')
-%_________________________________________________________________________________________
-% % Finding average and std of "DRL'ed, scaled, boosted" data and save them as a *hkl file 
-% if generate_hkl_avg
-% 
-% T_avg = full(sum(T_drl_scl_bst)./sum(M_drl_scl_bst));
-% T_avg(isnan(T_avg)) = 0;
-% T_avg(isinf(T_avg)) = 0;
-% T_avg(T_avg<0) = 0;
-% T_STD_new = sqrt(T_avg);
-% 
-% fileID = fopen(fileHKL,'w');  
-% fprintf(fileID,'%3d %3d %3d %6.6f %6.6f\n',[miller_h,miller_k,miller_l,T_avg',T_STD_new']');
-% fclose(fileID);
-% end
-% 
-% toc
-% EOF

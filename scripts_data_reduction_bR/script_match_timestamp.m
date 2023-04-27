@@ -31,7 +31,7 @@ for k=1:n_scaled
    k
    uniqueID_scaled = uniqueID{k};
    idx = find(strcmp(uniqueID_timed, uniqueID_scaled));
-   if length(idx) > 0                                                      %#ok<ISMT>
+   if length(idx) > 0                                                          %#ok<ISMT>
       ts = timestamps(idx(1));
       timestamps_scaled_frames(k) = ts;
       n_timed = n_timed + 1;

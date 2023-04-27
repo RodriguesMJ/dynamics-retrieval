@@ -16,17 +16,13 @@ load(fileData,'T_scl',...
               'miller_k',...
               'miller_l');
 
-
 % lattice sizes for group P6(3):
 a = 62.36;  % in Angstrom
 b = 62.39;  % in Angstrom
 c = 111.18; % in Angstrom
 
-
-qmin = 1.0/20; %0.6106 ; 
- 
-
-qmax = 1.0/2.3;  %0.667; %1.0/1.8;%0.6488;
+qmin = 1.0/20;   
+qmax = 1.0/2.3;  
 
 % q-vector in reciprocal space:
 qvec = [miller_h./a, miller_h./(sqrt(3)*a) + 2*miller_k./(sqrt(3)*b), miller_l./c];
@@ -49,5 +45,3 @@ miller_k = miller_k(IND);
 miller_l = miller_l(IND);
 
 nBrg = int2str(size(T_scl, 2))
-
-% EOF

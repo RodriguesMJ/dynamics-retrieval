@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import h5py
-import joblib
-import numpy
 import scipy.io
+import joblib
 from scipy import sparse
 
 # T = joblib.load('/das/work/p17/p17491/Cecilia_Casadei/NLSA/synthetic_data_jitter/test6/x.jbl')

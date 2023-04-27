@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-
-# P21212
+# RHO
 a = 61.36
 b = 91.15
 c = 150.43

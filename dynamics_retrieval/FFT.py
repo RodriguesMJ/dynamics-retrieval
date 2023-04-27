@@ -6,9 +6,8 @@ Created on Mon Oct 24 15:53:29 2022
 @author: casadei_c
 """
 import joblib
-import matplotlib.pyplot as plt
 import numpy
-import settings_synthetic_data_jitter as settings
+import matplotlib.pyplot as plt
 
 path = "/das/work/p17/p17491/Cecilia_Casadei/NLSA/synthetic_data_jitter/test18/LPSA_I_missing_obs_to_avg"
 print path

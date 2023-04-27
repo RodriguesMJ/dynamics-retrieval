@@ -26,7 +26,8 @@ def density_normalisation_memopt(W_sym, datatype):
                 W_norm[i, j] = W_sym[i, j] / (Q_i * Q_j)
     print "It took: ", time.time() - start
     return W_norm
-
+ 
+       
 
 def density_normalisation_timeopt(W_sym):
     s = W_sym.shape[0]
@@ -38,19 +39,8 @@ def density_normalisation_timeopt(W_sym):
     W_norm_opt = W_sym / norm_factor
 
     return W_norm_opt
+    
 
-
-def row_normalisation_memopt(W_norm, datatype):
-    s = W_norm.shape[0]
-    Q = numpy.sum(W_norm, axis=1)
-    P = numpy.zeros((s, s), dtype=datatype)
-    print "P: ", P.shape, P.dtype
-    for i in range(s):
-        if i % 1000 == 0:
-            print i, "/", s
-        Q_i = Q[i]
-        P[i, :] = W_norm[i, :] / Q_i
-    return P, Q
 
 
 def get_W_tilde_memopt(W_norm, datatype):
@@ -69,57 +59,6 @@ def get_W_tilde_memopt(W_norm, datatype):
         W_tilde[:, i] = W_tilde[:, i] / sqrt_Q_i
     return W_tilde
 
-
-def row_normalisation_timeopt(W_norm):
-    s = W_norm.shape[0]
-    Q = numpy.sum(W_norm, axis=1)
-    Q_temp = Q[:, numpy.newaxis]
-    Q_rep = numpy.repeat(Q_temp, s, axis=1)
-    P = W_norm / Q_rep
-    return P, Q
-
-
-def get_mu_P(Q):
-    Q_sum = Q.sum()
-    mu = Q / Q_sum
-    return mu
-
-
-def symmetrize_P_timeopt(P, Q):
-    print "P: ", P.shape, P.dtype
-    print "Q: ", Q.shape, Q.dtype
-    sqrt_Q = numpy.sqrt(Q)
-    inv_sqrt_Q = 1.0 / sqrt_Q
-    P_sym_temp = numpy.matmul(P, numpy.diag(inv_sqrt_Q))
-    P_sym = numpy.matmul(numpy.diag(sqrt_Q), P_sym_temp)
-    return P_sym
-
-
-def symmetrize_P_memopt(P, Q):
-    print "P: ", P.shape, P.dtype
-    print "Q: ", Q.shape, Q.dtype
-    sqrt_Q = numpy.sqrt(Q)
-    inv_sqrt_Q = 1.0 / sqrt_Q
-    s = P.shape[0]
-    start = time.time()
-    for i in range(s):
-        P[:, i] = inv_sqrt_Q[i] * P[:, i]
-        if i % 10000 == 0:
-            print i, "/", s
-    print "First loop done"
-    for i in range(s):
-        P[i, :] = sqrt_Q[i] * P[i, :]
-        if i % 10000 == 0:
-            print i, "/", s
-    print "Second loop done"
-    print "It took: ", time.time() - start
-    return P
-
-
-def get_mu_P_sym(P_sym):
-    evals_P_sym_left, evecs_P_sym_left = scipy.linalg.eig(P_sym, left=True, right=False)
-    mu_P_sym = evecs_P_sym_left[:, 0]
-    return evals_P_sym_left, mu_P_sym
 
 
 def main(settings):
@@ -154,4 +93,4 @@ def main(settings):
         W_tilde = joblib.load("%s/W_tilde.jbl" % results_path)
         print "Check that W_tilde is symmetric"
         diff = W_tilde - W_tilde.T
-        print numpy.amax(diff), numpy.amin(diff)
+        print numpy.amax(diff), numpy.amin(diff)     
