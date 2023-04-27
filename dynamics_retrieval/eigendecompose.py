@@ -80,10 +80,6 @@ def main(settings):
     #evals, evecs = eigendecompose_P_ARPACK(P, l)
     print 'Done'
 
-#    print 'Saving'
-#    joblib.dump(evals, '%s/P%s_evals.jbl'%(results_path, label))
-#    joblib.dump(evecs, '%s/P%s_evecs.jbl'%(results_path, label))
-
     #print 'Check eigenvalue problem'
     #check_ev(P, evecs, evals)
     
