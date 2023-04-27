@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-import numpy
 import math
+
+import numpy
 
 m = 7000
 S = 30000
 q = 4000
 
-results_path = '../../synthetic_data_5/test3/binning'
+results_path = "../../synthetic_data_5/test3/binning"
 
 # # D_sq
 # paral_step = 400
@@ -14,11 +15,11 @@ results_path = '../../synthetic_data_5/test3/binning'
 
 # datatype = numpy.float64
 
-# b = 1500 
+# b = 1500
 
 
 # # # # # # # # # # n_workers_aj = (2*f_max) + 1
-    
+
 # # # # # # # # # # paral_step_lp_filter_Dsq = 1000
 # # # # # # # # # # n_workers_lp_filter_Dsq = int(math.ceil((S-q)/paral_step_lp_filter_Dsq)) #26
 
@@ -30,13 +31,13 @@ results_path = '../../synthetic_data_5/test3/binning'
 
 # l = 50
 
-# nmodes = l 
-# toproject = range(nmodes) 
+# nmodes = l
+# toproject = range(nmodes)
 # paral_step_A = 400
 # n_workers_A = int(math.ceil(float(q)/paral_step_A))
 
 # ncopies = q
-# modes_to_reconstruct = range(20) 
+# modes_to_reconstruct = range(20)
 
 # paral_step_reconstruction = 2000
 # n_workers_reconstruction = int(math.ceil(float(S-q-ncopies+1)/paral_step_reconstruction))

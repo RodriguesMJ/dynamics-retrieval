@@ -1,11 +1,10 @@
 
 function script_grab_scalable_intensities(label, n_proc)
 
-label                                                                      %#ok<*NOPRT>
+label                                                                          %#ok<*NOPRT>
 step = 5000
 start = (n_proc*step)+1
 stop  = (n_proc+1)*step
-
 
 path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/data_extraction';
 directory = [path, '/data_hklI_scans_', label];
@@ -41,16 +40,6 @@ for k=start:stop %1:nScalableFrames
      line_in_stream = stream_line(k);
      disp(parts_stream{line_in_stream})
      
-%      if strfind(ID, 'class1')
-%         idx_1 = 12;
-%         idx_2 = 16;
-%         idx_3 = 13;
-%      else
-%         idx_1 = 10;
-%         idx_2 = 13;
-%         idx_3 = 12;
-%      end
-
      idx_1 = 10;
      idx_2 = 13;
      idx_3 = 13;
@@ -78,7 +67,7 @@ for k=start:stop %1:nScalableFrames
          n = n+1;
          linestream = parts_stream{line};
          linestream = regexp(linestream, '\s+', 'split');
-         hh = str2num(linestream{1});                                      %#ok<*ST2NM>
+         hh = str2num(linestream{1});                                          %#ok<*ST2NM>
          kk = str2num(linestream{2});
          ll = str2num(linestream{3});
          hkl = [hh, kk, ll];
@@ -93,4 +82,3 @@ for k=start:stop %1:nScalableFrames
      end
      fclose(file_hklI);
  end
-

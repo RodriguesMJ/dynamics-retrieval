@@ -1,4 +1,4 @@
-name: nlsa
+name: dynamics-retrieval
 channels:
   - conda-forge
   - defaults
@@ -14,4 +14,3 @@ dependencies:
   - pip
   - pip:
     - gemmi
-

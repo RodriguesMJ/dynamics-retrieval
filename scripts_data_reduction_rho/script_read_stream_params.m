@@ -51,18 +51,6 @@ for i=1:6
         stream_idx = stream_line(k);
         filename = parts_stream{stream_idx};
 
-    % bR
-    %     if strfind(filename, 'class1')
-    %         idx_1 = 12;
-    %         idx_2 = 16;
-    %         idx_3 = 13;
-    %     else
-    %         idx_1 = 10;
-    %         idx_2 = 13;
-    %         idx_3 = 12;
-    %     end
-
-    % rho
         idx_1 = 10;
         idx_2 = 13;
         idx_3 = 13;

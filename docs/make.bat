@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=nlsa
+set SPHINXPROJ=dynamics-retrieval
 
 if "%1" == "" goto help
 

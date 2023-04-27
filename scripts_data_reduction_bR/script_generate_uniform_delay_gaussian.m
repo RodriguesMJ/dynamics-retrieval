@@ -9,8 +9,8 @@
 clear;
 
 % SIGMA VALUE FOR TIMESTAMP GAUSSIAN MODELING
-sigma = 40.0                                                               %#ok<NOPTS>   
-FWHM = 2.355 * sigma                                                       %#ok<NOPTS>
+sigma = 40.0;                                                              
+FWHM = 2.355 * sigma;                                                      
 
 % LOAD DATA
 path = './';
@@ -74,12 +74,12 @@ v = min(S(I_t1:I_t2));
 % SHUFFLE THE TIMESTAMPS
 order = randperm(N_ts);
 
-thr_factors = 8; %[1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20];
+thr_factors = [8];
 for j=1:length(thr_factors)
     
     % ADD THE TIMESTAMP-CENTRED GAUSSIANS ONE AFTER THE OTHER 
     % GENERATING A FLAT DISTRIBUTION
-    thr_factor = thr_factors(j)                                            %#ok<NOPTS>
+    thr_factor = thr_factors(j)                                                %#ok<NOPTS>
     thr = N/thr_factor;
     
     S_uniform   = zeros(1, length(t));
@@ -102,7 +102,7 @@ for j=1:length(thr_factors)
          else
              % keep
              idx_uniform = [idx_uniform; idx];                                 %#ok<AGROW>
-             t_uniform   = [t_uniform; t0];                                      %#ok<AGROW>
+             t_uniform   = [t_uniform; t0];                                    %#ok<AGROW>
              n_uniform   = n_uniform + 1;
          end
          top = v + max(S_uniform - v);
@@ -116,13 +116,13 @@ for j=1:length(thr_factors)
     fn = sprintf('Sum_gaussians_sigma_%d_fs_n_in_%d_thr_factor_%d.jpg', ...
                   int16(sigma), ...
                   n_uniform, ...
-                  thr_factor)                                              %#ok<NOPTS>
+                  thr_factor)                                                  %#ok<NOPTS>
     saveas(gcf, fn);
     close(gcf);
     
     % COUNT NEGATIVE TIMESTAMPS
-    N_neg      = length(find(t_uniform<0))                                        %#ok<NOPTS>
-    N_neg_peak = length(find(t_uniform<-400))                                %#ok<NOPTS>
+    N_neg      = length(find(t_uniform<0))                                     %#ok<NOPTS>
+    N_neg_peak = length(find(t_uniform<-400))                                  %#ok<NOPTS>
     
     % SELECT DATA CONTRIBUTING TO UNIFORM DISTRIBUTION
     M_uniform = M_scl(idx_uniform, :);

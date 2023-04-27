@@ -18,13 +18,11 @@ fn = [path, folder, 'partialator_OK_', label, '.mat'];
 
 % LOAD UNIQUE_IDs
 load(fn, 'uniqueID');
-%uniqueID = uniqueID_light_sort;
-%clear uniqueID_light_sort;
 
 num_snapshot = size(uniqueID, 1)
 
-% % "miller_h", "miller_k", "miller_l" are Miller indices
-% % they are intentionally created to have the same packing convention as "redundancy"
+% "miller_h", "miller_k", "miller_l" are Miller indices
+% they are intentionally created to have the same packing convention as "redundancy"
 h_max = 35;       
 k_max = 50;
 l_max = 85;

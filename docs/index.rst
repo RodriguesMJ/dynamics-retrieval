@@ -1,4 +1,4 @@
-Welcome to nlsa's documentation!
+Welcome to dynamics-retrieval's documentation!
 ======================================
 
 .. toctree::

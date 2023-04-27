@@ -26,11 +26,10 @@ a = 61.45;
 b = 90.81;
 c = 150.82;
 
-d_lim = 1.83; %A
+d_lim = 1.83; % Angstroms
 
  for nn=1:num_snapshots
      
-     %nn
      ID = uniqueID{nn};
      s = strfind(ID, '/');
      s = s(end);

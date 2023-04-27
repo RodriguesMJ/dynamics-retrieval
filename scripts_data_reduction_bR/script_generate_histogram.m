@@ -6,8 +6,8 @@
 clear;
 
 % SIGMA VALUE FOR TIMESTAMP GAUSSIAN MODELING
-sigma = 15.0                                                               %#ok<NOPTS>   
-FWHM = 2.355 * sigma                                                       %#ok<NOPTS>
+sigma = 15.0;                                                                
+FWHM = 2.355 * sigma;                                                      
 
 % LOAD DATA
 path = './';
@@ -51,4 +51,3 @@ S = sum(G);
 plot(t,S);
 saveas(gcf, 'frame_distribution.jpg')
 close(gcf);
-
