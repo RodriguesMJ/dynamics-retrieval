@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use nlsa in a project::
+To use dynamics-retrieval in a project::
 
-    import nlsa
+    import dynamics_retrieval

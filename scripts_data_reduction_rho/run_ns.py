@@ -30,7 +30,7 @@ def run_ns(scan_n):
     elif scan_n == 10:
         run_start = 2127
         run_end = 2218
-    elif scan_n ==11:
+    elif scan_n == 11:
         run_start = 2220
         run_end = 2275
     elif scan_n == 12:
@@ -50,7 +50,7 @@ def run_ns(scan_n):
         run_end = 2719
     elif scan_n == 17:
         run_start = 2720
-        run_end = 2873    
+        run_end = 2873
     elif scan_n == 18:
         run_start = 2874
         run_end = 3005

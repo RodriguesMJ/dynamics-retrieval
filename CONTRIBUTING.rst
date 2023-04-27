@@ -38,8 +38,8 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-nlsa could always use more documentation, whether as part of the
-official nlsa docs, in docstrings, or even on the web in blog posts,
+dynamics-retrieval could always use more documentation, whether as part of the
+official dynamics-retrieval docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
@@ -57,17 +57,17 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `nlsa` for local development.
+Ready to contribute? Here's how to set up `dynamics-retrieval` for local development.
 
-1. Fork the `nlsa` repo on GitHub.
+1. Fork the `dynamics-retrieval` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/nlsa.git
+    $ git clone git@github.com:your_name_here/dynamics-retrieval.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv nlsa
-    $ cd nlsa/
+    $ mkvirtualenv dynamics-retrieval
+    $ cd dynamics-retrieval/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -79,7 +79,7 @@ Ready to contribute? Here's how to set up `nlsa` for local development.
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 nlsa tests
+    $ flake8 dynamics_retrieval tests
     $ python setup.py test or pytest
     $ tox
 
@@ -111,7 +111,7 @@ Tips
 
 To run a subset of tests::
 
-$ pytest tests.test_nlsa
+$ pytest tests.test_dynamics_retrieval
 
 
 Deploying

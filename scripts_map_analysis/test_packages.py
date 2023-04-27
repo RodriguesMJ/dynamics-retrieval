@@ -59,42 +59,42 @@ from mtspec.util import _load_mtdata
 # plt.show()
 
 ### TEST mtspec WITH SUM OF SINES
-print '\nTEST: Sum of sines'
-start = 0 #s
-stop  = 0.15 #s
-n = 150 #500000
-step = float(stop-start)/n 
-print 'Time range [s]:', start, '-', stop
-print 'N samples:', n
-print 'Sampling period [s]:', step
-print 'Sampling frequency [Hz]:', 1/step, '-> Nyquist frequency [Hz]:', 1/(2*step)
+print "\nTEST: Sum of sines"
+start = 0  # s
+stop = 0.15  # s
+n = 150  # 500000
+step = float(stop - start) / n
+print "Time range [s]:", start, "-", stop
+print "N samples:", n
+print "Sampling period [s]:", step
+print "Sampling frequency [Hz]:", 1 / step, "-> Nyquist frequency [Hz]:", 1 / (2 * step)
 t = numpy.arange(start, stop, step=step)
 
-#phase = numpy.pi/4
-f_1 = 50 # Hz
-data_1 = numpy.sin(2*numpy.pi*f_1*t)# + 2*numpy.pi*t*t)#30*t)
+# phase = numpy.pi/4
+f_1 = 50  # Hz
+data_1 = numpy.sin(2 * numpy.pi * f_1 * t)  # + 2*numpy.pi*t*t)#30*t)
 # plt.figure()
 # plt.gca().set_xlabel("Time [s]")
 # plt.plot(t, data_1)
 
-#f_2 = 40 # Hz
-#data_2 = numpy.sin(2*numpy.pi*f_2*t)
+# f_2 = 40 # Hz
+# data_2 = numpy.sin(2*numpy.pi*f_2*t)
 # plt.figure()
 # plt.gca().set_xlabel("Time [s]")
 # plt.plot(t, data_2)
 
-#f_3 = 3 # Hz
-#data_3 = numpy.sin(2*numpy.pi*f_3*t)
+# f_3 = 3 # Hz
+# data_3 = numpy.sin(2*numpy.pi*f_3*t)
 # plt.figure()
 # plt.gca().set_xlabel("Time [s]")
 # plt.plot(t, data_3)
 
 numpy.random.seed(42)
 A = 0.0
-randomlist = A*numpy.random.randn(t.shape[0])
-data = randomlist + data_1 #+ data_2  #+ data_3 + randomlist
-#print 'Components at', f_1, f_2, 'Hz, dephased by', phase, ' plus gaussian noise with amplitude', A
-#print 'Components at', f_1, f_2, f_3, 'Hz, plus gaussian noise with amplitude', A
+randomlist = A * numpy.random.randn(t.shape[0])
+data = randomlist + data_1  # + data_2  #+ data_3 + randomlist
+# print 'Components at', f_1, f_2, 'Hz, dephased by', phase, ' plus gaussian noise with amplitude', A
+# print 'Components at', f_1, f_2, f_3, 'Hz, plus gaussian noise with amplitude', A
 
 # plt.figure()
 # plt.gca().set_xlabel("Time [s]")
@@ -118,15 +118,14 @@ data = randomlist + data_1 #+ data_2  #+ data_3 + randomlist
 # plt.show()
 
 
-
 # BY INCREASING n THE NYQUIST FREQUENCY INCREASES, AND ALSO THE S/N OF PSD
 
-fig = matplotlib.pyplot.figure(figsize=(35,40))
-        
+fig = matplotlib.pyplot.figure(figsize=(35, 40))
+
 # TIME DOMAIUN
 ax1 = fig.add_subplot(6, 1, 1)
-#ax1.set_xlim(start, end)
-ax1.plot(t, data, color='m')
+# ax1.set_xlim(start, end)
+ax1.plot(t, data, color="m")
 matplotlib.pyplot.setp(ax1.get_xticklabels(), rotation=45, fontsize=25)
 matplotlib.pyplot.setp(ax1.get_yticklabels(), rotation=0, fontsize=25)
 ax1.set_xlabel(r"Time [s]", fontsize=30)
@@ -140,51 +139,53 @@ ax1.text(0.01,
          transform=ax1.transAxes, 
          fontsize=30,
          verticalalignment='top')#, bbox=props)
-"""     
-        
-# MULTITAPER ANALYSIS, WITHOUT F-STATS
-spec, freq, jackknife, _, _ = mtspec(data=data, 
-                                     delta=step, 
-                                     time_bandwidth=3,
-                                     number_of_tapers=4, 
-                                     nfft=2*data.shape[0], 
-                                     statistics=True)
+"""
 
-print 'Freq min, max [Hz]:', freq[0], freq[-1]
-print 'Freq step:', freq[1]-freq[0]
+# MULTITAPER ANALYSIS, WITHOUT F-STATS
+spec, freq, jackknife, _, _ = mtspec(
+    data=data,
+    delta=step,
+    time_bandwidth=3,
+    number_of_tapers=4,
+    nfft=2 * data.shape[0],
+    statistics=True,
+)
+
+print "Freq min, max [Hz]:", freq[0], freq[-1]
+print "Freq step:", freq[1] - freq[0]
 
 xmax = 80
 
 # MULTITAPER, LOG-SCALE
 ax2 = fig.add_subplot(6, 1, 2)
-ax2.plot(freq, spec, color='black')  
-ax2.set_yscale('log')      
+ax2.plot(freq, spec, color="black")
+ax2.set_yscale("log")
 matplotlib.pyplot.xticks(numpy.arange(0, xmax, 5.0))
 matplotlib.pyplot.setp(ax2.get_xticklabels(), rotation=45, fontsize=25)
 matplotlib.pyplot.setp(ax2.get_yticklabels(), rotation=0, fontsize=25)
-ax2.fill_between(freq, jackknife[:, 0], jackknife[:, 1],
-                  color="blue", alpha=0.3)
+ax2.fill_between(freq, jackknife[:, 0], jackknife[:, 1], color="blue", alpha=0.3)
 ax2.set_xlim(0, xmax)
-        
+
 # MULTITAPER, LINEAR SCALE
 ax3 = fig.add_subplot(6, 1, 3)
-ax3.plot(freq, spec, color='black')        
+ax3.plot(freq, spec, color="black")
 matplotlib.pyplot.xticks(numpy.arange(0, xmax, 5.0))
 matplotlib.pyplot.setp(ax3.get_xticklabels(), rotation=45, fontsize=25)
 matplotlib.pyplot.setp(ax3.get_yticklabels(), rotation=0, fontsize=25)
-ax3.fill_between(freq, jackknife[:, 0], jackknife[:, 1],
-                  color="blue", alpha=0.3)
+ax3.fill_between(freq, jackknife[:, 0], jackknife[:, 1], color="blue", alpha=0.3)
 ax3.set_xlim(0, xmax)
 
 # MULTITAPER ANALYSIS, WITH F-STATS
-spec, freq, jackknife, fstatistics, _ = mtspec(data=data, 
-                                      delta=step, 
-                                      time_bandwidth=3.5,
-                                      number_of_tapers=4, 
-                                      nfft=2*data.shape[0], 
-                                      statistics=True, 
-                                      rshape=0, 
-                                      fcrit=0.90)
+spec, freq, jackknife, fstatistics, _ = mtspec(
+    data=data,
+    delta=step,
+    time_bandwidth=3.5,
+    number_of_tapers=4,
+    nfft=2 * data.shape[0],
+    statistics=True,
+    rshape=0,
+    fcrit=0.90,
+)
 
 # F-STATS
 ax4 = fig.add_subplot(6, 1, 4)
@@ -193,33 +194,33 @@ ax4.set_xlim(0, xmax)
 idx = numpy.where(abs(freq - xmax) < 10)
 idx = idx[0][-1]
 print idx
-ax4.set_ylim(0, 1.1*numpy.amax(fstatistics[0:idx]))
+ax4.set_ylim(0, 1.1 * numpy.amax(fstatistics[0:idx]))
 ax4.plot(freq, fstatistics, color="c")
-#ax4.set_xlabel(r"Frequency [THz]", fontsize=30)
+# ax4.set_xlabel(r"Frequency [THz]", fontsize=30)
 matplotlib.pyplot.xticks(numpy.arange(0, xmax, 5.0))
 matplotlib.pyplot.setp(ax4.get_xticklabels(), rotation=45, fontsize=25)
-matplotlib.pyplot.setp(ax4.get_yticklabels(), rotation=0,  fontsize=25)
+matplotlib.pyplot.setp(ax4.get_yticklabels(), rotation=0, fontsize=25)
 
 # Plot the confidence intervals.
-for p in [100*0.90]:
+for p in [100 * 0.90]:
     y = numpy.percentile(fstatistics, p)
     matplotlib.pyplot.hlines(y, 0, xmax, linestyles="--", color="0.2")
-    matplotlib.pyplot.text(x=1, y=y+0.2, s="%i %%"%p, ha="left", fontsize=25)
+    matplotlib.pyplot.text(x=1, y=y + 0.2, s="%i %%" % p, ha="left", fontsize=25)
 
 # MULTITAPER WITH F-STATS, LOG-SCALE
 ax5 = fig.add_subplot(6, 1, 5)
-ax5.set_yscale('log')
-ax5.plot(freq, spec, color='b')        
+ax5.set_yscale("log")
+ax5.plot(freq, spec, color="b")
 matplotlib.pyplot.xticks(numpy.arange(0, xmax, 5.0))
 matplotlib.pyplot.setp(ax5.get_xticklabels(), rotation=45, fontsize=25)
 matplotlib.pyplot.setp(ax5.get_yticklabels(), rotation=0, fontsize=25)
 ax5.set_facecolor((0.1, 1.0, 0.7, 0.1))
 ax5.set_xlim(0, xmax)
- 
+
 # MULTITAPER WITH F-STATS, LINEAR SCALE
 ax6 = fig.add_subplot(6, 1, 6)
-ax6.plot(freq, spec, color='b')        
-ax6.set_xlabel(r"Frequency [Hz]", fontsize=30)    
+ax6.plot(freq, spec, color="b")
+ax6.set_xlabel(r"Frequency [Hz]", fontsize=30)
 matplotlib.pyplot.xticks(numpy.arange(0, xmax, 5.0))
 matplotlib.pyplot.setp(ax6.get_xticklabels(), rotation=45, fontsize=25)
 matplotlib.pyplot.setp(ax6.get_yticklabels(), rotation=0, fontsize=25)
@@ -227,7 +228,7 @@ ax6.set_facecolor((0.1, 1.0, 0.7, 0.1))
 ax6.set_xlim(0, xmax)
 
 matplotlib.pyplot.tight_layout()
-#matplotlib.pyplot.savefig('./test_multitape_sines_plus_noise_A_%.1f_n_%d.png'%(A, n))
-matplotlib.pyplot.savefig('./test.png')
-#matplotlib.pyplot.savefig('./test_multitape_only_noise_n_%d.png'%(n))
+# matplotlib.pyplot.savefig('./test_multitape_sines_plus_noise_A_%.1f_n_%d.png'%(A, n))
+matplotlib.pyplot.savefig("./test.png")
+# matplotlib.pyplot.savefig('./test_multitape_only_noise_n_%d.png'%(n))
 matplotlib.pyplot.close()

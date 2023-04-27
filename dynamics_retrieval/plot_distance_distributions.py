@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import joblib
-import numpy
 import matplotlib
-matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
-matplotlib.rcParams['agg.path.chunksize'] = 10000
+import numpy
+
+matplotlib.use("Agg")  # Force matplotlib to not use any Xwindows backend.
+matplotlib.rcParams["agg.path.chunksize"] = 10000
 import matplotlib.pyplot
 
 def f(toplot, fn):
@@ -18,15 +19,15 @@ def f(toplot, fn):
 def plot_d_0j(settings): 
     results_path = settings.results_path
     idxs = [0, 5000, 15000]
-    d_sq = joblib.load('%s/d_sq.jbl'%(results_path)) 
+    d_sq = joblib.load("%s/d_sq.jbl" % (results_path))
     print numpy.amax(d_sq), numpy.amin(d_sq)
     print numpy.amax(numpy.diag(d_sq)), numpy.amin(numpy.diag(d_sq))
-    
+
     numpy.fill_diagonal(d_sq, 0)
     print numpy.amax(d_sq), numpy.amin(d_sq)
     print numpy.amax(numpy.diag(d_sq)), numpy.amin(numpy.diag(d_sq))
     d = numpy.sqrt(d_sq)
-    
+
     for idx in idxs:
     
         d_0j = d[idx,:]
@@ -35,18 +36,19 @@ def plot_d_0j(settings):
         f(d_0j, fn)
         
 
-def plot_D_0j(settings): 
+
+def plot_D_0j(settings):
     results_path = settings.results_path
     idxs = [0, 5000, 15000]
-    d_sq = joblib.load('%s/D_sq_normalised.jbl'%(results_path)) 
+    d_sq = joblib.load("%s/D_sq_normalised.jbl" % (results_path))
     print numpy.amax(d_sq), numpy.amin(d_sq)
-    print 'Diag:', numpy.amax(numpy.diag(d_sq)), numpy.amin(numpy.diag(d_sq))
-    
+    print "Diag:", numpy.amax(numpy.diag(d_sq)), numpy.amin(numpy.diag(d_sq))
+
     numpy.fill_diagonal(d_sq, 0)
     print numpy.amax(d_sq), numpy.amin(d_sq)
     print 'Diag:', numpy.amax(numpy.diag(d_sq)), numpy.amin(numpy.diag(d_sq))
     d = numpy.sqrt(d_sq)
-    
+
     for idx in idxs:
     
         d_0j = d[idx,:]

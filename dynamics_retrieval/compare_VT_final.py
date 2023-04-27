@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 import pickle
-import numpy
 
+import numpy
 import settings
 
 results_path = settings.results_path
 print results_path
 
-f = open('%s/VT_final_loop.pkl'%results_path, 'rb')
+f = open("%s/VT_final_loop.pkl" % results_path, "rb")
 VT_final_loop = pickle.load(f)
 f.close()
 
-f = open('%s/VT_final.pkl'%results_path, 'rb')
+f = open("%s/VT_final.pkl" % results_path, "rb")
 VT_final = pickle.load(f)
 f.close()
 
-f = open('%s/VT_final_manual.pkl'%results_path, 'rb')
+f = open("%s/VT_final_manual.pkl" % results_path, "rb")
 VT_final_manual = pickle.load(f)
 f.close()
 

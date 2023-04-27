@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install nlsa, run this command in your terminal:
+To install dynamics-retrieval, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install nlsa
+    $ pip install dynamics-retrieval
 
-This is the preferred method to install nlsa, as it will always install the most recent stable release.
+This is the preferred method to install dynamics-retrieval, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,7 +26,7 @@ you through the process.
 From sources
 ------------
 
-The sources for nlsa can be downloaded from the `Github repo`_.
+The sources for dynamics-retrieval can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
