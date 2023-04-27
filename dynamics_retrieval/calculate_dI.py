@@ -10,9 +10,9 @@ import joblib
 import numpy
 
 def main(settings):
-    T_fn  = '%s/T_sparse_LTD_%s.jbl'%(settings.results_path, settings.label) # TO LOAD
-    M_fn  = '%s/M_sparse_%s.jbl'%(settings.results_path, settings.label) # TO LOAD
-    dT_fn = '%s/dT_sparse_LTD_%s.jbl'%(settings.results_path, settings.label)    # TO SAVE
+    T_fn  = '%s/T_sparse_LTD_%s.jbl'%(settings.results_path, settings.label)   # TO LOAD
+    M_fn  = '%s/M_sparse_%s.jbl'%(settings.results_path, settings.label)       # TO LOAD
+    dT_fn = '%s/dT_sparse_LTD_%s.jbl'%(settings.results_path, settings.label)  # TO SAVE
     
     T = joblib.load(T_fn)
     M = joblib.load(M_fn)
@@ -41,7 +41,4 @@ def main(settings):
     print 'After mask multiplication: '
     print 'dT_sparse: is sparse: ', sparse.issparse(dT_sparse), dT_sparse.shape, dT_sparse.dtype
     print 'T[100,0:100]: ', T[100,0:100]
-    joblib.dump(dT_sparse, dT_fn)
-    
-
-    
+    joblib.dump(dT_sparse, dT_fn)    
