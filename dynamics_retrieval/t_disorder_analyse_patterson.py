@@ -53,22 +53,16 @@ ccp4.setup()
 arr = numpy.array(ccp4.grid, copy=False)
 y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
 pyplot.plot(y,arr[0,:,0],label='uncorrected')
-print(ccp4.grid.unit_cell.b)
-print(arr.shape[1])
-print(y[0], y[-1])
 
 t_d_y_Ang = 0.245 * ccp4.grid.unit_cell.b
-print(t_d_y_Ang)
 diff = abs(y-t_d_y_Ang)
 idx_t1 = numpy.argmin(diff)
-print(idx_t1, y[idx_t1])
 diff = abs(y-2*t_d_y_Ang)
 idx_t2 = numpy.argmin(diff)
-print(idx_t2, y[idx_t2])
 
-print(arr[0,idx_t1,0], arr[0, idx_t2, 0])
 t1_uncorrected = arr[0,idx_t1,0]
 t2_uncorrected = arr[0,idx_t2,0]
+print(t1_uncorrected, t2_uncorrected)
 
 pyplot.tight_layout()
 pyplot.savefig('%s/%s_original_patt_x0_z0.png'%(outfolder, label),dpi=96*2)
