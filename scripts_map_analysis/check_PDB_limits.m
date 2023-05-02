@@ -1,9 +1,6 @@
 clear all;
 
-
-%path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR/map_analysis/maptool_CMC';
-%pdbpath = [path, '/6g7h_edited_nonH.pdb']
-path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/Phase_model';
+path = '/mypath/Phase_model';
 pdbpath = [path, '/bov_nlsa_refine_96.pdb']
 pdb = pdbread(pdbpath);
 

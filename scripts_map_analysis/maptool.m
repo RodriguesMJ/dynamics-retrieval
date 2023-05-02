@@ -1,6 +1,7 @@
 % maptool_bR
 % -------------------------------------------------------------------------
 % written by Cecilia Wickstrand, 05-04-2020
+% modified by Cecilia Casadei, 2021
 %
 % publication: 
 % "A tool for visualizing protein motions in time-resolved crystallography"
