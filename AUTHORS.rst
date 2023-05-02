@@ -16,7 +16,7 @@ Contributors
 
 * K. P.
 
-* Cecilia W.
+* Cecilia Wickstrand
 
 * Gergely Katona
 
