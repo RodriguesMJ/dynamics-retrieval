@@ -7,7 +7,7 @@ dynamics-retrieval
 
 
 
-Run NLSA on various data set types.
+Run dynamics retrieval on various data set types.
 
 
 
