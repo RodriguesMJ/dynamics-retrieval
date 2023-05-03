@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script generates a DRL mask from a dataset using diffraction resolution limits of 
 % snapshots, and is applied on that dataset at the end.
-% A. Hosseini, Dec-2017, March-2018, March-2019
+% Ourmazd Lab, UWM, Dec-2017, March-2018, March-2019
 % C. Casadei - modified March-21-2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear 

@@ -5,7 +5,7 @@
 % Then it packs the data  
 % in a sparse matrix and generates a mask. 
 % Results are saved in a MAT file for analysis. 
-% Ahmad H., Dec-07-17, updated on May-24-18 for femtosecond data
+% Ourmazd Lab, UWM, Dec-07-17, updated on May-24-18 for femtosecond data
 % Cecilia C., March-12-19, modified
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all

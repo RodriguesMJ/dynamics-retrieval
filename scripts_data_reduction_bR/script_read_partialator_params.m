@@ -4,7 +4,7 @@
 % for ALL (scalable) data 
 % and saves them in a MAT file 
 % together with corresponding filename and eventID.
-% Ahmad H., Dec-28-2017
+% Ourmazd Lab, UWM, Dec-28-2017
 % Modified by Cecilia C., March-3-2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
