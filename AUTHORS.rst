@@ -16,6 +16,8 @@ Contributors
 
 * Russell Fung
 
+* Reyhaneh Sepehr
+
 * Cecilia Wickstrand
 
 * Gergely Katona
