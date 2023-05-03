@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script reads Partialator parameters of crystFEL (OSF & relB) and apply them 
 % to the snapshots, which are already passed the DRL removal step.
-% A. Hosseini, Dec-2017, May-2018, July-2018, March-2019
+% Ourmazd Lab, UWM, Dec-2017, May-2018, July-2018, March-2019
 % Cecilia C., modified 22 March 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear
