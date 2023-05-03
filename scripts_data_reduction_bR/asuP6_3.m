@@ -1,3 +1,7 @@
+%%%%%%%%%%%%%%%%%%
+% Ourmazd Lab, UWM
+%%%%%%%%%%%%%%%%%%
+
 function hkl_asu=asuP6_3(hkl)
   % Apply symmetry transformations and Friedel transformation so that 
   % all reflections are in the asymmetric unit. - 

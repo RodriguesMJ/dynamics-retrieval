@@ -1,3 +1,8 @@
+%%%%%%%%%%%%%%%%%%%%%%
+% Ourmazd Lab, UWM
+% Modified, C. Casadei
+%%%%%%%%%%%%%%%%%%%%%%
+
 function f_grab_scalable_hklI_asu_uid(n)
 
 path = './';
