@@ -14,7 +14,7 @@ Contributors
 
 * Ahmad Hosseinizadeh
 
-* K. P.
+* Russell Fung
 
 * Cecilia Wickstrand
 
