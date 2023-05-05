@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Cecilia Casadei <ceciliamariacasadei@gmail.com>
+* Cecilia Casadei <ceciliamariacasadei@gmail.com> (PSI)
 
 Contributors
 ------------
