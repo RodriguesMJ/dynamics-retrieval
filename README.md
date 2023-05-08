@@ -12,7 +12,47 @@ be created with
 
 After this, install the package:
 
-    pip install .
+    pip install -e .[dev]
 
-Developers can use `pip install -e .[dev]` to install in developer mode with
-additional suggested packages.
+Many workflows currently require editing the source code, so installing in developer
+mode (`-e`) is recommended.
+
+# Workflows
+
+The LPSA and NLSA code are contained in the `dynamics_retrieval` package.
+However significant pre-processing is required to prepare data for analysis.
+Preparation and analysis scripts are provided in the `scripts*` directories,
+which can be customized to your application. Code for LPSA and NLSA analysis is
+contained in the library, with wrappers calling the functions within
+`workflows` directory.
+
+## TR-SFX Workflow
+
+This is the general workflow used for serial crystallography. Scripts for bovine
+rhodopsin (bR) and rhodopsin (rho) are provided. The general flow is as follows:
+
+- `scripts_crystfel_bR`:`
+  - Process SwissFEL data collection to produce stream files & list of scaling
+    factors (from partialator)
+  - Determine resolution cutoff from merge files
+- `scripts_data_reduction_bR`
+  - Start with streams, scaling factors, and space group (eg asuP5_3.m)
+  - Process
+    - Extract HKL intensity for each frame from the stream
+    - Apply scale factors for each frame
+    - Apply symmetry transformations
+    - Add timing info for each frame
+    - Filter for desired timing distribution
+  - Output data matrix (1 column per frame)
+- `workflows`
+  - `run_TR-SFX_LPSA.py` runs scripts for dynamics retrieval
+  - produces reconstructed HKL for each timestep
+- `scripts_make_maps`
+  - converts output to mtz for use in phenix
+- `scripts_map_analysis`
+  - Integrate difference density around a feature of interest
+
+### Settings files
+
+Settings are currently passed via a python module consisting of global
+variables. Examples are in `workflows/settings*.py`.
