@@ -8,7 +8,7 @@ import numpy
 def get_meanden_simple():
 
     sigmacutoffs = [0]
-    here = "/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI"
+    here = "."
 
     fn = "%s/results/mapd0.mat" % (here)
 
@@ -40,9 +40,7 @@ def get_meanden(mode):
     label = "_step_10_range_105000_145000"
     l = "_125010_145000"
 
-    here = (
-        "/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis"
-    )
+    here = "."
     fn = "%s/results_m_0_%d%s/mapd0%s.mat" % (here, mode, label, l)
 
     print "Loading"
@@ -78,9 +76,7 @@ def merge():
     label = "_step_10_range_50000_99990"
     l_1 = "_50000_74990"
     l_2 = "_75000_99990"
-    here = (
-        "/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis"
-    )
+    here = "."
 
     for sigmacutoff in sigmacutoffs:
         meanposden_1 = joblib.load(
