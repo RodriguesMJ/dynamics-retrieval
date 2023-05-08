@@ -34,10 +34,9 @@ distance = 0.2; % ??, how dense grid within sphere
 
 
 
-
 %label = '_step_10_range_178000_195000';
 % Files
-here = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI';
+here = '.';
 pdbpath = [here '/6g7k_C20.pdb']; % resting state pdb
 indir  = [here '/output/']; % where to find .h5 maps
 outdir = [here '/results/'];
@@ -46,7 +45,6 @@ nrmaps = 1046;
 mapnames = cell(nrmaps, 1);
 for idx = 1:nrmaps
     i = 100*(idx-1);
-    %i = 178000+10*(idx-1);
     nm = ['1.8_bR_light_p_0_1_modes_timestep_' num2str(i, '%0.6d') '_light--dark_I_dark_avg'];
     mapnames(idx,1) = {nm};
 end
@@ -152,7 +150,7 @@ end
 
 save([outdir 'mapd0.mat'], 'mapd0', '-v7.3');
 
-% % CALCULATE AVERAGE DENSITIES AND CORRELATIONS
+% % CALCULATE AVERAGE DENSITIES 
 % %------------------------------------
 % % Calculate mean positive and negative densities
 % mapd = mapd0;
@@ -176,173 +174,35 @@ save([outdir 'mapd0.mat'], 'mapd0', '-v7.3');
 % save([here '/bov_nlsa_refine_96_edited.mat'], 'pdb');
 
 
-% % % Calculate Pscore = pearson correlation (<A+> <A->, <B+> <B->)
-% % Pscore = zeros(nrmaps,nrmaps);
-% % 
-% % for m = 1:nrmaps
-% %     for n = 1:nrmaps
-% %         Pscore(m,n) = corr2([meanposden(m,:) meannegden(m,:)],[meanposden(n,:) meannegden(n,:)]);
-% %     end
-% % end
-% % 
-% % 
-% % % PREPARE EXAMPLE PLOTS
-% % %------------------------------------
-% % fprintf('Preparing plots.\n')
-% % 
-% % % Plot settings
-% % golden = [0.83, 0.65, 0.13]*0.8;
-% % slate = [0.5 0.5 1]*0.8;
-% % fontsize = 12;
-% % fontname = 'helvetica narrow';
-% % set(0,'DefaultAxesFontName',fontname,'DefaultTextFontName',fontname);
-% % 
-% % % avoid overlapping in plots        
-% % scale_E = max(max(meanposden-meannegden));
-% % 
-% % % For plotting all atoms, find where helices start and stop
-% % helix_limits_res = [6 32; 37 58; 80 100; 105 127; 131  160; 165 191; 201 224;300 300];
-% % res_all = [pdb.Model.Atom.resSeq]'; 
-% % limits_all = zeros(size(helix_limits_res));
-% % for h = 1:size(helix_limits_res,1)
-% %     limits_all(h,1) = find(res_all==helix_limits_res(h,1), 1, 'first');
-% %     limits_all(h,2) = find(res_all==helix_limits_res(h,2), 1, 'last');
-% % end
-% % 
-% % % For plotting C alphas, find where helices start and stop
-% % selected_Ca = find(strcmp({pdb.Model.Atom.AtomName}','CA'));
-% % res_Ca = [pdb.Model.Atom(selected_Ca).resSeq]'; 
-% % helix_limits_res = [6 32; 37 58; 80 100; 105 127; 131  160; 165 191; 201 224];
-% % limits_Ca = zeros(size(helix_limits_res));
-% % for h = 1:size(helix_limits_res,1)
-% %     limits_Ca(h,1) = find(res_Ca==helix_limits_res(h,1), 1, 'first');
-% %     limits_Ca(h,2) = find(res_Ca==helix_limits_res(h,2), 1, 'last');
-% % end
-% % 
-% % % For plotting selected residues, find where residues start and stop
-% % res = [pdb.Model.Atom.resSeq]';
-% % resofinterest = [82 85 89 182 212 216 300];
-% % selected_res = find(ismember(res, resofinterest));
-% % limits_res = zeros(length(resofinterest),2);
-% % for i = 1:length(limits_res)
-% %     limits_res(i,1) = find(res(selected_res)==resofinterest(i), 1, 'first');
-% %     limits_res(i,2) = find(res(selected_res)==resofinterest(i), 1, 'last');
-% %     ticks_res{i} = num2str(resofinterest(i));
-% % end
-% % ticks_res{end} = 'RET';
-% % 
-% % 
-% % % PLOT
-% % %------------------------------------
-% % figure('units','normalized','outerposition',[0 0 1 1],'name',['radius ' num2str(radius) ' ??, ' num2str(sigmacutoff) ' sigma,'])
-% % 
-% % % 1. mean pos/neg density, selected residues around site
-% % subplot(2,3,1)
-% % scale_E_set = 4;
-% %     hold all
-% %     for n = 1:nrmaps
-% %         line([1 length(selected_res)], [1/scale_E_set+(n) 1/scale_E_set+(n)],'color', [0.8 0.8 0.8],'linestyle','--')
-% %         line([1 length(selected_res)], [-1/scale_E_set+(n) -1/scale_E_set+(n)],'color', [0.8 0.8 0.8],'linestyle','--')
-% %         plot(1:length(selected_res), -meanposden(n,selected_res)/scale_E_set+(n),'color', slate) 
-% %         plot(1:length(selected_res), -meannegden(n,selected_res)/scale_E_set+(n),'color', golden)
-% %     end
-% %     for i = 1:nrmaps
-% %         line([1 length(selected_res)], [(i) (i)],'color', [0.8 0.8 0.8])
-% %     end
-% %     for h = 2:length(limits_res)
-% %         line([limits_res(h,1)-0.5 limits_res(h,1)-0.5],[0 nrmaps+1],'color', 'k')
-% %     end 
-% %     ylim([0 nrmaps+1])
-% %     xlim([1 length(selected_res)])
-% %     title('Selected residues')   
-% %     set(gca,'XTickLabel',ticks_res,'XTick', mean(limits_res,2)','Ytick',1:nrmaps,'Yticklabel', timeticks)
-% %     set(gca,'Ydir','reverse', 'XAxisLocation', 'top','TickDir','out', 'box','on','FontSize',fontsize)
-% % 
-% %  % 2. mean pos/neg density, all atoms    
-% %  subplot(2,3,[2 3])
-% %     hold all
-% %     for n = 1:nrmaps
-% %         plot(1:nratoms, -meanposden(n,:)/scale_E+(n),'color', slate) 
-% %         plot(1:nratoms, -meannegden(n,:)/scale_E+(n),'color', golden)
-% %     end
-% %     for i = 1:nrmaps
-% %         line([1 nratoms], [(i) (i)],'color', [0.8 0.8 0.8])
-% %         hold all
-% %     end 
-% %     for h = 1:length(limits_all)
-% %         line([limits_all(h,1)-0.5 limits_all(h,1)-0.5],[0 nrmaps+1],'color', 'k')
-% %         line([limits_all(h,2)+0.5 limits_all(h,2)+0.5],[0 nrmaps+1],'color', 'k')
-% %     end 
-% %     set(gca,'TickDir','out','Ytick',1:nrmaps,'Yticklabel', timeticks)
-% %     set(gca,'XTickLabel',{'A', 'B', 'C', 'D', 'E', 'F','G','RET'},'XTick', mean(limits_all,2))
-% %     ylim([0 nrmaps+1])
-% %     xlim([1 1787])
-% %     title('All atoms (protein only)')
-% %     set(gca,'Ydir','reverse', 'XAxisLocation', 'top', 'box','on','FontSize',fontsize)
-% %     
-% % % 3. mean pos/neg density, C alpha atoms
-% % subplot(2,3,[5 6])
-% %     hold all
-% %     for n = 1:nrmaps
-% %         plot(1:length(selected_Ca), -meanposden(n,selected_Ca)/scale_E+(n),'color', slate) 
-% %         plot(1:length(selected_Ca), -meannegden(n,selected_Ca)/scale_E+(n),'color', golden)
-% %     end
-% %     for i = 1:nrmaps
-% %         line([1 length(selected_Ca)], [(i) (i)],'color', [0.8 0.8 0.8])
-% %     end   
-% %     for h = 1:length(limits_Ca)
-% %         line([limits_Ca(h,1)-0.5 limits_Ca(h,1)-0.5],[0 nrmaps+1],'color', 'k')
-% %         line([limits_Ca(h,2)+0.5 limits_Ca(h,2)+0.5],[0 nrmaps+1],'color', 'k')
-% %     end 
-% %     set(gca,'XTickLabel',{'A', 'B', 'C', 'D', 'E', 'F','G'},'XTick', mean(limits_Ca,2)')
-% %     set(gca,'TickDir','out','Ytick',1:nrmaps,'Yticklabel', timeticks)
-% %     ylim([0 nrmaps+1])
-% %     xlim([1 length(selected_Ca)])
-% %     title('C alphas')
-% %     set(gca,'Ydir','reverse', 'XAxisLocation', 'top', 'box','on','FontSize',fontsize)
-% % 
-% % % 4. Pearson correlation
-% % subplot(2,3,4)
-% %     imagesc(Pscore)
-% %     colorbar
-% %     axis('square')
-% %     caxis([0 1])
-% %     set(gca,'TickDir','out','Ydir','reverse', 'XAxisLocation', 'top', 'box','on','FontSize', fontsize)
-% %     set(gca,'Ytick',1:nrmaps,'Yticklabel', timeticks,'Xtick',1:nrmaps,'Xticklabel', timeticks)
-% %     title('Correlation')
-% %     
-% % saveas(gcf,'../output/output.png')
-% %     
-% % % OPTIONAL CONTROL SECTION
-% % %**************************************************************************
-% % % - CHECK GRID
-% % %   load a map
-%       map1 = hdf5read([indir mapnames{1} '_cartesian.h5'],'map');
-% % %   check that the size of the map is the same as for gX / gY / gZ 
-% % %   if not, change the order of Y Z X in the meshgrid command 
-% % %
-% % % - CHECK PDB IS COVERED BY MAP
-%    pdb = pdbread(pdbpath);
-%    lim_map = [sX(1) sX(end) sY(1) sY(end) sZ(1) sZ(end)];
-%    lim_pdb = [min([pdb.Model.Atom(:).X]) max([pdb.Model.Atom(:).X]) min([pdb.Model.Atom(:).Y]) max([pdb.Model.Atom(:).Y]) min([pdb.Model.Atom(:).Z]) max([pdb.Model.Atom(:).Z])];
-% % %
-% % % - CHECK DENSITY CALCULATIONS
-% % %   Select a map and a pick few random atoms
-% % %   Calculate the interpolated density value at each of the atoms
-% % %   Open coot, go to the atoms and set the contour level to see that the
-% % %   calculated densities are correct.
-% % % 
-% % %     testset = [157;307;457;1657]
-% % %     testpdb.Model.Atom = pdb.Model.Atom(testset)
-% % %     aX = [testpdb.Model.Atom.X]';
-% % %     aY = [testpdb.Model.Atom.Y]';
-% % %     aZ = [testpdb.Model.Atom.Z]';
-% % %     map3 = hdf5read([indir mapnames{3} '_cartesian.h5'],'map');
-% % %     testdensities = interp3(gY,gZ,gX,map3, aY, aZ , aX)
-% % % 
-% % %     For this test set (THR 24 C; TYR 43 OH; GLY 63 C; VAL 217 O)
-% % %     the calculated densites (-0.0269    0.0157    0.0657   -0.0954)
-% % %     are identical to those seen in coot.
-% % %**************************************************************************
-% % 
-% %    
+     
+% OPTIONAL CONTROL SECTION
+%**************************************************************************
+% - CHECK GRID
+%   load a map
+%   map1 = hdf5read([indir mapnames{1} '_cartesian.h5'],'map');
+%   check that the size of the map is the same as for gX / gY / gZ 
+%   if not, change the order of Y Z X in the meshgrid command 
+% 
+% - CHECK PDB IS COVERED BY MAP
+%   pdb = pdbread(pdbpath);
+%   lim_map = [sX(1) sX(end) sY(1) sY(end) sZ(1) sZ(end)];
+%   lim_pdb = [min([pdb.Model.Atom(:).X]) max([pdb.Model.Atom(:).X]) min([pdb.Model.Atom(:).Y]) max([pdb.Model.Atom(:).Y]) min([pdb.Model.Atom(:).Z]) max([pdb.Model.Atom(:).Z])];
+% 
+% - CHECK DENSITY CALCULATIONS
+%   Select a map and a pick few random atoms
+%   Calculate the interpolated density value at each of the atoms
+%   Open coot, go to the atoms and set the contour level to see that the
+%   calculated densities are correct.
+% 
+%   testset = [157;307;457;1657]
+%   testpdb.Model.Atom = pdb.Model.Atom(testset)
+%   aX = [testpdb.Model.Atom.X]';
+%   aY = [testpdb.Model.Atom.Y]';
+%   aZ = [testpdb.Model.Atom.Z]';
+%   map3 = hdf5read([indir mapnames{3} '_cartesian.h5'],'map');
+%   testdensities = interp3(gY,gZ,gX,map3, aY, aZ , aX)
+%  
+%   For this test set (THR 24 C; TYR 43 OH; GLY 63 C; VAL 217 O)
+%   the calculated densites (-0.0269    0.0157    0.0657   -0.0954)
+%   are identical to those seen in coot.
+%**************************************************************************

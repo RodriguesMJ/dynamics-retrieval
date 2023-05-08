@@ -16,7 +16,7 @@
    To run 3. on computing node use 
    sbatch -p day run_process.sh
 
-4. maptool_CMC.m 
+4. maptool.m 
 
    4’871 atoms chain A+B with retinals
    2’553 grid points at step 0.2A in a sphere of radius 1.7A around each atom   
