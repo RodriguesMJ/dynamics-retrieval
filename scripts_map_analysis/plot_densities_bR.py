@@ -9,10 +9,7 @@ import numpy
 
 
 def get_meanden(mode, label):
-    folder = (
-        "/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR/map_analysis/maptool_CMC/output_figures/out_mode_0_%d_h5grid_8"
-        % mode
-    )
+    folder = "./output_figures/out_mode_0_%d_h5grid_8" % mode
     filename = "%s/meannegden_map_modes_0_%d%s.mat" % (folder, mode, label)
     mat = scipy.io.loadmat(filename)
     meannegden = mat["meannegden"]
@@ -24,7 +21,7 @@ def get_meanden(mode, label):
 
 def plot_site_density_simple():
 
-    folder = "/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA/map_analysis_LPSA_dI"
+    folder = "."
 
     # Atom in 6g7h
     atom = 0  # RET - C20
@@ -44,11 +41,8 @@ def plot_site_density_simple():
     matplotlib.pyplot.figure(figsize=(40, 10))
     matplotlib.pyplot.gca().tick_params(axis="x", labelsize=38)
     matplotlib.pyplot.gca().tick_params(axis="y", labelsize=0)
-    # matplotlib.pyplot.scatter(range(100,  99200, 100), meannegden[:,atom], c='magenta')
-    # matplotlib.pyplot.scatter(range(0,  104600, 100), meanposden[atom,:], c='cyan')
     matplotlib.pyplot.scatter(times_to_plot, meanposden[atom, :], c="b")
     matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c="k")
-    # matplotlib.pyplot.xlim(100, 99100)
     matplotlib.pyplot.xlabel("Time [fs]", fontsize=45)
     matplotlib.pyplot.ylabel("Electron density [a.u.]", fontsize=45)
     figname = "%s/results_C20_6g7k/RET_C20.png" % (folder)
@@ -58,7 +52,7 @@ def plot_site_density_simple():
 
 def plot_site_density():
     label = "_radius_1.7_dist_0.2_sig_4"
-    folder = "/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR/map_analysis/maptool_CMC/output_figures"
+    folder = "./output_figures"
 
     # Atom in 6g7h
     # atom = 1645 # LYS216 - CD
@@ -104,12 +98,8 @@ def plot_peak_density():
     label = "_radius_1_dist_0.1_sig_4_centered_C10"
 
     mode = 1
-    # for mode in modes:
     print "Mode: ", mode
     folder = "./out_mode_0_%d_h5grid_8" % mode
-    # filename = '%s/meannegden_map_modes_0_%d%s.mat'%(folder, mode, label)
-    # mat = scipy.io.loadmat(filename)
-    # meannegden = mat['meannegden']
     filename = "%s/meanposden_map_modes_0_%d%s.mat" % (folder, mode, label)
     mat = scipy.io.loadmat(filename)
     meanposden = mat["meanposden"]
@@ -117,7 +107,6 @@ def plot_peak_density():
     matplotlib.pyplot.figure(figsize=(40, 10))
     matplotlib.pyplot.gca().tick_params(axis="x", labelsize=25)
     matplotlib.pyplot.gca().tick_params(axis="y", labelsize=0)
-    # matplotlib.pyplot.scatter(range(100,  99200, 100), meannegden[:,atom], c='magenta')
     matplotlib.pyplot.scatter(range(100, 99200, 100), meanposden[:, 0], c="cyan")
     matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c="k")
     matplotlib.pyplot.xlim(100, 99100)
@@ -205,46 +194,39 @@ def plot_movie_density():
         matplotlib.pyplot.savefig(figname)
         matplotlib.pyplot.close()
 
-        idxs = numpy.argsort(meannegden_avg)
-        print meannegden_avg[idxs[0]], meannegden_avg[idxs[-1]]
-        print idxs.shape
-        idxs = [idxs[i] for i in range(idxs.shape[0])]
-        print idxs[0:50]
-
-
-#        minv = numpy.amin(meannegden)
-#        maxv = numpy.amax(meanposden)
-#        print minv, maxv
-#        for i in range(nframes):
-#            print mode, i
-#            matplotlib.pyplot.figure(figsize=(50,10))
-#            matplotlib.pyplot.title('Integrated positive and negative density surrounding atom sites', fontsize=30)
-#            matplotlib.pyplot.gca().tick_params(axis='x', labelsize=25)
-#            matplotlib.pyplot.gca().tick_params(axis='y', labelsize=0)
-#            matplotlib.pyplot.scatter(range(natoms), meannegden[i,:], c='magenta')
-#            matplotlib.pyplot.scatter(range(natoms), meanposden[i,:], c='cyan')
-#            matplotlib.pyplot.scatter(x_a, y_a)
-#            matplotlib.pyplot.scatter(x_b, y_b)
-#            matplotlib.pyplot.scatter(x_c, y_c)
-#            matplotlib.pyplot.scatter(x_d, y_d)
-#            matplotlib.pyplot.scatter(x_e, y_e)
-#            matplotlib.pyplot.scatter(x_f, y_f)
-#            matplotlib.pyplot.scatter(x_g, y_g)
-#            matplotlib.pyplot.scatter(x_r, y_r)
-#            matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
-#            matplotlib.pyplot.ylim(-1.1, maxv+0.1)
-#            matplotlib.pyplot.text(x_a[0]+17, y_a[0]+0.03, 'GLU-9 - GLY-31',    fontsize=27)
-#            matplotlib.pyplot.text(x_b[0]+27, y_a[0]+0.03, 'ASP-36 - LEU-62',   fontsize=27)
-#            matplotlib.pyplot.text(x_c[0]+6,  y_a[0]+0.03, 'TRP-80 - VAL-101',  fontsize=27)
-#            matplotlib.pyplot.text(x_d[0]-7,  y_a[0]+0.03, 'ASP-104 - THR-128', fontsize=27)
-#            matplotlib.pyplot.text(x_e[0]+40, y_a[0]+0.03, 'VAL-130 - GLY-155', fontsize=27)
-#            matplotlib.pyplot.text(x_f[0]+22, y_a[0]+0.03, 'ARG-164 - GLY-192', fontsize=27)
-#            matplotlib.pyplot.text(x_g[0]+4,  y_a[0]+0.03, 'PRO-200 - ARG-225', fontsize=27)
-#            matplotlib.pyplot.text(x_r[0]-8,  y_r[0]+0.03, 'RET',               fontsize=25)
-#            matplotlib.pyplot.xlabel('Atom number', fontsize=28)
-#            figname = '%s/movie/map_modes_0_%d%s_frame_%0.5d.png'%(folder, mode, label, 100+100*i)
-#            matplotlib.pyplot.savefig(figname)
-#            matplotlib.pyplot.close()
+        minv = numpy.amin(meannegden)
+        maxv = numpy.amax(meanposden)
+        print minv, maxv
+        for i in range(nframes):
+            print mode, i
+            matplotlib.pyplot.figure(figsize=(50,10))
+            matplotlib.pyplot.title('Integrated positive and negative density surrounding atom sites', fontsize=30)
+            matplotlib.pyplot.gca().tick_params(axis='x', labelsize=25)
+            matplotlib.pyplot.gca().tick_params(axis='y', labelsize=0)
+            matplotlib.pyplot.scatter(range(natoms), meannegden[i,:], c='magenta')
+            matplotlib.pyplot.scatter(range(natoms), meanposden[i,:], c='cyan')
+            matplotlib.pyplot.scatter(x_a, y_a)
+            matplotlib.pyplot.scatter(x_b, y_b)
+            matplotlib.pyplot.scatter(x_c, y_c)
+            matplotlib.pyplot.scatter(x_d, y_d)
+            matplotlib.pyplot.scatter(x_e, y_e)
+            matplotlib.pyplot.scatter(x_f, y_f)
+            matplotlib.pyplot.scatter(x_g, y_g)
+            matplotlib.pyplot.scatter(x_r, y_r)
+            matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
+            matplotlib.pyplot.ylim(-1.1, maxv+0.1)
+            matplotlib.pyplot.text(x_a[0]+17, y_a[0]+0.03, 'GLU-9 - GLY-31',    fontsize=27)
+            matplotlib.pyplot.text(x_b[0]+27, y_a[0]+0.03, 'ASP-36 - LEU-62',   fontsize=27)
+            matplotlib.pyplot.text(x_c[0]+6,  y_a[0]+0.03, 'TRP-80 - VAL-101',  fontsize=27)
+            matplotlib.pyplot.text(x_d[0]-7,  y_a[0]+0.03, 'ASP-104 - THR-128', fontsize=27)
+            matplotlib.pyplot.text(x_e[0]+40, y_a[0]+0.03, 'VAL-130 - GLY-155', fontsize=27)
+            matplotlib.pyplot.text(x_f[0]+22, y_a[0]+0.03, 'ARG-164 - GLY-192', fontsize=27)
+            matplotlib.pyplot.text(x_g[0]+4,  y_a[0]+0.03, 'PRO-200 - ARG-225', fontsize=27)
+            matplotlib.pyplot.text(x_r[0]-8,  y_r[0]+0.03, 'RET',               fontsize=25)
+            matplotlib.pyplot.xlabel('Atom number', fontsize=28)
+            figname = '%s/movie/map_modes_0_%d%s_frame_%0.5d.png'%(folder, mode, label, 100+100*i)
+            matplotlib.pyplot.savefig(figname)
+            matplotlib.pyplot.close()
 
 
 def Correlate(x1, x2):
@@ -261,46 +243,58 @@ def Correlate(x1, x2):
 
 def plot_helix_density():
     label = "_radius_1.7_dist_0.2_sig_4_time_75000_90000_step_10"
-    modes = range(4, 5)  # (1, 6)
+    modes = range(1, 6)  
     for mode in modes:
         print "Mode: ", mode
         meannegden, meanposden = get_meanden(mode, label)
         posden_all = numpy.sum(meanposden, axis=1)
         negden_all = numpy.sum(meannegden, axis=1)
         matplotlib.pyplot.figure(figsize=(10, 20))
-        # matplotlib.pyplot.scatter(range(1, meanposden.shape[0]+1), posden_all, c='k', s=5)
-        # matplotlib.pyplot.scatter(range(1, meanposden.shape[0]+1), negden_all, c='k', s=5)
-        # matplotlib.pyplot.scatter(range(10000, 10000+10*meanposden.shape[0], 10), posden_all, c='k', s=5)
-        matplotlib.pyplot.scatter(
-            range(75000, 75000 + 10 * meanposden.shape[0], 10), negden_all, c="k", s=5
-        )
+        matplotlib.pyplot.scatter(range(1, meanposden.shape[0]+1), posden_all, c='k', s=5)
+        matplotlib.pyplot.scatter(range(1, meanposden.shape[0]+1), negden_all, c='k', s=5)
         matplotlib.pyplot.savefig("./allatoms_movie_mode_%d.png" % mode, dpi=4 * 96)
         matplotlib.pyplot.close()
 
 
-#        matplotlib.pyplot.figure(figsize=(20,10))
-#        color_s = ['blue', 'darkturquoise', 'mediumseagreen', 'magenta', 'black', 'plum', 'purple', 'aquamarine']
-#        start_s = [29,  239, 576, 774, 956,  1243, 1516, 1785]
-#        end_s =   [214, 451, 761, 947, 1229, 1473, 1717, 1805]
-#        label_s = ['Helix A', 'Helix B', 'Helix C', 'Helix D', 'Helix E', 'Helix F', 'Helix G', 'RET']
-#        for i in [1, 2, 5, 6, 7]:#range(len(start_s)):
-#            print i
-#            color = color_s[i]
-#            start = start_s[i]
-#            end = end_s[i]
-#            print start, end
-#            h_pos = meanposden[:,start:end]
-#            h_neg = meannegden[:,start:end]
-#            h_pos = numpy.sum(h_pos, axis=1)
-#            h_neg = numpy.sum(h_neg, axis=1)
-#
-#            matplotlib.pyplot.scatter(range(1, h_pos.shape[0]+1), h_pos, c=color, s=5, label=label_s[i])
-#            matplotlib.pyplot.scatter(range(1, h_pos.shape[0]+1), h_neg, c=color, s=5)
-#            matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
-#
-#        matplotlib.pyplot.legend()
-#        matplotlib.pyplot.savefig('./helix_movie_mode_%d_simple.png'%mode, dpi=4*96)
-#        matplotlib.pyplot.close()
+        matplotlib.pyplot.figure(figsize=(20,10))
+        color_s = ["blue", 
+                   "darkturquoise", 
+                   "mediumseagreen", 
+                   "magenta", 
+                   "black", 
+                   "plum", 
+                   "purple", 
+                   "aquamarine"]
+        start_s = [29,  239, 576, 774, 956,  1243, 1516, 1785]
+        end_s =   [214, 451, 761, 947, 1229, 1473, 1717, 1805]
+        label_s = [
+            "Helix A",
+            "Helix B",
+            "Helix C",
+            "Helix D",
+            "Helix E",
+            "Helix F",
+            "Helix G",
+            "RET",
+        ]
+        for i in [1, 2, 5, 6, 7]:
+            print i
+            color = color_s[i]
+            start = start_s[i]
+            end = end_s[i]
+            print start, end
+            h_pos = meanposden[:,start:end]
+            h_neg = meannegden[:,start:end]
+            h_pos = numpy.sum(h_pos, axis=1)
+            h_neg = numpy.sum(h_neg, axis=1)
+
+            matplotlib.pyplot.scatter(range(1, h_pos.shape[0]+1), h_pos, c=color, s=5, label=label_s[i])
+            matplotlib.pyplot.scatter(range(1, h_pos.shape[0]+1), h_neg, c=color, s=5)
+            matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
+
+        matplotlib.pyplot.legend()
+        matplotlib.pyplot.savefig('./helix_movie_mode_%d_simple.png'%mode, dpi=4*96)
+        matplotlib.pyplot.close()
 
 
 def calc_helix_CC():

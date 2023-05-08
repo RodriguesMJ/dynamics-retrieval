@@ -52,17 +52,7 @@ def plot(neg_integral, pos_integral, nmaps, path, label):
 
 
 def plot_zoom(neg_integral, pos_integral, nmaps, path, label):
-    # matplotlib.pyplot.figure(figsize=(40,10))
-    # matplotlib.pyplot.gca().tick_params(axis='x', labelsize=25)
-    # matplotlib.pyplot.gca().tick_params(axis='y', labelsize=0)
-    # start = 435
-    # end = 1050
-    # matplotlib.pyplot.scatter(range(start, end), neg_integral[start:end], c='m', s=5)
-    # matplotlib.pyplot.scatter(range(start, end), pos_integral[start:end], c='b', s=5)
-    # matplotlib.pyplot.axhline(y=0, xmin=0, xmax=1, c='k')
-    # matplotlib.pyplot.savefig('%s/%s_zoom_435_1050.png'%(path, label))
-    # matplotlib.pyplot.close()
-
+    
     if "m_0_2" in label:
         fig = matplotlib.pyplot.figure(figsize=(40, 10))
         ax1 = fig.add_subplot(111)
@@ -141,10 +131,10 @@ def multitape(neg_integral, pos_integral, nmaps, path, label):
         m = 2
         start_end_list = [
             [550, 650]
-        ]  # [[690, 800]]#[[435, 690], [500, 690], [690, 1050]]
+        ] 
     if "m_0_1" in label:
         m = 1
-        start_end_list = [[1050, 1450], [1050, 2100]]  # [[500, 1000]]#, [1780, 1950]]
+        start_end_list = [[1050, 1450], [1050, 2100]]  
 
     for start_end in start_end_list:
 
@@ -182,7 +172,7 @@ def multitape(neg_integral, pos_integral, nmaps, path, label):
             transform=ax1.transAxes,
             fontsize=30,
             verticalalignment="top",
-        )  # , bbox=props)
+        ) 
 
         ax1_t = ax1.twiny()
         new_tick_locations = numpy.array(
@@ -301,8 +291,8 @@ def multitape(neg_integral, pos_integral, nmaps, path, label):
 def multitape_zoom(neg_integral, pos_integral, nmaps, path, label):
     step = 10
     t0_idx = 43500
-    t_idx_left = 50000  # 105000#178000
-    t_idx_right = 99990  # 145000#195000
+    t_idx_left = 50000 
+    t_idx_right = 99990  
 
     def tick_function(X):
         step_fs = (385.0 + 335.0) / 213557
@@ -354,7 +344,7 @@ def multitape_zoom(neg_integral, pos_integral, nmaps, path, label):
         transform=ax1.transAxes,
         fontsize=30,
         verticalalignment="top",
-    )  # , bbox=props)
+    )  
 
     ax1_t = ax1.twiny()
     new_tick_locations = numpy.array(
@@ -492,7 +482,6 @@ def plot_atoms_density(meanposden, meannegden, path, label, atoms, pospeak_idx):
     print "meanposden: ", meanposden.shape
     print "meannegden: ", meannegden.shape
 
-    # whole_posden = meanposden[pospeak_idx, :]
     whole_posden = numpy.sum(meanposden[atoms, :], axis=0)
     whole_negden = numpy.sum(meannegden[atoms, :], axis=0)
     nmaps = meannegden.shape[1]
@@ -510,33 +499,9 @@ if __name__ == "__main__":
 
     for mode in modes:
         for sigcutoff in sigcutoffs:
-            # path = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis/results_m_0_%d'%mode
-            # label = 'm_0_%d_radius_%.1f_dist_%.1f_sigcutoff_%.1f'%(mode, radius, distance, sigcutoff)
-            # fn_p = '%s/meanposden_%s.jbl'%(path, label)
-            # fn_n = '%s/meannegden_%s.jbl'%(path, label)
-            # meanposden = joblib.load(fn_p)
-            # meannegden = joblib.load(fn_n)
-
-            # flag = 0
-            # if flag == 1:
-            #     plot_whole_density(meanposden, meannegden, path, label)
-
-            # flag = 0
-            # if flag == 1:
-            #     # RET A
-            #     RETA_start = 2421
-            #     RETA_end = 2440+1
-            #     RETA_label = '%s_RETA'%label
-            #     plot_chain_density(meanposden, meannegden, path, RETA_label, RETA_start, RETA_end)
-
-            #     # RET B
-            #     RETB_start = 4851
-            #     RETB_end = 4870+1
-            #     RETB_label = '%s_RETB'%label
-            #     plot_chain_density(meanposden, meannegden, path, RETB_label, RETB_start, RETB_end)
-
+            
             path = (
-                "/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis/results_m_0_%d_step_10_range_50000_99990"
+                "./results_m_0_%d_step_10_range_50000_99990"
                 % mode
             )
             label = "m_0_%d_radius_%.1f_dist_%.1f_sigcutoff_%.1f" % (
