@@ -30,10 +30,9 @@
    Interpolate on Y, Z, X.
    Reshape to 4’871 x 2’553.
    Convert electron density values to sigma values.
-   Repeat for each map and save mapd0:
+   Repeat for each map and save mapd0.
  
-   mode 0+1 3h30’ 108 GB
-   mode 0+2 3h    108 GB
+
 
 5. maptool_getmeanden.py
 
