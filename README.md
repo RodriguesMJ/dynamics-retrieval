@@ -27,3 +27,8 @@ Verify that imports of dynamics_retrieval modules work:
 cd workflows
 
 python test_package.py
+
+
+---------------------
+
+Bacteriorhodopsin TR-SFX data can be found at: https://doi.org/10.5281/zenodo.7896581
