@@ -9,14 +9,21 @@ Basic usage for conda users:
 git clone git@github.com:CeciliaCasadei/dynamics-retrieval.git
 
 Generate your project dedicated environment:
+
 conda create --name py27 python=2.7
+
 conda activate py27
+
 conda list
+
 pip install -e .
 
 Verify that dynamics_retrieval is an installed package.
+
 conda list
 
 Verify that imports of dynamics_retrieval modules work:
+
 cd workflows
+
 python test_package.py
