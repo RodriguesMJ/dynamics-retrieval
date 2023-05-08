@@ -33,7 +33,7 @@ distance = 0.2; % ??, how dense grid within sphere
 
 mode = 1;
 % Files
-here = '/das/work/p18/p18594/cecilia-offline/NLSA/data_rho_2/results_NLSA/map_analysis';
+here = '.';
 pdbpath = [here '/bov_nlsa_refine_96_edited.pdb']; % resting state pdb
 indir  = [here '/output_m_0_' num2str(mode) '/']; % where to find .h5 maps
 outdir = [here '/results_m_0_' num2str(mode) '/'];
