@@ -10,7 +10,7 @@ dependencies:
   - matplotlib
   - joblib
   - h5py
-  - dask
   - pip
   - pip:
     - gemmi
+    - -e .[dev]

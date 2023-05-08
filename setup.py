@@ -17,7 +17,6 @@ requirements = [
     "matplotlib",
     "joblib",
     "h5py",
-    "dask",
     "gemmi",
 ]
 
