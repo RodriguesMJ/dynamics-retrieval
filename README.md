@@ -12,12 +12,20 @@ be created with
 
 After this, install the package:
 
+    git clone https://github.com/CeciliaCasadei/dynamics-retrieval.git
+    cd dynamics-retrieval
     pip install -e .[dev]
 
 Many workflows currently require editing the source code, so installing in developer
 mode (`-e`) is recommended.
 
-# Workflows
+## Testing
+
+To test:
+
+    cd workflows
+    python test_package.py
+## Workflows
 
 The LPSA and NLSA code are contained in the `dynamics_retrieval` package.
 However significant pre-processing is required to prepare data for analysis.
@@ -26,10 +34,12 @@ which can be customized to your application. Code for LPSA and NLSA analysis is
 contained in the library, with wrappers calling the functions within
 `workflows` directory.
 
-## TR-SFX Workflow
+### TR-SFX Workflow
 
 This is the general workflow used for serial crystallography. Scripts for bovine
-rhodopsin (bR) and rhodopsin (rho) are provided. The general flow is as follows:
+rhodopsin (rho) and bacteriorhodopsin (bR) are provided. Bacteriorhodopsin
+TR-SFX data can be found on [zenodo](https://doi.org/10.5281/zenodo.7896581).
+The general flow is as follows:
 
 - `scripts_crystfel_bR`:`
   - Process SwissFEL data collection to produce stream files & list of scaling
