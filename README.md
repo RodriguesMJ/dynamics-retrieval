@@ -41,14 +41,16 @@ rhodopsin (rho) and bacteriorhodopsin (bR) are provided. Bacteriorhodopsin
 TR-SFX data can be found on [zenodo](https://doi.org/10.5281/zenodo.7896581).
 The general flow is as follows:
 
-- `scripts_crystfel_bR`:`
-  - Process SwissFEL data collection to produce stream files & list of scaling
-    factors (from partialator)
-  - Determine resolution cutoff from merge files
-- `scripts_data_reduction_bR`
-  - Start with streams, scaling factors, and space group (eg asuP5_3.m)
+- `scripts_crystfel_*`:`
+  - Use CrystFEL to process TR-SFX data to produce stream files 
+    with indexed intensities(indexamajig, ambigator)
+    & a list of scale factors (partialator).
+  - Calculate merging statistics, 
+    to e.g. estimate the desired high-resolution cutoff.
+- `scripts_data_reduction_*`
+  - Start with streams, scaling factors, and space group (eg asuP6_3.m)
   - Process
-    - Extract HKL intensity for each frame from the stream
+    - Extract reflection intensities for each frame from the stream
     - Apply scale factors for each frame
     - Apply symmetry transformations
     - Add timing info for each frame
@@ -56,9 +58,9 @@ The general flow is as follows:
   - Output data matrix (1 column per frame)
 - `workflows`
   - `run_TR-SFX_LPSA.py` runs scripts for dynamics retrieval
-  - produces reconstructed HKL for each timestep
+  - produces reconstructed reflection intensities for each timestep
 - `scripts_make_maps`
-  - converts output to mtz for use in phenix
+  - Converts output to mtz for use in phenix
 - `scripts_map_analysis`
   - Integrate difference density around a feature of interest
 
