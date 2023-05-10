@@ -41,9 +41,9 @@ rhodopsin (rho) and bacteriorhodopsin (bR) are provided. Bacteriorhodopsin
 TR-SFX data can be found on [zenodo](https://doi.org/10.5281/zenodo.7896581).
 The general flow is as follows:
 
-- `scripts_crystfel_*`:`
+- `scripts_crystfel_*`
   - Use CrystFEL to process TR-SFX data to produce stream files 
-    with indexed intensities(indexamajig, ambigator)
+    with indexed intensities (indexamajig, ambigator)
     & a list of scale factors (partialator).
   - Calculate merging statistics, 
     to e.g. estimate the desired high-resolution cutoff.
