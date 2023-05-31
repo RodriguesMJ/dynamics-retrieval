@@ -2,6 +2,15 @@
 
 Dynamics retrieval (SSA, LPSA, NLSA) methods with application to time-resolved serial crystallography data and other (synthetic, climate).
 
+References:
+
+Casadei, C. M. et al., Structural Dynamics (2022)
+Low-pass spectral analysis of time-resolved serial crystallography data
+https://doi.org/10.1063/4.0000156
+
+Casadei, C. M. et al., Structural Dynamics (2023)
+Dynamics retrieval from stochastically weighted incomplete data by low-pass spectral analysis
+https://doi.org/10.1063/4.0000178
 
 ## Installation
 
