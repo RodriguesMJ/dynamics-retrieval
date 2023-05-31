@@ -14,14 +14,15 @@ def f(settings):
 
     datatype = settings.datatype
 
-    # U = joblib.load('%s/U.jbl'%results_path)
-    # print 'U:', U.shape
+    U = joblib.load('%s/U.jbl'%results_path)
+    print 'U:', U.shape
     S = joblib.load("%s/S.jbl" % results_path)
     print "S: ", S.shape
     VT_final = joblib.load("%s/VT_final.jbl" % results_path)
     print "VT_final: ", VT_final.shape
 
-    VT_final = VT_final[:, 0 : settings.S - settings.q + 1]
+    #VT_final = VT_final[:, 0 : settings.S - settings.q + 1]
+    VT_final = VT_final[:, 0 : int(float(2*settings.S - settings.q + 1)/2)]
     print "VT_final: ", VT_final.shape
     print settings.modes_to_reconstruct
 
@@ -33,8 +34,8 @@ def f(settings):
     for k in settings.modes_to_reconstruct:
         print "Mode: ", k
 
-        # u_k = U[:,k]
-        u_k = joblib.load("%s/uj/u_%d.jbl" % (results_path, k))
+        u_k = U[:,k]
+        #u_k = joblib.load("%s/uj/u_%d.jbl" % (results_path, k))
         s_k = S[k]
         v_k = VT_final[k, :]
         print u_k.shape, v_k.shape
@@ -71,7 +72,8 @@ def f(settings):
 def f_ts(settings):
     S = settings.S
     q = settings.q
-    s = S - q + 1
+    #s = S - q + 1
+    s = int(float(2*S - q + 1)/2)
 
     ts_svs = joblib.load("%s/ts_svs.jbl" % settings.results_path)
     print "ts_svs:", ts_svs.shape, ts_svs[0:5], "..", ts_svs[-2:]

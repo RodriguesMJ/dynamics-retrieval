@@ -62,13 +62,13 @@ def plot_ts(settings):
         f(ts, chrono, "%s/chrono_ts_%d.png" % (out_folder, i))
         f(ts, -chrono, "%s/chrono_ts_%d_minussign.png" % (out_folder, i))
         f(
-            ts[0 : settings.S - settings.q - 1],
-            chrono[0 : settings.S - settings.q - 1],
+            ts[0 : int(float(2*settings.S - settings.q + 1)/2)],# settings.S - settings.q - 1],
+            chrono[0 : int(float(2*settings.S - settings.q + 1)/2)], #settings.S - settings.q - 1],
             "%s/chrono_ts_%d_firsthalf.png" % (out_folder, i),
         )
         f(
-            ts[0 : settings.S - settings.q - 1],
-            -chrono[0 : settings.S - settings.q - 1],
+            ts[0 : int(float(2*settings.S - settings.q + 1)/2)],
+            -chrono[0 : int(float(2*settings.S - settings.q + 1)/2)],
             "%s/chrono_ts_%d_firsthalf_minussign.png" % (out_folder, i),
         )
 
