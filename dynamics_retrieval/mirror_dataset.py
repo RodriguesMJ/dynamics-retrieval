@@ -15,7 +15,7 @@ from scipy import sparse
 def main(settings):
     print settings.results_path
     T = joblib.load(
-        "%s/dT_bst_sparse_LTD_%s.jbl" % (settings.results_path, settings.label)
+        "%s/dT_bst.jbl" % (settings.results_path)
     )
 
     x = T[:, :].todense()
@@ -37,8 +37,8 @@ def main(settings):
 
     joblib.dump(
         T_mirrored_sparse,
-        "%s/dT_bst_sparse_LTD_%s_mirrored.jbl"
-        % (settings.results_path, settings.label),
+        "%s/dT_bst_mirrored.jbl"
+        % (settings.results_path),
     )
 
 

@@ -444,7 +444,7 @@ if flag == 1:
 
     if sparse.issparse(T) == False:
         T = sparse.csr_matrix(T)
-    print "M, is sparse:", sparse.issparse(M), M.dtype, M.shape
+    print "T, is sparse:", sparse.issparse(T), T.dtype, T.shape
     if sparse.issparse(M) == False:
         M = sparse.csr_matrix(M)
     print "M, is sparse:", sparse.issparse(M), M.dtype, M.shape

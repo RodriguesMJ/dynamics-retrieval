@@ -5,17 +5,17 @@ from scipy import sparse
 
 def main(settings):
 
-    label = settings.label
+    #label = settings.label
     folder = settings.results_path
 
     # LIGHT
-    # T = joblib.load( '%s/T_sel_sparse_%s.jbl'%(folder, label))
-    T = joblib.load("%s/dT_sparse_LTD_%s.jbl" % (folder, label))
-    M = joblib.load("%s/M_sparse_%s.jbl" % (folder, label))
+    # T = joblib.load("%s/dT_sparse_LTD_%s.jbl" % (folder, label))
+    # M = joblib.load("%s/M_sparse_%s.jbl" % (folder, label))
 
     # Syn data
-    # T = joblib.load( '%s/x.jbl'%(folder))
-    # M = joblib.load( '%s/mask.jbl'%(folder))
+    T = joblib.load( '%s/dT.jbl'%(folder))
+    M = joblib.load( '%s/input_data_mask_sparsity_0.50.jbl'%(folder))
+    
 
     print "T: is sparse: ", sparse.issparse(T), T.dtype, T.shape
     print "M: is sparse: ", sparse.issparse(M), M.dtype, M.shape
@@ -37,12 +37,12 @@ def main(settings):
 
     print "T_bst: is sparse: ", sparse.issparse(T_bst), T_bst.dtype, T_bst.shape
 
-    print T[10, 0:100]
-    print n_obs[10, 0]
-    print T_bst[10, 0:100]
+    print T[100, 250:350]
+    print n_obs[100, 0]
+    print T_bst[100, 250:350]
 
     T_bst_sparse = sparse.csr_matrix(T_bst)
-    joblib.dump(T_bst_sparse, "%s/dT_bst_sparse_LTD_%s.jbl" % (folder, label))
+    joblib.dump(T_bst_sparse, "%s/dT_bst.jbl" % (folder))
 
     print "dT_bst_sparse: is sparse: ", sparse.issparse(
         T_bst_sparse

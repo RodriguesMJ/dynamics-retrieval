@@ -11,11 +11,10 @@ from scipy import sparse
 
 
 def main(settings):
-    T_fn = "%s/T_sparse_LTD_%s.jbl" % (settings.results_path, settings.label)  # TO LOAD
-    M_fn = "%s/M_sparse_%s.jbl" % (settings.results_path, settings.label)  # TO LOAD
-    dT_fn = "%s/dT_sparse_LTD_%s.jbl" % (
+    T_fn = "%s/input_data_sparsity_0.50.jbl" % (settings.results_path)         # TO LOAD
+    M_fn = "%s/input_data_mask_sparsity_0.50.jbl" % (settings.results_path)    # TO LOAD
+    dT_fn = "%s/dT.jbl" % (
         settings.results_path,
-        settings.label,
     )  # TO SAVE
 
     T = joblib.load(T_fn)
@@ -32,13 +31,15 @@ def main(settings):
 
     ns = numpy.sum(M, axis=1)
     print "ns: ", ns.shape, ns.dtype
+    
     avgs = numpy.sum(T, axis=1) / ns
     print "avgs: ", avgs.shape
+    
     print "avgs[100,0]:", avgs[100, 0]
-    print "T[100,0:100]: ", T[100, 0:100]
+    print "T[100,250:350]: ", T[100, 250:350]
     T = T - avgs
     for i in range(M.shape[1]):
-        if i % 500 == 0:
+        if i % 100 == 0:
             print i
         T[:, i] = numpy.multiply(T[:, i], (M[:, i].todense()))
     dT_sparse = sparse.csr_matrix(T)
@@ -46,5 +47,6 @@ def main(settings):
     print "dT_sparse: is sparse: ", sparse.issparse(
         dT_sparse
     ), dT_sparse.shape, dT_sparse.dtype
-    print "T[100,0:100]: ", T[100, 0:100]
+    print "T[100,250:350]: ", T[100, 250:350]
     joblib.dump(dT_sparse, dT_fn)
+    
