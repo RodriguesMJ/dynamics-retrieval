@@ -4,12 +4,12 @@ Dynamics retrieval (SSA, LPSA, NLSA) methods with application to time-resolved s
 
 References:
 
-Casadei, C. M. et al., Structural Dynamics (2022)
-Dynamics retrieval from stochastically weighted incomplete data by low-pass spectral analysis
+Casadei, C. M. et al., Structural Dynamics (2022),
+Dynamics retrieval from stochastically weighted incomplete data by low-pass spectral analysis.
 https://doi.org/10.1063/4.0000156
 
-Casadei, C. M. et al., Structural Dynamics (2023)
-Low-pass spectral analysis of time-resolved serial crystallography data
+Casadei, C. M. et al., Structural Dynamics (2023),
+Low-pass spectral analysis of time-resolved serial crystallography data.
 https://doi.org/10.1063/4.0000178
 
 ## Installation
@@ -34,6 +34,7 @@ To test:
 
     cd workflows
     python test_package.py
+    
 ## Workflows
 
 The LPSA and NLSA code are contained in the `dynamics_retrieval` package.

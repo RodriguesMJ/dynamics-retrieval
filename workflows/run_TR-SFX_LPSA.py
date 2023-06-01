@@ -28,11 +28,11 @@ if flag == 1:
     dynamics_retrieval.t_disorder_correct.main(settings)
 
 ##### MERGE TEST #######
-flag = 0
+flag = 1
 if flag == 1:
     import dynamics_retrieval.merge_test
 
-    dynamics_retrieval.merge_test.main()
+    dynamics_retrieval.merge_test.main_sliding_window()
 ########################
 
 flag = 0
@@ -423,7 +423,7 @@ if flag == 1:
         nmodes = 1
         dynamics_retrieval.add_modes.f(settings, nmodes)
 
-flag = 1
+flag = 0
 if flag == 1:
     import dynamics_retrieval.add_modes
 

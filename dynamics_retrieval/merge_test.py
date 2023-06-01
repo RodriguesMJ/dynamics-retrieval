@@ -142,3 +142,57 @@ def merge_all():
 
     f_out = "%s/I_light_avg.txt" % (fpath)
     numpy.savetxt(f_out, out, fmt="%6d%6d%6d%17.2f%17.2f")
+    
+def main_sliding_window():
+
+    # data_path = '/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_bR_2/results_LPSA'
+    data_path = "/das/work/p17/p17491/Cecilia_Casadei/NLSA/data_rho/LPSA"
+
+    fpath = "%s/binning_LTD_sliding_window" % (data_path)
+    if not os.path.exists(fpath):
+        os.mkdir(fpath)
+
+    # LIGHT
+
+    miller_h = joblib.load("%s/converted_data_light/miller_h_light.jbl" % (data_path))
+    miller_k = joblib.load("%s/converted_data_light/miller_k_light.jbl" % (data_path))
+    miller_l = joblib.load("%s/converted_data_light/miller_l_light.jbl" % (data_path))
+
+    out = numpy.zeros((miller_h.shape[0], 5))
+    out[:, 0] = miller_h.flatten()
+    out[:, 1] = miller_k.flatten()
+    out[:, 2] = miller_l.flatten()
+    print "out: ", out.shape
+
+    T = joblib.load("%s/converted_data_light/T_sparse_LTD_light.jbl" % (data_path))
+    M = joblib.load("%s/converted_data_light/M_sparse_light.jbl" % (data_path))
+    ts = joblib.load("%s/converted_data_light/t_light.jbl" % (data_path))
+    print "T: ", T.shape
+    print "M: ", M.shape,
+    print "ts: ", ts.shape
+
+    stepsize = 15000
+    binsize = 2*stepsize
+    
+    start = 0
+    for i in range(0, 1+int(float(T.shape[1]-binsize)/stepsize)):
+        start = i*stepsize
+        end = start+binsize
+        
+        t_start = ts[start]
+        t_end = ts[end]
+        
+        print start, end, t_start, t_end
+
+
+        T_bin = T[:, start:end]
+        M_bin = M[:, start:end]
+    
+        I_bin, sigI_bin = f(T_bin, M_bin)
+
+        out[:, 3] = I_bin.flatten()
+        out[:, 4] = sigI_bin.flatten()
+
+        f_out = "%s/I_bin_%d_%d_avg_%0.1ffs_%0.1ffs.txt" % (fpath, start, end, t_start, t_end)
+        print f_out
+        numpy.savetxt(f_out, out, fmt="%6d%6d%6d%17.2f%17.2f")
