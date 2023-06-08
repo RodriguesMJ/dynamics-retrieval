@@ -4,7 +4,6 @@ channels:
   - defaults
 dependencies:
   - python=2.7
-  - spyder=4.1.1
   - numpy
   - scipy
   - matplotlib
