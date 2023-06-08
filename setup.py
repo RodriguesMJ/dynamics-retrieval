@@ -4,10 +4,10 @@
 
 from setuptools import find_packages, setup
 
-with open("README.rst") as readme_file:
+with open("README.md") as readme_file:
     readme = readme_file.read()
 
-with open("HISTORY.rst") as history_file:
+with open("CHANGELOG.md") as history_file:
     history = history_file.read()
 
 requirements = [
@@ -26,9 +26,7 @@ setup_requirements = [
 
 test_requirements = ["tox", "flake8", "coverage", "pytest>=3", "pytest-runner>=5"]
 
-doc_requirements = ["Sphinx>1.8"]
-
-dev_requirements = ["bump2version", "twine", "black", "isort"]
+dev_requirements = ["black", "isort"]
 
 setup(
     author="Cecilia Casadei",
@@ -44,10 +42,10 @@ setup(
     install_requires=requirements,
     extras_require={
         "tests": test_requirements,
-        "docs": doc_requirements,
         "dev": dev_requirements + test_requirements + doc_requirements,
     },
     long_description=readme + "\n\n" + history,
+    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords="science,serial-crystallography,dynamics,lpsa,nlsa,structural-biology",
     name="dynamics-retrieval",
@@ -55,7 +53,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://git.psi.ch/casadei_c/nlsa",
+    url="https://github.com/CeciliaCasadei/dynamics-retrieval",
     version="0.1.0",
     zip_safe=False,
 )
