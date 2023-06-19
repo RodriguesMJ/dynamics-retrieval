@@ -48,8 +48,8 @@ pyplot.figure(figsize=(14, 14))
 pyplot.ylim([-20, +50])
 
 fn = "%s/ccp4s/%s_original_patt.ccp4" % (outfolder, label)
-ccp4 = gemmi.read_ccp4_map(fn)
-ccp4.setup()
+ccp4 = gemmi.read_ccp4_map(fn,setup=True)
+#ccp4.setup() 
 arr = numpy.array(ccp4.grid, copy=False)
 y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
 pyplot.plot(y,arr[0,:,0],label='uncorrected')
@@ -110,8 +110,8 @@ if flag == 1:
             fraction_beta,
             fraction_gamma,
         )
-        ccp4 = gemmi.read_ccp4_map(fn)
-        ccp4.setup()
+        ccp4 = gemmi.read_ccp4_map(fn,setup=True)
+        #ccp4.setup()
         arr = numpy.array(ccp4.grid, copy=False)
         print(arr[0, idx_t1, 0], arr[0, idx_t2, 0])
         if (
@@ -167,8 +167,8 @@ if flag == 1:
     pyplot.ylim([-20, +50])
 
     fn = "%s/ccp4s/%s_original_patt.ccp4" % (outfolder, label)
-    ccp4 = gemmi.read_ccp4_map(fn)
-    ccp4.setup()
+    ccp4 = gemmi.read_ccp4_map(fn,setup=True)
+    #ccp4.setup()
     arr = numpy.array(ccp4.grid, copy=False)
     y = numpy.linspace(0, ccp4.grid.unit_cell.b, num=arr.shape[1], endpoint=False)
     pyplot.plot(y, arr[0, :, 0], label="uncorrected", c="b")
